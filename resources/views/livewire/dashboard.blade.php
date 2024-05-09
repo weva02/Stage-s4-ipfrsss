@@ -8,10 +8,10 @@
                       <div class="card-header p-3 pt-2">
                           <div
                               class="icon icon-lg icon-shape bg-gradient-dark shadow-dark text-center border-radius-xl mt-n4 position-absolute">
-                              <i class="material-icons opacity-10">weekend</i>
+                              <i class="material-icons opacity-10">access_time</i>
                           </div>
                           <div class="text-end pt-1">
-                              <p class="text-sm mb-0 text-capitalize">Today's Money</p>
+                              <p class="text-sm mb-0 text-capitalize">Session en court</p>
                               <h4 class="mb-0">$53k</h4>
                           </div>
                       </div>
@@ -80,7 +80,7 @@
                   </div>
               </div>
           </div>
-          <div class="row mt-4">
+          <!-- <div class="row mt-4">
               <div class="col-lg-4 col-md-6 mt-4 mb-4">
                   <div class="card z-index-2 ">
                       <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
@@ -142,8 +142,8 @@
                       </div>
                   </div>
               </div>
-          </div>
-          <div class="row mb-4">
+          </div> -->
+          <!-- <div class="row mb-4">
               <div class="col-lg-8 col-md-6 mb-md-0 mb-4">
                   <div class="card">
                       <div class="card-header pb-0">
@@ -557,7 +557,7 @@
                       </div>
                   </div>
               </div>
-          </div>
+          </div> -->
       </div>
   </div>
   </div>
