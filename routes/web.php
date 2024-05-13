@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Livewire\Dashboard;
 use App\Http\Livewire\ExampleLaravel\UserManagement;
 use App\Http\Livewire\ExampleLaravel\UserProfile;
+use App\Http\Livewire\ExampleLaravel\EtudiantController;
 use App\Http\Livewire\Notifications;
 use App\Http\Livewire\Profile;
 use App\Http\Livewire\RTL;
@@ -43,6 +44,31 @@ Route::get('sign-in', Login::class)->middleware('guest')->name('login');
 
 Route::get('user-profile', UserProfile::class)->middleware('auth')->name('user-profile');
 Route::get('user-management', UserManagement::class)->middleware('auth')->name('user-management');
+
+Route::get('etudiant-management', EtudiantController::class)->middleware('auth')->name('etudiant-management');
+
+// Route::get('add-etudiant', EtudiantController::class)->middleware('auth')->name('add-etudiant');
+// Route::get('add-etudiant-traitement/{id}', EtudiantController::class)->middleware('auth')->name('add-etudiant-traitement');
+// Route::get('update-etudiant', EtudiantController::class)->middleware('auth')->name('update-etudiant');
+// Route::get('update-etudiant-traitement/{id}', EtudiantController::class)->middleware('auth')->name('update-etudiant-traitement');
+Route::get('delete-etudiant', EtudiantController::class)->middleware('auth')->name('delete-etudiant');
+// Route::get('/etudiant',[EtudiantController::class , 'liste_etudiant']);
+// Route::get('/ajouter',[EtudiantController::class , 'ajouter_etudiant']);
+// Route::post('/ajouter/traitement',[EtudiantController::class , 'ajouter_etudiant_traitement']);
+// Route::get('/update-etudiant/{id}',[EtudiantController::class , 'update_etudiant']);
+// Route::post('/update/traitement',[EtudiantController::class , 'update_etudiant_traitement']);
+// Route::get('/delete-etudiant/{id}',[EtudiantController::class , 'delete_etudiant']);
+
+// Route::middleware(['auth'])->group(function () {
+//     Route::get('etudiant-management', [EtudiantController::class, 'render'])->name('etudiant-management');
+//     Route::get('etudiant-management/liste-etudiant', [EtudiantController::class, 'liste_etudiant'])->name('liste-etudiant');
+//     Route::get('etudiant-management/ajouter-etudiant', [EtudiantController::class, 'ajouter_etudiant'])->name('ajouter-etudiant');
+//     Route::post('etudiant-management/ajouter-etudiant', [EtudiantController::class, 'ajouter_etudiant_traitement'])->name('ajouter-etudiant-traitement');
+//     Route::get('etudiant-management/update-etudiant/{id}', [EtudiantController::class, 'update_etudiant'])->name('update-etudiant');
+//     Route::post('etudiant-management/update-etudiant/{id}', [EtudiantController::class, 'update_etudiant_traitement'])->name('update-etudiant-traitement');
+//     Route::get('etudiant-management/delete-etudiant/{id}', [EtudiantController::class, 'delete_etudiant'])->name('delete-etudiant');
+// });
+
 
 Route::group(['middleware' => 'auth'], function () {
 Route::get('dashboard', Dashboard::class)->name('dashboard');
