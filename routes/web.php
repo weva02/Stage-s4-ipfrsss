@@ -46,6 +46,15 @@ Route::get('user-profile', UserProfile::class)->middleware('auth')->name('user-p
 Route::get('user-management', UserManagement::class)->middleware('auth')->name('user-management');
 
 Route::get('etudiant-management', EtudiantController::class)->middleware('auth')->name('etudiant-management');
+// Routes pour les opérations CRUD des étudiants via Livewire
+Route::middleware('auth')->group(function () {
+    Route::get('add-etudiant', [EtudiantController::class, 'add'])->name('add-etudiant');
+
+    Route::get('etudiant/add', [EtudiantController::class, 'add'])->name('etudiant.add');
+    Route::post('etudiant/store', [EtudiantController::class, 'store'])->name('etudiant.store');
+    Route::get('etudiant/edit/{id}', [EtudiantController::class, 'edit'])->name('etudiant.edit');
+    Route::post('etudiant/update/{id}', [EtudiantController::class, 'update'])->name('etudiant.update');
+});
 
 // Route::get('add-etudiant', EtudiantController::class)->middleware('auth')->name('add-etudiant');
 // Route::get('add-etudiant-traitement/{id}', EtudiantController::class)->middleware('auth')->name('add-etudiant-traitement');

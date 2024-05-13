@@ -68,9 +68,8 @@
                 </div>
             </div>
         </div>
-
-        <!-- Modal for create -->
-<div class="modal fade" id="addEtudiant" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<!-- Modal for create -->
+<!-- <div class="modal fade" id="addEtudiant" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -86,37 +85,23 @@
                         <label for="exampleInputEmail1">Nom</label>
                         <input type="text" onblur="" name="firstName" class="form-control" id="firstName" placeholder="Enter First Name">
                         <small id="nom_error" class="form-text text-danger"></small>
-
                     </div>
                     <div class="form-group">
                         <label for="exampleInputEmail1">Prenom</label>
                         <input type="text" name="prenom" class="form-control" id="prenom" placeholder="Enter Middle Name">
                         <small id="prenom_error" class="form-text text-danger"></small>
-
                     </div>
                     <div class="form-group">
                         <label for="exampleInputEmail1">Email</label>
                         <input type="email" name="email" class="form-control" id="email" placeholder="Enter Last Name">
                         <small id="email_error" class="form-text text-danger"></small>
                     </div>
-
                     <div class="form-group">
                         <label for="exampleInputEmail1">Telephone </label>
                         <input type="text" name="telephone" class="form-control" id="telephone" aria-describedby="emailHelp" placeholder="Enter email">
                         <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
                         <small id="telephone_error" class="form-text text-danger"></small>
-
                     </div>
-                    <!-- <div class="form-group">
-                        <label for="exampleInputPassword1">Password</label>
-                        <input type="password" name="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-                        <small id="password_error" class="form-text text-danger"></small>
-                    </div>
-                    <div class="form-group">
-                        <label for="exampleInputPassword1">Password</label>
-                        <input type="password" name="password_confirmation" class="form-control" id="exampleInputPassword1" placeholder="Confirm Your Password">
-                        <small id="password_confirmation_error" class="form-text text-danger"></small>
-                    </div> -->
                 </form>
             </div>
             <div class="modal-footer">
@@ -125,11 +110,10 @@
             </div>
         </div>
     </div>
-</div>
-
+</div> -->
 
 <!-- Modal for edit -->
-<div class="modal fade" id="editEtudiant" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<!-- <div class="modal fade" id="editEtudiant" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -150,7 +134,6 @@
                         <label for="PrenomEdit">Prenom</label>
                         <input type="text" name="prenomupdate" class="form-control" id="prenomupdate" placeholder="Enter Middle Name">
                         <small id="prenom_edit_error" class="form-text text-danger"></small>
-
                     </div>
                     <div class="form-group">
                         <label for="EmailEdit">Email</label>
@@ -164,131 +147,41 @@
                         <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
                         <small id="telephone_edit_error" class="form-text text-danger"></small>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button"  id="update_etudiant" class="btn btn-primary">Save changes</button>
-                    </div>
-
                 </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button"  id="update_etudiant" class="btn btn-primary">Save changes</button>
             </div>
         </div>
     </div>
 </div>
 
-
-
 <script>
-
-    $(document).on('click', '#save_etudiant', function(e){
-        e.preventDefault();
-        $('#nom_error').text('');
-        $('#prenom_error').text('');
-        $('#email_error').text('');
-        $('#telephone_error').text('');
-        // $('#password_error').text('');
-        // $('#password_confirmation_error').text('');
-
-        var formData = new FormData($('#etudiantForm')[0]);
-        console.log(formData)
-
-        $.ajax({
-            type: 'post',
-            enctype: 'multipart/form-data',
-            url: "{{route('register.create')}}",
-            data: formData,
-            processData: false,
-            contentType: false,
-            cache: false,
-            success: function (response){
-                if(response){
-                    $("#etudiantTable tbody").prepend('<tr><td>'+response.nom+'</td><td>'+response.prenom+'</td><td>'+response.email+'</td><td>'+response.telephone+'</td></tr>')
-                    $('#etudiantForm')[0].reset();
-                    $('#addEtudiant').modal('hide');
-                    $('#msg-succ').show();
-
-                }
-
-            }, error: function (reject){
-                    var response = $.parseJSON(reject.responseText);
-                    $.each(response.errors, function(key, val){
-                        $("#" + key + "_error").text(val[0]);
-                    });
-            }
-        });
-    });
-
-
-
-    $('body').on('click', '#getEtudiant', function (event) {
-        event.preventDefault();
-        var etudiant_id = $(this).data('id');
-        console.log(etudiant_id)
-        $.get('register-edit/' + etudiant_id, function (data) {
-            $('#NomEdit').val(data.nom);
-            $('#PrenomEdit').val(data.prenom);
-            $('#EmailEdit').val(data.email);
-            $('#TelephoneEdit').val(data.telephone);
-            $('#etudiantIdEdit').val(etudiant_id);
-
-
-        })
-    });
-
-
-
-    $(document).on('click', '#update_etudiant', function(e){
-        e.preventDefault();
-        $('#nom_edit_error').text('');
-        $('#prenom_edit_error').text('');
-        $('#email_edit_errorr').text('');
-        $('#telephone_edit_error').text('');
-
-    //    var formData = new FormData($('#editForm')[0]);
-        var nom = $("#NomEdit").val();
-        var prenom = $("#PrenomEdit").val();
-        var email = $("#EmailEdit").val();
-        var telephone= $("#TelephoneEdit").val();
-        var id = $("#IdEdit").val();
-
-
-        console.log(nom)
-        console.log(prenom)
-        console.log(id)
-
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
+    $(document).ready(function() {
+        // Fonction pour ajouter un étudiant
+        $(document).on('click', '#save_etudiant', function(e){
+            e.preventDefault();
+            // Votre code AJAX pour ajouter un étudiant
         });
 
-        $.ajax({
-            type: 'post',
-            enctype: 'multipart/form-data',
-            url: "{{url('register-update')}}" +'/'+ etudiant_id,
-            data: {
-                nomupdate:nom,
-                prenomupdate:prenom,
-                emailupdate:email,
-                telephoneupdate:telephone,
-            },
-            processData: false,
-            contentType: false,
-            cache: false,
-            success: function (response){
-                if(response){
-                    $("#etudiantTable tbody").prepend('<tr><td>'+response.nom+'</td><td>'+response.prenom+'</td><td>'+response.email+'</td><td>'+response.telephone+'</td></tr>')
-                    $('#etudiantForm')[0].reset();
-                    $('#editEtudiant').modal('hide');
-                    $('#msg-succ').show();
-                }
+        // Fonction pour pré-remplir le formulaire de modification d'un étudiant
+        $(document).on('click', '.editEtudiant', function(e){
+            e.preventDefault();
+            // Votre code AJAX pour récupérer les données de l'étudiant à modifier et pré-remplir le formulaire
+        });
 
-            }, error: function (reject){
-                var response = $.parseJSON(reject.responseText);
-                $.each(response.errors, function(key, val){
-                    $("#" + key + "_edit_error").text(val[0]);
-                });
-            }
+        // Fonction pour mettre à jour un étudiant
+        $(document).on('click', '#update_etudiant', function(e){
+            e.preventDefault();
+            // Votre code AJAX pour mettre à jour un étudiant
+        });
+
+        // Fonction pour supprimer un étudiant
+        $(document).on('click', '.deleteEtudiant', function(e){
+            e.preventDefault();
+            var etudiant_id = $(this).data('id');
+            // Votre code AJAX pour supprimer un étudiant
         });
     });
-
-</script>
+</script> -->
