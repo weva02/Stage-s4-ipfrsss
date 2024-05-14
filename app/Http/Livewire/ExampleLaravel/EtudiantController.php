@@ -1,190 +1,67 @@
 <?php
 
-
 namespace App\Http\Livewire\ExampleLaravel;
 
 use Illuminate\Http\Request;
 use Livewire\Component;
-
 use App\Models\Etudiant;
-
 
 class EtudiantController extends Component
 {
     public function liste_etudiant()
     {
-        $etudiants = Etudiant::paginate(5);
-        return view('livewire.example-laravel.etudiant-management' , compact('etudiants'));
+        $etudiants = Etudiant::paginate(4);
+        return view('livewire.example-laravel.etudiant-management', compact('etudiants'));
     }
-    public function add_etudiant()
+    public function store(Request $request)
     {
-        return view('livewire.example-laravel.add-etudiant');
-    }
-    public function add_etudiant_traitement(Request $request)
-    {
-        $request->validate([
-            'nom' => 'required',
-            'prenom' => 'required',
-            'email' => 'required',
-            'telephone' => 'required',
+        $validatedData = $request->validate([
+            'nom' => 'required|string|max:255',
+            'prenom' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'telephone' => 'required|string|max:255',
+        ], [
+            'nom.required' => 'Veuillez entrer le nom de l\'étudiant',
+            'prenom.required' => 'Veuillez entrer le prénom de l\'étudiant',
+            'email.required' => 'Veuillez entrer l\'email de l\'étudiant',
+            'telephone.required' => 'Veuillez entrer le numéro de téléphone de l\'étudiant',
         ]);
-        $etudiant = new Etudiant();
-        $etudiant->nom = $request->nom;
-        $etudiant->prenom = $request->prenom;
-        $etudiant->email = $request->email;
-        $etudiant->telephone = $request->telephone;
+
+        $etudiant = new Etudiant([
+            'nom' => $validatedData['nom'],
+            'prenom' => $validatedData['prenom'],
+            'email' => $validatedData['email'],
+            'telephone' => $validatedData['telephone'],
+        ]);
         $etudiant->save();
 
-        return redirect('/ajouter')->with('status', 'L etudiant a bien ete ajoute avec succes.');
+        return response()->json(['success' => 'Étudiant enregistré avec succès!']);
+        // Après l'ajout réussi
+        // return response()->json(['success' => true, 'message' => 'Élément ajouté avec succès', 'redirect' => route('etudiant-management')]);
 
-    }
-    public function update_etudiant($id){
-        $etudiants = Etudiant::find($id);
-        return view('livewire.example-laravel.update-etudiant' , compact('etudiants'));
-
-    }
-    public function update_etudiant_traitement(Request $request){
-        $request->validate([
-            'nom' => 'required',
-            'prenom' => 'required',
-            'email' => 'required',
-            'telephone' => 'required',
-        ]);
-    
-        $etudiant = Etudiant::find($request->id);
-        $etudiant->nom = $request->nom;
-        $etudiant->prenom = $request->prenom;
-        $etudiant->email = $request->email;
-        $etudiant->telephone = $request->telephone;
-        $etudiant->update();
-        return redirect('/etudiant')->with('status', 'L etudiant a bien ete modifier avec succes.');
     }
     public function delete_etudiant($id){
         $etudiant = Etudiant::find($id);
-        $etudiant->delete();
-        return redirect('/etudiant')->with('status', 'L etudiant a bien ete supprimer avec succes.');
+        if ($etudiant) {
+            $etudiant->delete();
+            return redirect()->back()->with('status', 'Etudiant supprimé avec succès');
+        } else {
+            return redirect()->back()->with('status', 'Étudiant non trouvé');
+        }
+    }
+    public function update(Request $request, $id)
+    {
+        $etudiant = Etudiant::find($id);
+        if ($etudiant) {
+            $etudiant->update($request->all());
+            return response()->json(['success' => 'Étudiant modifié avec succès!']);
+        } else {
+            return response()->json(['error' => 'Étudiant non trouvé'], 404);
+        }
     }
     public function render()
     {
-        // Récupérer les étudiants depuis la base de données
-        $etudiants = Etudiant::paginate(5);
-
-        // Passer les données des étudiants à la vue
+        $etudiants = Etudiant::paginate(4);
         return view('livewire.example-laravel.etudiant-management', compact('etudiants'));
     }
-
-
-    
 }
-
-    // ###############################################################################################
-    // public  function store(EtudiantController $request){
-    //     $etudiants = Etudiant::create([
-    //        'nom' =>  $request->nom,
-    //         'prenom' =>  $request->prenom,
-    //         'email' =>  $request->email,
-    //         'telephone' =>  $request->telephone,
-    //     ]);
-    //     if($etudiants)
-    //     return response()->json($etudiants);
-    //     else
-    //         return response()->json([
-    //             'status' => false,
-    //             'msg' => 'SomeThing Error Try Again',
-    //         ]);
-    // }
-
-    // public  function edit($id){
-    //     $etudiantData = Etudiant::find($id);
-    //     return response()->json($etudiantData);
-    // }
-
-    // public function update(EtudiantController $request, $id){
-    //     $etudiants = Etudiant::find($id);
-    //     if (!$etudiants)
-    //         return response()->json([
-    //             'status' => false,
-    //             'msg' => 'SomeThing Error Try Again',
-    //         ]);
-    //     else
-    //         $etudiants->update([
-    //             'nom' =>  $request->nomupdate,
-    //             'prenom' =>  $request->prenomupdate,
-    //             'email' =>  $request->emailupdate,
-    //             'telephone' =>  $request->telephoneupdate,
-    //         ]);
-
-    //         return response()->json($etudiants);
-
-    // }
-// ###########################################
-// {
-//     public function liste_etudiant()
-//     {
-//         $etudiants = Etudiant::paginate(5);
-//         return view('livewire.example-laravel.etudiant-management', compact('etudiants'));
-//     }
-
-//     public function store(Request $request)
-//     {
-//         $request->validate([
-//             'nom' => 'required',
-//             'prenom' => 'required',
-//             'email' => 'required|email',
-//             'telephone' => 'required',
-//         ]);
-
-//         Etudiant::create([
-//             'nom' => $request->nom,
-//             'prenom' => $request->prenom,
-//             'email' => $request->email,
-//             'telephone' => $request->telephone,
-//         ]);
-
-//         return response()->json(['success' => true]);
-//     }
-
-//     public function edit($id)
-//     {
-//         $etudiant = Etudiant::find($id);
-//         return response()->json($etudiant);
-//     }
-
-//     public function update(Request $request, $id)
-//     {
-//         $request->validate([
-//             'nom' => 'required',
-//             'prenom' => 'required',
-//             'email' => 'required|email',
-//             'telephone' => 'required',
-//         ]);
-
-//         $etudiant = Etudiant::find($id);
-//         $etudiant->update([
-//             'nom' => $request->nom,
-//             'prenom' => $request->prenom,
-//             'email' => $request->email,
-//             'telephone' => $request->telephone,
-//         ]);
-
-//         return response()->json(['success' => true]);
-//     }
-
-//     public function delete($id)
-//     {
-//         $etudiant = Etudiant::find($id);
-//         $etudiant->delete();
-//         return response()->json(['success' => true]);
-//     }
-//     public function render()
-//     {
-//         // Récupérer les étudiants depuis la base de données
-//         $etudiants = Etudiant::paginate(5);
-
-//         // Passer les données des étudiants à la vue
-//         return view('livewire.example-laravel.etudiant-management', compact('etudiants'));
-//     }
-
-
-    
-// }

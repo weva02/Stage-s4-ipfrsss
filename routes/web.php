@@ -46,37 +46,24 @@ Route::get('user-profile', UserProfile::class)->middleware('auth')->name('user-p
 Route::get('user-management', UserManagement::class)->middleware('auth')->name('user-management');
 
 Route::get('etudiant-management', EtudiantController::class)->middleware('auth')->name('etudiant-management');
+
+Route::put('etudiants/{id}', [EtudiantController::class, 'update'])->middleware('auth')->name('etudiants.update');
+Route::post('/etudiants', [EtudiantController::class, 'store'])->middleware('auth')->name('etudiants.store');
+Route::get('/delete-etudiant/{id}',[EtudiantController::class , 'delete_etudiant'])->middleware('auth')->name('etudiants.delete_etudiant');
+Route::post('/etudiant/store', [EtudiantController::class,'store'])->name('etudiant.store');
+
 // Routes pour les opérations CRUD des étudiants via Livewire
-Route::middleware('auth')->group(function () {
-    Route::get('add-etudiant', [EtudiantController::class, 'add'])->name('add-etudiant');
+// Route::put('etudiants/{id}', [EtudiantController::class, 'update'])->name('etudiants.update');
+// Route::put('etudiants/{id}', [EtudiantController::class, 'delete'])->name('etudiants.delete');
+// Route::put('etudiants/{id}', EtudiantController::class)->middleware('auth')->name('etudiants.update');
+// Route::delete('etudiants/{id}', EtudiantController::class)->middleware('auth')->name('etudiants.delete');
+// Routes pour mettre à jour et supprimer un étudiant
+// Route::put('etudiants/{id}', [EtudiantController::class, 'update'])->middleware('auth')->name('etudiants.update');
+// Route::post('/etudiants', [EtudiantController::class, 'store'])->middleware('auth')->name('etudiants.store');
 
-    Route::get('etudiant/add', [EtudiantController::class, 'add'])->name('etudiant.add');
-    Route::post('etudiant/store', [EtudiantController::class, 'store'])->name('etudiant.store');
-    Route::get('etudiant/edit/{id}', [EtudiantController::class, 'edit'])->name('etudiant.edit');
-    Route::post('etudiant/update/{id}', [EtudiantController::class, 'update'])->name('etudiant.update');
-});
+// Route::delete('etudiants/{id}', [EtudiantController::class, 'delete'])->middleware('auth')->name('etudiants.delete');
 
-// Route::get('add-etudiant', EtudiantController::class)->middleware('auth')->name('add-etudiant');
-// Route::get('add-etudiant-traitement/{id}', EtudiantController::class)->middleware('auth')->name('add-etudiant-traitement');
-// Route::get('update-etudiant', EtudiantController::class)->middleware('auth')->name('update-etudiant');
-// Route::get('update-etudiant-traitement/{id}', EtudiantController::class)->middleware('auth')->name('update-etudiant-traitement');
-Route::get('delete-etudiant', EtudiantController::class)->middleware('auth')->name('delete-etudiant');
-// Route::get('/etudiant',[EtudiantController::class , 'liste_etudiant']);
-// Route::get('/ajouter',[EtudiantController::class , 'ajouter_etudiant']);
-// Route::post('/ajouter/traitement',[EtudiantController::class , 'ajouter_etudiant_traitement']);
-// Route::get('/update-etudiant/{id}',[EtudiantController::class , 'update_etudiant']);
-// Route::post('/update/traitement',[EtudiantController::class , 'update_etudiant_traitement']);
-// Route::get('/delete-etudiant/{id}',[EtudiantController::class , 'delete_etudiant']);
 
-// Route::middleware(['auth'])->group(function () {
-//     Route::get('etudiant-management', [EtudiantController::class, 'render'])->name('etudiant-management');
-//     Route::get('etudiant-management/liste-etudiant', [EtudiantController::class, 'liste_etudiant'])->name('liste-etudiant');
-//     Route::get('etudiant-management/ajouter-etudiant', [EtudiantController::class, 'ajouter_etudiant'])->name('ajouter-etudiant');
-//     Route::post('etudiant-management/ajouter-etudiant', [EtudiantController::class, 'ajouter_etudiant_traitement'])->name('ajouter-etudiant-traitement');
-//     Route::get('etudiant-management/update-etudiant/{id}', [EtudiantController::class, 'update_etudiant'])->name('update-etudiant');
-//     Route::post('etudiant-management/update-etudiant/{id}', [EtudiantController::class, 'update_etudiant_traitement'])->name('update-etudiant-traitement');
-//     Route::get('etudiant-management/delete-etudiant/{id}', [EtudiantController::class, 'delete_etudiant'])->name('delete-etudiant');
-// });
 
 
 Route::group(['middleware' => 'auth'], function () {
