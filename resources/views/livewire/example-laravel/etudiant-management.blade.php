@@ -203,7 +203,7 @@
     $("#add-new-etudiant").click(function(e){
         e.preventDefault();
         let form = $('#etudiant-add-form')[0];
-        let data = new FormData(form);
+        let data = new FormData(form); 
         
         $.ajax({
             url: "{{ route('etudiant.store') }}",
