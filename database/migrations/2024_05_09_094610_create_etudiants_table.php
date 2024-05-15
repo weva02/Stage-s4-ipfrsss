@@ -13,10 +13,17 @@ return new class extends Migration
     {
         Schema::create('etudiants', function (Blueprint $table) {
             $table->id();
-            $table->string('nom');
-            $table->string('prenom');
-            $table->mail('email', 191)->unique(); // Specify a maximum length for the email column
-            $table->integer('telephone');
+            $table->integer('NNI');
+            $table->string('nomprenom');
+            $table->string('nationalite');
+            $table->string('diplome');
+            $table->string('genre');
+            $table->string('lieunaissance');
+            $table->string('adress');
+            $table->integer('Age');
+            $table->string('email', 191)->unique(); // Corrected this line
+            $table->integer('phone');
+            $table->integer('wtsp');
             $table->timestamps();
         });
     }
