@@ -51,16 +51,16 @@
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">format_list_bulleted</i>
                     </div>
-                    <span class="nav-link-text ms-1">Liste des Apprenant</span>
+                    <span class="nav-link-text ms-1">Liste des Etudiants</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white {{ Route::currentRouteName() == 'user-management' ? ' active bg-gradient-primary' : '' }}  "
-                    href="{{ route('user-management') }}">
+                <a class="nav-link text-white {{ Route::currentRouteName() == 'prof-management' ? ' active bg-gradient-primary' : '' }}  "
+                    href="{{ route('prof-management') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">format_list_bulleted</i>
                     </div>
-                    <span class="nav-link-text ms-1">Liste des Formateur </span>
+                    <span class="nav-link-text ms-1">Liste des Professeur </span>
                 </a>
             </li>
             <!-- <li class="nav-item">

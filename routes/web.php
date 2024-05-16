@@ -10,6 +10,8 @@ use App\Http\Livewire\Dashboard;
 use App\Http\Livewire\ExampleLaravel\UserManagement;
 use App\Http\Livewire\ExampleLaravel\UserProfile;
 use App\Http\Livewire\ExampleLaravel\EtudiantController;
+use App\Http\Livewire\ExampleLaravel\ProfesseurController;
+
 use App\Http\Livewire\Notifications;
 use App\Http\Livewire\Profile;
 use App\Http\Livewire\RTL;
@@ -45,12 +47,20 @@ Route::get('sign-in', Login::class)->middleware('guest')->name('login');
 Route::get('user-profile', UserProfile::class)->middleware('auth')->name('user-profile');
 Route::get('user-management', UserManagement::class)->middleware('auth')->name('user-management');
 
+//Etudiant routes
 Route::get('etudiant-management', EtudiantController::class)->middleware('auth')->name('etudiant-management');
-
 Route::put('etudiants/{id}', [EtudiantController::class, 'update'])->middleware('auth')->name('etudiants.update');
 Route::post('/etudiants', [EtudiantController::class, 'store'])->middleware('auth')->name('etudiants.store');
 Route::get('/delete-etudiant/{id}',[EtudiantController::class , 'delete_etudiant'])->middleware('auth')->name('etudiants.delete_etudiant');
 Route::post('/etudiant/store', [EtudiantController::class,'store'])->name('etudiant.store');
+
+//Professeur routes
+Route::get('prof-management', ProfesseurController::class)->middleware('auth')->name('prof-management');
+Route::put('profs/{id}', [ProfesseurController::class, 'update'])->middleware('auth')->name('profs.update');
+Route::post('/profs', [ProfesseurController::class, 'store'])->middleware('auth')->name('profs.store');
+Route::get('/delete-prof/{id}',[ProfesseurController::class , 'delete_prof'])->middleware('auth')->name('profs.delete_etudiant');
+Route::post('/prof/store', [ProfesseurController::class,'store'])->name('prof.store');
+
 
 // Routes pour les opérations CRUD des étudiants via Livewire
 // Route::put('etudiants/{id}', [EtudiantController::class, 'update'])->name('etudiants.update');

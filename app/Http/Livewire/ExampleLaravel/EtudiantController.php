@@ -13,32 +13,84 @@ class EtudiantController extends Component
         $etudiants = Etudiant::paginate(4);
         return view('livewire.example-laravel.etudiant-management', compact('etudiants'));
     }
+    // public function store(Request $request)
+    // {
+    //     $validatedData = $request->validate([
+    //         'nni' => 'required|integer|max:255',
+    //         'nomprenom' => 'required|string|max:255',
+    //         'nationalite' => 'required|string|max:255',
+    //         'diplome' => 'required|string|max:255',
+    //         'genre' => 'required|string|max:255',
+    //         'lieunaissance' => 'required|string|max:255',
+    //         'adress' => 'required|string|max:255',
+    //         'age' => 'required|integer|max:255',
+    //         'email' => 'required|email|max:255',
+    //         'phone' => 'required|integer|max:255',
+    //         'wtsp' => 'required|integer|max:255',
+    //     ], [
+    //         'nni.required' => 'Veuillez entrer le NNI de l\'étudiant',
+    //         'nomprenom.required' => 'Veuillez entrer le nom et le prénom de l\'étudiant',
+    //         'nationalite.required' => 'Veuillez entrer la nationalite de l\'étudiant',
+    //         'genre.required' => 'Veuillez entrer le genre de l\'étudiant',
+    //         'lieunaissance.required' => 'Veuillez entrer le lieunaissance de l\'étudiant',
+    //         'adress.required' => 'Veuillez entrer l\'adress de l\'étudiant',
+    //         'age.required' => 'Veuillez entrer l\'age de l\'étudiant',
+    //         'email.required' => 'Veuillez entrer l\'email de l\'étudiant',
+    //         'phone.required' => 'Veuillez entrer le numéro de téléphone de l\'étudiant',
+    //         'wtsp.required' => 'Veuillez entrer le numéro de WhatsApp de l\'étudiant',
+
+    //     ]);
+
+    //     $etudiant = new Etudiant([
+    //         'nni' => $validatedData['nni'],
+    //         'nomprenom' => $validatedData['nomprenom'],
+    //         'nationalite' => $validatedData['nationalite'],
+    //         'diplome' => $validatedData['diplome'],
+    //         'genre' => $validatedData['genre'],
+    //         'lieunaissance' => $validatedData['lieunaissance'],
+    //         'adress' => $validatedData['adress'],
+    //         'age' => $validatedData['age'],
+    //         'email' => $validatedData['email'],
+    //         'phone' => $validatedData['phone'],
+    //         'wtsp' => $validatedData['wtsp'],
+    //     ]);
     public function store(Request $request)
     {
+        // Validation des données
         $validatedData = $request->validate([
-            'nom' => 'required|string|max:255',
-            'prenom' => 'required|string|max:255',
+            'nni' => 'required|integer',
+            'nomprenom' => 'required|string|max:255',
+            'nationalite' => 'required|string|max:255',
+            'diplome' => 'required|string|max:255',
+            'genre' => 'required|string|max:1',
+            'lieunaissance' => 'required|string|max:255',
+            'adress' => 'required|string|max:255',
+            'age' => 'required|integer',
             'email' => 'required|email|max:255',
-            'telephone' => 'required|string|max:255',
-        ], [
-            'nom.required' => 'Veuillez entrer le nom de l\'étudiant',
-            'prenom.required' => 'Veuillez entrer le prénom de l\'étudiant',
-            'email.required' => 'Veuillez entrer l\'email de l\'étudiant',
-            'telephone.required' => 'Veuillez entrer le numéro de téléphone de l\'étudiant',
+            'phone' => 'required|integer',
+            'wtsp' => 'required|integer',
         ]);
 
+        // Création d'un nouvel étudiant
         $etudiant = new Etudiant([
-            'nom' => $validatedData['nom'],
-            'prenom' => $validatedData['prenom'],
+            'nni' => $validatedData['nni'],
+            'nomprenom' => $validatedData['nomprenom'],
+            'nationalite' => $validatedData['nationalite'],
+            'diplome' => $validatedData['diplome'],
+            'genre' => $validatedData['genre'],
+            'lieunaissance' => $validatedData['lieunaissance'],
+            'adress' => $validatedData['adress'],
+            'age' => $validatedData['age'],
             'email' => $validatedData['email'],
-            'telephone' => $validatedData['telephone'],
+            'phone' => $validatedData['phone'],
+            'wtsp' => $validatedData['wtsp'],
         ]);
+
+        // Sauvegarde dans la base de données
         $etudiant->save();
 
+        // Réponse JSON
         return response()->json(['success' => 'Étudiant enregistré avec succès!']);
-        // Après l'ajout réussi
-        // return response()->json(['success' => true, 'message' => 'Élément ajouté avec succès', 'redirect' => route('etudiant-management')]);
-
     }
     public function delete_etudiant($id){
         $etudiant = Etudiant::find($id);

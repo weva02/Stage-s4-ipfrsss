@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('etudiants', function (Blueprint $table) {
             $table->id();
-            $table->integer('NNI');
+            $table->integer('nni');
             $table->string('nomprenom');
             $table->string('nationalite');
             $table->string('diplome');
             $table->string('genre');
             $table->string('lieunaissance');
             $table->string('adress');
-            $table->integer('Age');
+            $table->integer('age');
             $table->string('email', 191)->unique(); // Corrected this line
             $table->integer('phone');
             $table->integer('wtsp');
