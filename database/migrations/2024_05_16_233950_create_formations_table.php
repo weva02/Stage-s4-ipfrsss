@@ -11,18 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('formation', function (Blueprint $table) {
+        Schema::create('formations', function (Blueprint $table) {
             $table->id();
             $table->string('code');
-            $table->string('libelle');
-            $table->integer('nombre_heures');
-            $table->decimal('prix', 8, 2);
-            $table->unsignedBigInteger('id_domaine'); // Assurez-vous que le type correspond à celui de la clé primaire de Domaine
+            $table->string('nom');
+            $table->string('duree');
+            // $table->decimal('prix', 8, 2);
+            // $table->unsignedBigInteger('id_domaine'); // Assurez-vous que le type correspond à celui de la clé primaire de Domaine
     
             $table->timestamps();
     
             // Contrainte de clé étrangère qui référence la table Domaine
-            $table->foreign('id_domaine')->references('id')->on('domaine')->onDelete('cascade');
+            // $table->foreign('id_domaine')->references('id')->on('domaine')->onDelete('cascade');
         });
     }
 
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('formation');
+        Schema::dropIfExists('formations');
     }
 };

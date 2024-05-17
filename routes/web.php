@@ -9,8 +9,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Livewire\Dashboard;
 use App\Http\Livewire\ExampleLaravel\UserManagement;
 use App\Http\Livewire\ExampleLaravel\UserProfile;
+
 use App\Http\Livewire\ExampleLaravel\EtudiantController;
 use App\Http\Livewire\ExampleLaravel\ProfesseurController;
+use App\Http\Livewire\ExampleLaravel\FormationsController;
+
 
 use App\Http\Livewire\Notifications;
 use App\Http\Livewire\Profile;
@@ -62,16 +65,11 @@ Route::get('/delete-prof/{id}',[ProfesseurController::class , 'delete_prof'])->m
 Route::post('/prof/store', [ProfesseurController::class,'store'])->name('prof.store');
 
 
-// Routes pour les opérations CRUD des étudiants via Livewire
-// Route::put('etudiants/{id}', [EtudiantController::class, 'update'])->name('etudiants.update');
-// Route::put('etudiants/{id}', [EtudiantController::class, 'delete'])->name('etudiants.delete');
-// Route::put('etudiants/{id}', EtudiantController::class)->middleware('auth')->name('etudiants.update');
-// Route::delete('etudiants/{id}', EtudiantController::class)->middleware('auth')->name('etudiants.delete');
-// Routes pour mettre à jour et supprimer un étudiant
-// Route::put('etudiants/{id}', [EtudiantController::class, 'update'])->middleware('auth')->name('etudiants.update');
-// Route::post('/etudiants', [EtudiantController::class, 'store'])->middleware('auth')->name('etudiants.store');
-
-// Route::delete('etudiants/{id}', [EtudiantController::class, 'delete'])->middleware('auth')->name('etudiants.delete');
+Route::get('formations-management', FormationsController::class)->middleware('auth')->name('formations-management');
+Route::put('formations/{id}', [FormationsController::class, 'update'])->middleware('auth')->name('formations.update');
+Route::post('/formations', [FormationsController::class, 'store'])->middleware('auth')->name('formations.store');
+Route::get('/delete-formation/{id}',[FormationsController::class , 'delete_formation'])->middleware('auth')->name('formations.delete_etudiant');
+Route::post('/formation/store', [FormationsController::class,'store'])->name('formation.store');
 
 
 

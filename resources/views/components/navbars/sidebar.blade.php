@@ -63,6 +63,15 @@
                     <span class="nav-link-text ms-1">Liste des Professeur </span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link text-white {{ Route::currentRouteName() == 'formations-management' ? ' active bg-gradient-primary' : '' }}  "
+                    href="{{ route('formations-management') }}">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">format_list_bulleted</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Liste des Formations </span>
+                </a>
+            </li>
             <!-- <li class="nav-item">
                 <a class="nav-link text-white {{ Route::currentRouteName() == 'tables' ? ' active bg-gradient-primary' : '' }} "
                     href="{{ route('tables') }}">

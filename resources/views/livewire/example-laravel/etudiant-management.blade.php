@@ -6,9 +6,6 @@
     <!-- Inclure le CSS d'IziToast -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.min.css">
 
-    <!-- Inclure jQuery -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> -->
-
     <!-- Inclure le script d'IziToast -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js"></script>
 
@@ -149,61 +146,9 @@
   </div>
 </div>
 
-<!-- Model ajouter -->
 
-<!-- Ajouter un étudiant Modal -->
-<!-- <div class="modal fade" id="etudiantAddModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Ajouter un nouvel étudiant</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="etudiant-add-form">
-                    @csrf
-                    <div class="mb-3">
-                        <label for="nni" class="form-label">NNI:</label>
-                        <input type="text" class="form-control" id="new-etudiant-nni" name="nni">
-                    </div>
-                    <div class="mb-3">
-                        <label for="nni" class="form-label">Nom & Prenom:</label>
-                        <input type="text" class="form-control" id="new-etudiant-nomprenom" name="nomprenom">
-                    </div><div class="mb-3">
-                        <label for="nationalite" class="form-label">Nationalite:</label>
-                        <input type="text" class="form-control" id="new-etudiant-nationalite" name="nationalite">
-                    </div><div class="mb-3">
-                        <label for="diplome" class="form-label">Diplome:</label>
-                        <input type="text" class="form-control" id="new-etudiant-diplome" name="diplome">
-                    </div><div class="mb-3">
-                        <label for="genre" class="form-label">Genre:</label>
-                        <input type="text" class="form-control" id="new-etudiant-genre" name="genre">
-                    </div><div class="mb-3">
-                        <label for="age" class="form-label">Age:</label>
-                        <input type="text" class="form-control" id="new-etudiant-age" name="age">
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email:</label>
-                        <input type="email" class="form-control" id="new-etudiant-email" name="email">
-                    </div>
-                    <div class="mb-3">
-                        <label for="phone" class="form-label">Portable:</label>
-                        <input type="text" class="form-control" id="new-etudiant-phone" name="phone">
-                    </div>
-                        <label for="wtsp" class="form-label">WhatsApp:</label>
-                        <input type="text" class="form-control" id="new-etudiant-wtsp" name="wtsp">
-                    </div>
-            </div>
-            <div class="modal-footer">
-            
-                <button type="button" class="btn btn-info" id="add-new-etudiant">Ajouter</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-            </div>
-        </div>
-    </div>
-</div> -->
 
-<!-- Ajouter un étudiant Modal -->
+<!-- Ajouter un prof Modal -->
 <div class="modal fade" id="etudiantAddModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -275,55 +220,7 @@
  
 <script type="text/javascript">
     $(document).ready(function () {
-        // $.ajaxSetup({
-        //     headers: {
-        //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        //     }
-        // });
-
-        // // Fonction de soumission du formulaire pour ajouter un nouvel étudiant
-        // $("#add-new-etudiant").click(function(e){
-        //     e.preventDefault();
-        //     let form = $('#etudiant-add-form')[0];
-        //     let data = new FormData(form); 
-
-        //     $.ajax({
-        //         url: "{{ route('etudiant.store') }}",
-        //         type: "POST",
-        //         data: data,
-        //         dataType: "JSON",
-        //         processData: false,
-        //         contentType: false,
-        //         success: function(response) {
-        //             if (response.errors) {
-        //                 var errorMsg = '';
-        //                 $.each(response.errors, function(field, errors) {
-        //                     $.each(errors, function(index, error) {
-        //                         errorMsg += error + '<br>';
-        //                     });
-        //                 });
-        //                 iziToast.error({
-        //                     message: errorMsg,
-        //                     position: 'topRight'
-        //                 });
-        //             } else {
-        //                 iziToast.success({
-        //                     message: response.success,
-        //                     position: 'topRight'
-        //                 });
-        //                 $('#etudiantAddModal').modal('hide');
-        //                 // Optionally reload the page or table data to reflect the new entry
-        //                 location.reload();
-        //             }
-        //         },
-        //         error: function(xhr, status, error) {
-        //             iziToast.error({
-        //                 message: 'An error occurred: ' + error,
-        //                 position: 'topRight'
-        //             });
-        //         }
-        //     });
-        // });
+        
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -461,30 +358,6 @@
             }
         });
 
-        // Delete student
-        // $('body').on('click', '#delete-etudiant', function (e) {
-        //     e.preventDefault();
-        //     var confirmation = confirm("Êtes-vous sûr de vouloir supprimer cet étudiant ?");
-        //     if (confirmation) {
-        //         $.ajax({
-        //             url: $(this).attr('href'),
-        //             type: 'DELETE',
-        //             success: function(response) {
-        //                 iziToast.success({
-        //                     message: response.success,
-        //                     position: 'topRight',
-        //                 });
-        //                 location.reload(); // Refresh the page to show the updated student list
-        //             },
-        //             error: function(xhr, status, error) {
-        //                 iziToast.error({
-        //                     message: 'An error occurred: ' + error,
-        //                     position: 'topRight'
-        //                 });
-        //             }
-        //         });
-        //     }
-        // });
 
         // Fade out alert
         var alertElement = document.querySelector('.fade-out');
@@ -496,187 +369,6 @@
     });
 </script>
 
-<!-- <script type="text/javascript">
-
- 
-
-
-
-    document.addEventListener('DOMContentLoaded', function() {
-        var deleteEtudiant = document.getElementById('deleteEtudiant');
-
-        deleteEtudiant.addEventListener('click', function(event) {
-            event.preventDefault();
-            var confirmation = confirm("Êtes-vous sûr de vouloir supprimer cet étudiant ?");
-            if (confirmation) {
-                window.location.href = this.getAttribute('href');
-            }
-        });
-    });
-
-    // Sélectionnez l'élément avec la classe fade-out
-    var alertElement = document.querySelector('.fade-out');
-
-    // Vérifiez si l'élément existe
-    if (alertElement) {
-        // Masquez l'élément après 2 secondes
-        setTimeout(function() {
-            alertElement.style.display = 'none';
-        }, 2000); // 2000 millisecondes équivalent à 2 secondes
-    }
-
-
-    $(document).ready(function () {
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-    /*------------------------------------------
-    --------------------------------------------
-    When click user on Add Button
-    --------------------------------------------
-    --------------------------------------------*/
-
-
-
-    $("#add-new-etudiant").click(function(e){
-        e.preventDefault();
-        let form = $('#etudiant-add-form')[0];
-        let data = new FormData(form); 
-        
-        $.ajax({
-            url: "{{ route('etudiant.store') }}",
-            type: "POST",
-            data : data,
-            dataType:"JSON",
-            processData : false,
-            contentType:false,
-            
-        success: function(response) {
-
-            if (response.errors) {
-                var errorMsg = '';
-                $.each(response.errors, function(field, errors) {
-                    $.each(errors, function(index, error) {
-                        errorMsg += error + '<br>';
-                    });
-                });
-                iziToast.error({
-                    message: errorMsg,
-                    position: 'topRight'
-                });
-                
-            } else {
-            iziToast.success({
-            message: response.success,
-            position: 'topRight',
-            
-            
-                    });
-            }
-                    
-        },
-        error: function(xhr, status, error) {
-        
-            iziToast.error({
-                message: 'An error occurred: ' + error,
-                position: 'topRight'
-            });
-        }
-    
-        });
-    
-    })
-
-
-
-    /*------------------------------------------
-    --------------------------------------------
-    When click user on Edit Button
-    --------------------------------------------
-    --------------------------------------------*/
-    $('body').on('click', '#edit-etudiant', function () {
-        var etudiantURL = $(this).data('url');
-
-        $('#etudiantEditModal').modal('show');
-        $('#etudiant-id').val($(this).parents("tr").find("td:nth-child(1)").text());
-        $('#etudiant-nni').val($(this).parents("tr").find("td:nth-child(2)").text());
-        $('#etudiant-nomprenom').val($(this).parents("tr").find("td:nth-child(3)").text());
-        $('#etudiant-nationalite').val($(this).parents("tr").find("td:nth-child(4)").text());
-        $('#etudiant-diplome').val($(this).parents("tr").find("td:nth-child(5)").text()); // Utilisez le bon sélecteur pour le prénom
-        $('#etudiant-genre').val($(this).parents("tr").find("td:nth-child(6)").text());
-        $('#etudiant-lieunaissance').val($(this).parents("tr").find("td:nth-child(7)").text());
-        $('#etudiant-adress').val($(this).parents("tr").find("td:nth-child(8)").text());
-        $('#etudiant-age').val($(this).parents("tr").find("td:nth-child(9)").text());
-        $('#etudiant-email').val($(this).parents("tr").find("td:nth-child(10)").text()); // Utilisez le bon sélecteur pour l'e-mail
-        $('#etudiant-phone').val($(this).parents("tr").find("td:nth-child(11)").text()); // Utilisez le bon sélecteur pour le téléphone
-        $('#etudiant-wtsp').val($(this).parents("tr").find("td:nth-child(12)").text()); // Utilisez le bon sélecteur pour le téléphone
-        
-    });
-
-    /*------------------------------------------
-    --------------------------------------------
-    When click user on Update Button
-    --------------------------------------------
-    --------------------------------------------*/
-    // Modifier le sélecteur pour cibler le bouton de mise à jour des étudiants
-    $('body').on('click', '#etudiant-update', function () {
-        var id = $('#etudiant-id').val();
-        var nni = $('#etudiant-nni').val();
-        var nomprenom = $('#etudiant-nomprenom').val();
-        var nationalite = $('#etudiant-nationalite').val();
-        var diplome = $('#etudiant-diplome').val();
-        var genre = $('#etudiant-genre').val();
-        var lieunaissance = $('#etudiant-lieunaissance').val();
-        var adress = $('#etudiant-adress').val();
-        var age = $('#etudiant-age').val();
-        var email = $('#etudiant-email').val();
-        var phone = $('#etudiant-phone').val();
-        var wtsp = $('#etudiant-wtsp').val();
-
-        $.ajax({
-            url: '/etudiants/' + id,
-            type: 'PUT',
-            dataType: 'json',
-            data: { nni: nni, nomprenom: nomprenom, nationalite: nationalite, diplome: diplome,genre: genre, lieunaissance: lieunaissance, adress: adress, age: age  , email: email, phone: phone, wtsp: wtsp },
-            success: function(data) {
-                $('#etudiantEditModal').modal('hide');
-
-                // Mettre à jour les données dans le tableau sans recharger la page
-                var rowIndex = $('#etudiant-id').closest('tr').index(); // Index de la ligne
-                $('table tr').eq(rowIndex + 1).find('td:nth-child(2)').text(nni);
-                $('table tr').eq(rowIndex + 1).find('td:nth-child(3)').text(nomprenom);
-                $('table tr').eq(rowIndex + 1).find('td:nth-child(4)').text(nationalite);
-                $('table tr').eq(rowIndex + 1).find('td:nth-child(5)').text(diplome);
-                $('table tr').eq(rowIndex + 1).find('td:nth-child(6)').text(genre);
-                $('table tr').eq(rowIndex + 1).find('td:nth-child(7)').text(lieunaissance);
-                $('table tr').eq(rowIndex + 1).find('td:nth-child(8)').text(adress);
-                $('table tr').eq(rowIndex + 1).find('td:nth-child(9)').text(age);
-                $('table tr').eq(rowIndex + 1).find('td:nth-child(10)').text(email);
-                $('table tr').eq(rowIndex + 1).find('td:nth-child(11)').text(phone);
-                $('table tr').eq(rowIndex + 1).find('td:nth-child(12)').text(wtsp);
-            },
-            error: function(xhr, status, error) {
-                // Gérer les erreurs de la requête AJAX
-                console.error(xhr.responseText);
-            }
-            
-        });
-    });
-    $('body').on('click', '#delete-etudiant', function (e) {
-    e.preventDefault();
-    var confirmation = confirm("Êtes-vous sûr de vouloir supprimer cet étudiant ?");
-    if (confirmation) {
-        window.location.href = $(this).attr('href');
-    }
-});
-
-});
-
-    
-</script> -->
 </body>
 </html>
 

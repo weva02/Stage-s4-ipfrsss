@@ -30,7 +30,7 @@
                             
                         </div>
                         <div class="me-3 my-3 text-end">
-                    <button type="button" class="btn bg-gradient-dark mb-0" data-bs-toggle="modal" data-bs-target="#profAddModal"><i class="material-icons text-sm">add</i>&nbsp;&nbsp;Ajouter un Apprenant</button>
+                    <button type="button" class="btn bg-gradient-dark mb-0" data-bs-toggle="modal" data-bs-target="#formationAddModal"><i class="material-icons text-sm">add</i>&nbsp;&nbsp;Ajouter un Apprenant</button>
                 </div>
                         <div class="card-body px-0 pb-2">
                             <div class="table-responsive p-0">
@@ -43,14 +43,14 @@
                                             </th>
                                             <th
                                                 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Nom & Prenom</th>
+                                                Code</th>
                                             <th
                                                 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                EMAIL</th>
+                                                Nom</th>
                                             <th
                                                 class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Diplome</th>
-                                            <th
+                                                Duree</th>
+                                            <!-- <th
                                                 class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 Portable</th>
                                             <th
@@ -58,7 +58,7 @@
                                                 WhatsApp</th>
                                             <th
                                                 class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Type</th>
+                                                Type</th> -->
                                             <!-- <th
                                                 class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 CREATION DATE
@@ -67,29 +67,26 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach($profs as $prof)
+                                    @foreach($formations as $formation)
                                         <tr>
-                                            <td>{{ $prof->id }}</td>
-                                            <td>{{ $prof->nomprenom }}</td>
-                                            <td>{{ $prof->email }}</td>
-                                            <td>{{ $prof->diplome }}</td>
-                                            <td>{{ $prof->phone }}</td>
-                                            <td>{{ $prof->wtsp }}</td>
-                                            <td>{{ $prof->typeymntprof_id }}</td>
+                                            <td>{{ $formation->id }}</td>
+                                            <td>{{ $formation->code }}</td>
+                                            <td>{{ $formation->nom }}</td>
+                                            <td>{{ $formation->duree }}</td>
 
 
                                             <td>
                                             <!-- <a href="javascript:void(0)" id="edit-prof" class="btn btn-info">Modifier</a> -->
-                                            <a href="javascript:void(0)" id="edit-prof" class="btn btn-info">Modifier</a>
+                                            <a href="javascript:void(0)" id="edit-formation" class="btn btn-info">Modifier</a>
 
-                                            <a href="/delete-prof/{{ $prof->id }}" id="delete-prof" class="btn btn-danger">Supprimer</a>
+                                            <a href="/delete-formation/{{ $formation->id }}" id="delete-formation" class="btn btn-danger">Supprimer</a>
                                             </td>
 
                                         </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
-                                {{ $profs->links() }}
+                                {{ $formations->links() }}
                             </div>
                         </div>
                     </div>
@@ -98,155 +95,81 @@
         </div>
 
         <!-- Model modifier -->
-<!-- <div class="modal fade" id="profEditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-  
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modifier Professeur</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-  
-      </div>
-  
-      <div class="modal-body">
-        <input type="hidden" id="prof-id" name="id">
-        <p><strong>Nom & Prenom:</strong> <br/> <input type="text" name="nomprenom" id="prof-nomprenom" class="form-control"></span></p>
-        <p><strong>Email:</strong> <br/> <input type="email" name="email" id="prof-email" class="form-control"></span></p>
-        <p><strong>Diplome:</strong> <br/> <input type="text" name="diplome" id="prof-diplome" class="form-control"></span></p>
-        <p><strong>Portable:</strong> <br/> <input type="text" name="phone" id="prof-phone" class="form-control"></span></p>
-        <p><strong>WhatsApp:</strong> <br/> <input type="text" name="wtsp" id="prof-wtsp" class="form-control"></span></p>
-        <p><strong>Tyoe payment:</strong> <br/> <input type="text" name="type" id="prof-type" class="form-control"></span></p>
 
-      </div>
-  
-      <div class="modal-footer">
-        <button type="button" class="btn btn-info" id="prof-update">Modifier</button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-      </div>
-    </div>
-  </div>
-</div> -->
 
-<!-- Model ajouter -->
 
-<!-- Ajouter un étudiant Modal -->
-<!-- <div class="modal fade" id="profAddModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Ajouter un nouvel Professeur</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="prof-add-form">
-                    @csrf
-                    <div class="mb-3">
-                        <label for="nomprenom" class="form-label">Nom & Prenom:</label>
-                        <input type="text" class="form-control" id="new-prof-nomprenom" name="nomprenom">
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email:</label>
-                        <input type="email" class="form-control" id="new-prof-email" name="email">
-                    </div>
-                    <div class="mb-3">
-                        <label for="diplome" class="form-label">Diplome:</label>
-                        <input type="text" class="form-control" id="new-prof-diplome" name="diplome">
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="phone" class="form-label">Portable:</label>
-                        <input type="text" class="form-control" id="new-prof-phone" name="phone">
-                    </div>
-                    <div class="mb-3">
-                        <label for="wtsp" class="form-label">WhatsApp:</label>
-                        <input type="text" class="form-control" id="new-prof-wtsp" name="wtsp">
-                    </div>
-                    <div class="mb-3">
-                        <label for="type" class="form-label">Type payment:</label>
-                        <input type="text" class="form-control" id="new-prof-type" name="type">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-            
-                <button type="button" class="btn btn-info" id="add-new-prof">Ajouter</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-            </div>
-        </div>
-    </div>
-</div> -->
 
-<!-- Ajouter Professeur Modal -->
-<div class="modal fade" id="profAddModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- Ajouter formation Modal -->
+<div class="modal fade" id="formationAddModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ajouter un nouveau Professeur</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Ajouter une nouvelle Formation</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="prof-add-form">
+                    <form id="formation-add-form">
                         @csrf
                         <div class="mb-3">
-                            <label for="nomprenom" class="form-label">Nom & Prenom:</label>
-                            <input type="text" class="form-control" id="new-prof-nomprenom" name="nomprenom" required>
+                            <label for="code" class="form-label">Code:</label>
+                            <input type="text" class="form-control" id="new-formation-code" name="code" required>
                         </div>
-                        <div class="mb-3">
+                        <!-- <div class="mb-3">
                             <label for="email" class="form-label">Email:</label>
                             <input type="email" class="form-control" id="new-prof-email" name="email" required>
+                        </div> -->
+                        <div class="mb-3">
+                            <label for="nom" class="form-label">Nom:</label>
+                            <input type="text" class="form-control" id="new-formation-nom" name="nom" required>
                         </div>
                         <div class="mb-3">
-                            <label for="diplome" class="form-label">Diplome:</label>
-                            <input type="text" class="form-control" id="new-prof-diplome" name="diplome" required>
+                            <label for="duree" class="form-label">Duree:</label>
+                            <input type="text" class="form-control" id="new-formation-duree" name="duree" required>
                         </div>
-                        <div class="mb-3">
-                            <label for="phone" class="form-label">Portable:</label>
-                            <input type="text" class="form-control" id="new-prof-phone" name="phone" required>
-                        </div>
-                        <div class="mb-3">
+                        <!-- <div class="mb-3">
                             <label for="wtsp" class="form-label">WhatsApp:</label>
                             <input type="text" class="form-control" id="new-prof-wtsp" name="wtsp" required>
                         </div>
                         <div class="mb-3">
                             <label for="type" class="form-label">Type payment:</label>
                             <input type="text" class="form-control" id="new-prof-type" name="type" required>
-                        </div>
+                        </div> -->
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-info" id="add-new-prof">Ajouter</button>
+                    <button type="button" class="btn btn-info" id="add-new-formation">Ajouter</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modifier Professeur Modal -->
+    <!-- Modifier formation Modal -->
 
 
 
 
-<div class="modal fade" id="profEditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="formationEditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
   
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modifier Professeur</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Modifier Formation</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
   
       </div>
   
       <div class="modal-body">
-        <input type="hidden" id="prof-id" name="id"></span>
-        <p><strong>Nom & Prenom:</strong> <br/> <input type="text" name="nomprenom" id="prof-nomprenom" class="form-control"></span></p>
-        <p><strong>Email:</strong> <br/> <input type="email" name="email" id="prof-email" class="form-control"></span></p>
-        <p><strong>Diplome:</strong> <br/> <input type="text" name="diplome" id="prof-diplome" class="form-control"></span></p>
-        <p><strong>Portable:</strong> <br/> <input type="text" name="phone" id="prof-phone" class="form-control"></span></p>
-        <p><strong>WhatsApp:</strong> <br/> <input type="text" name="wtsp" id="prof-wtsp" class="form-control"></span></p>
+        <input type="hidden" id="formation-id" name="id"></span>
+        <p><strong>Code:</strong> <br/> <input type="text" name="code" id="formation-code" class="form-control"></span></p>
+        <!-- <p><strong>Email:</strong> <br/> <input type="email" name="email" id="prof-email" class="form-control"></span></p> -->
+        <p><strong>Nom:</strong> <br/> <input type="text" name="nom" id="formation-nom" class="form-control"></span></p>
+        <p><strong>Duree:</strong> <br/> <input type="text" name="duree" id="formation-duree" class="form-control"></span></p>
+        <!-- <p><strong>WhatsApp:</strong> <br/> <input type="text" name="wtsp" id="prof-wtsp" class="form-control"></span></p> -->
       </div>
   
       <div class="modal-footer">
-        <button type="button" class="btn btn-info" id="prof-update">Modifier</button>
+        <button type="button" class="btn btn-info" id="formation-update">Modifier</button>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
       </div>
     </div>
@@ -267,13 +190,13 @@ $(document).ready(function () {
             }
         });
 
-        $("#add-new-prof").click(function(e){
+        $("#add-new-formation").click(function(e){
             e.preventDefault();
-            let form = $('#prof-add-form')[0];
+            let form = $('#formation-add-form')[0];
             let data = new FormData(form); 
             
             $.ajax({
-                url: "{{ route('prof.store') }}",
+                url: "{{ route('formation.store') }}",
                 type: "POST",
                 data: data,
                 dataType: "json",
@@ -292,7 +215,7 @@ $(document).ready(function () {
                             message: response.message,
                             position: 'topRight'
                         });
-                        $('#profAddModal').modal('hide');
+                        $('#formationAddModal').modal('hide');
                         setTimeout(function(){
                             location.reload();
                         }, 1000);
@@ -302,37 +225,37 @@ $(document).ready(function () {
         });
 
         
-        $('body').on('click', '#edit-prof', function () {
-            var etudiantURL = $(this).data('url');
+        $('body').on('click', '#edit-formation', function () {
+            var formationURL = $(this).data('url');
 
-            $('#profEditModal').modal('show');
+            $('#formationEditModal').modal('show');
             var tr = $(this).closest('tr');
-            $('#prof-id').val(tr.find("td:nth-child(1)").text());
-            $('#prof-nomprenom').val(tr.find("td:nth-child(2)").text());
-            $('#prof-email').val(tr.find("td:nth-child(3)").text());
-            $('#prof-diplome').val(tr.find("td:nth-child(4)").text());
-            $('#prof-phone').val(tr.find("td:nth-child(5)").text());
-            $('#prof-wtsp').val(tr.find("td:nth-child(6)").text());
+            $('#formation-id').val(tr.find("td:nth-child(1)").text());
+            $('#formation-code').val(tr.find("td:nth-child(2)").text());
+            $('#formation-nom').val(tr.find("td:nth-child(3)").text());
+            $('#formation-duree').val(tr.find("td:nth-child(4)").text());
+            // $('#prof-phone').val(tr.find("td:nth-child(5)").text());
+            // $('#prof-wtsp').val(tr.find("td:nth-child(6)").text());
         });
 
         // Update student
-        $('body').on('click', '#prof-update', function () {
-            var id = $('#prof-id').val();
+        $('body').on('click', '#formation-update', function () {
+            var id = $('#formation-id').val();
             var data = {
-                nomprenom: $('#prof-nomprenom').val(),
-                email: $('#prof-email').val(),
-                diplome: $('#prof-diplome').val(),
-                phone: $('#prof-phone').val(),
-                wtsp: $('#prof-wtsp').val()
+                code: $('#formation-code').val(),
+                nom: $('#formation-nom').val(),
+                duree: $('#formation-duree').val(),
+                // phone: $('#prof-phone').val(),
+                // wtsp: $('#prof-wtsp').val()
             };
 
             $.ajax({
-                url: '/profs/' + id,
+                url: '/formations/' + id,
                 type: 'PUT',
                 dataType: 'json',
                 data: data,
                 success: function(response) {
-                    $('#profEditModal').modal('hide');
+                    $('#formationEditModal').modal('hide');
                     if (response.success) {
                         iziToast.success({
                             message: response.success,
@@ -358,7 +281,7 @@ $(document).ready(function () {
 
         $('body').on('click', '#delete-etudiant', function (e) {
             e.preventDefault();
-            var confirmation = confirm("Êtes-vous sûr de vouloir supprimer cet Professeur ?");
+            var confirmation = confirm("Êtes-vous sûr de vouloir supprimer cet Formation ?");
             if (confirmation) {
                 window.location.href = $(this).attr('href');
             }
