@@ -11,19 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('contenus_formation', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('formation_id');  // Clé étrangère vers la table formations
-            $table->integer('NumChap');
-            $table->integer('NumUnite');
-            $table->text('description');
-            $table->integer('NombreHeures');
-    
-            $table->timestamps();
-    
-            // Définir la contrainte de clé étrangère
-            $table->foreign('formation_id')->references('id')->on('formation')->onDelete('cascade');
-        });
+        // Vérifier si la table existe déjà
+        if (!Schema::hasTable('contenus_formation')) {
+            Schema::create('contenus_formation', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('formation_id');  // Clé étrangère vers la table formations
+                $table->integer('NumChap');
+                $table->integer('NumUnite');
+                $table->text('description');
+                $table->integer('NombreHeures');
+        
+                $table->timestamps();
+        
+                // Définir la contrainte de clé étrangère
+                $table->foreign('formation_id')->references('id')->on('formations')->onDelete('cascade');
+            });
+        }
     }
 
     /**

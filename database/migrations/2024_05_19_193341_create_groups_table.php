@@ -11,10 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('Domaine', function (Blueprint $table) {
+        Schema::create('groups', function (Blueprint $table) {
             $table->id();
-            $table->string('description');
+            $table->unsignedBigInteger('id_formation');
+            $table->time('heurs_debut');
+            $table->time('heurs_fin');
             $table->timestamps();
+
+            // Contrainte de clé étrangère
+            $table->foreign('id_formation')->references('id')->on('formations')->onDelete('cascade');
         });
     }
 
@@ -23,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('Domaine');
+        Schema::dropIfExists('groups');
     }
 };

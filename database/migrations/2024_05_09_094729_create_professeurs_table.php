@@ -11,23 +11,30 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('professeurs', function (Blueprint $table) {
-            $table->id();
-            $table->string('nomprenom');
-            $table->string('email');
-            $table->string('diplome');
-            $table->integer('phone');
-            $table->integer('wtsp');
-            $table->unsignedBigInteger('typeymntprof_id');
-            $table->foreign('typeymntprof_id')->references('id')->on('typeymntprofs')->onDelete('cascade');
+        if (!Schema::hasTable('professeurs')) {
+            Schema::create('professeurs', function (Blueprint $table) {
+                // Définition des colonnes
+                $table->id();
+                $table->string('nomprenom');
+                $table->string('nattionalite');
+                $table->string('email');
+                $table->string('diplome');
+                $table->integer('phone');
+                $table->integer('wtsp');
+                $table->unsignedBigInteger('typeymntprof_id');
+                $table->foreign('typeymntprof_id')->references('id')->on('typeymntprofs')->onDelete('cascade');
 
-            $table->timestamps();
-        });
+
+                $table->timestamps();
+            });
+        }
     }
+   
 
     /**
      * Reverse the migrations.
      */
+
     public function down(): void
     {
         Schema::dropIfExists('professeurs');
