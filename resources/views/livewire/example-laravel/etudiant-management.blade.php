@@ -10,10 +10,20 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js"></script>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <style>
+      .imgUpload {
+                max-width: 90px;
+                max-height: 70px;
+                min-width: 50px;
+                min-height: 50px;
+            }
+</style>
 </head>
 <body>
         <!-- Navbar -->
         <!-- End Navbar -->
+        
         <div class="container-fluid py-4">
             <div class="row">
                 <div class="col-12">
@@ -23,12 +33,26 @@
                     </div>
                     @endif
                     <div class="card my-4">
-                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                            
+                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 d-flex justify-content-between align-items-center">
+                        <div>
+                            <button type="button" class="btn bg-gradient-dark" data-bs-toggle="modal" data-bs-target="#etudiantAddModal">
+                                <i class="material-icons text-sm">add</i>&nbsp;&nbsp;Ajouter un Etudiant
+                            </button>
+                            <a href="{{ route('export.etudiants') }}" class="btn btn-success">Exporter Étudiants</a>
                         </div>
-                        <div class="me-3 my-3 text-end">
-                    <button type="button" class="btn bg-gradient-dark mb-0" data-bs-toggle="modal" data-bs-target="#etudiantAddModal"><i class="material-icons text-sm">add</i>&nbsp;&nbsp;Ajouter un Apprenant</button>
-                </div>
+                        <form action="/search" method="get" class="d-flex align-items-center ms-auto">
+                            <div class="input-group input-group-sm" style="width: 250px;">
+                                <input type="text" name="search" id="sear_bar"  class="form-control" placeholder="Rechercher..." value="{{ isset($search) ? $search : ''}}">
+                                <button type="submit" class="btn btn-primary">Rechercher</button>
+                            </div>
+                        </form>
+                    </div>
+
+
+                        <div class="me-3 my-3 text-end ">
+                        
+                        </div>
+                
                         <div class="card-body px-0 pb-2">
                             <div class="table-responsive p-0">
                                 <table class="table align-items-center mb-0">
@@ -37,6 +61,10 @@
                                             <th
                                                 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 ID
+                                            </th>
+                                            <th
+                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                Image
                                             </th>
                                             <th
                                                 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
@@ -73,10 +101,10 @@
                                                 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                                 WhatsApp</th>
                             
-                                            <!-- <th
+                                            <th
                                                 class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                CREATION DATE
-                                            </th> -->
+                                                Actions
+                                            </th>
                                             <th class="text-secondary opacity-7"></th>
                                         </tr>
                                     </thead>
@@ -84,6 +112,9 @@
                                     @foreach($etudiants as $etudiant)
                                         <tr>
                                             <td>{{ $etudiant->id }}</td>
+                                            <td>
+                                                <img src="{{ asset('images/'.$etudiant->image)}}" alt="" width="60px" >
+                                            </td>
                                             <td>{{ $etudiant->nni }}</td>
                                             <td>{{ $etudiant->nomprenom }}</td>
                                             <td>{{ $etudiant->nationalite }}</td>
@@ -96,8 +127,8 @@
                                             <td>{{ $etudiant->phone }}</td>
                                             <td>{{ $etudiant->wtsp }}</td>
                                             <td>
-                                            <a href="javascript:void(0)" id="edit-etudiant" class="btn btn-info">Modifier</a>
-                                            <a href="/delete-etudiant/{{ $etudiant->id }}" id="delete-etudiant" class="btn btn-danger">Supprimer</a>
+                                            <a href="javascript:void(0)" id="edit-etudiant" class="btn btn-info"><i class="material-icons opacity-10">border_color</i></a>
+                                            <a href="/delete-etudiant/{{ $etudiant->id }}" id="delete-etudiant" class="btn btn-danger"><i class="material-icons opacity-10">delete</i></a>
                                             </td>
 
                                         </tr>
@@ -124,7 +155,13 @@
       </div>
   
       <div class="modal-body">
+      <form id="etudiant-edit-form" enctype="multipart/form-data">
         <input type="hidden" id="etudiant-id" name="id"></span>
+        <div class="row mb-3">
+                                
+
+                            </div>
+        <!-- <p><strong>Image:</strong> <br/> <input type="file" name="image" id="etudiant-image" class="form-control"></span></p> -->
         <p><strong>NNI:</strong> <br/> <input type="text" name="nni" id="etudiant-nni" class="form-control"></span></p>
         <p><strong>Nom & Prenom:</strong> <br/> <input type="text" name="nomprenom" id="etudiant-nomprenom" class="form-control"></span></p>
         <p><strong>Nationalite:</strong> <br/> <input type="text" name="nationalite" id="etudiant-nationalite" class="form-control"></span></p>
@@ -136,7 +173,8 @@
         <p><strong>Email:</strong> <br/> <input type="email" name="email" id="etudiant-email" class="form-control"></span></p>
         <p><strong>Portable:</strong> <br/> <input type="text" name="phone" id="etudiant-phone" class="form-control"></span></p>
         <p><strong>WhatsApp:</strong> <br/> <input type="text" name="wtsp" id="etudiant-wtsp" class="form-control"></span></p>
-      </div>
+      </form>  
+    </div>
   
       <div class="modal-footer">
         <button type="button" class="btn btn-info" id="etudiant-update">Modifier</button>
@@ -159,6 +197,11 @@
             <div class="modal-body">
             <form id="etudiant-add-form">
     @csrf
+    
+    <div class="mb-3">
+        <label for="image" class="form-label">Image:</label>
+        <input type="file" class="form-control" id="new-etudiant-image" name="image">
+    </div>
     <div class="mb-3">
         <label for="nni" class="form-label">NNI:</label>
         <input type="text" class="form-control" id="new-etudiant-nni" name="nni">
@@ -227,6 +270,9 @@
             }
         });
 
+        
+        
+
         // Fonction de soumission du formulaire pour ajouter un nouvel étudiant
         $("#add-new-etudiant").click(function(e){
             e.preventDefault();
@@ -284,6 +330,24 @@
             });
         });
 
+        $('#image').change(function (){
+        // buat variabel file untuk mengambil file
+        const file = this.files[0]
+
+        console.log(file)
+  
+        if(file){
+            // buat objek FileReader
+            let reader = new FileReader()
+              // gunakan fungsi onload yang akan merefresh target gambarnya saja
+            reader.onload = function (event){ 
+                $('#imagePreview').attr('src',event.target.result)
+            }
+            // baca data sesuai file yang di minta
+            reader.readAsDataURL(file);
+        }
+     })
+
         // Edit student
         $('body').on('click', '#edit-etudiant', function () {
             var etudiantURL = $(this).data('url');
@@ -291,64 +355,101 @@
             $('#etudiantEditModal').modal('show');
             var tr = $(this).closest('tr');
             $('#etudiant-id').val(tr.find("td:nth-child(1)").text());
-            $('#etudiant-nni').val(tr.find("td:nth-child(2)").text());
-            $('#etudiant-nomprenom').val(tr.find("td:nth-child(3)").text());
-            $('#etudiant-nationalite').val(tr.find("td:nth-child(4)").text());
-            $('#etudiant-diplome').val(tr.find("td:nth-child(5)").text());
-            $('#etudiant-genre').val(tr.find("td:nth-child(6)").text());
-            $('#etudiant-lieunaissance').val(tr.find("td:nth-child(7)").text());
-            $('#etudiant-adress').val(tr.find("td:nth-child(8)").text());
-            $('#etudiant-age').val(tr.find("td:nth-child(9)").text());
-            $('#etudiant-email').val(tr.find("td:nth-child(10)").text());
-            $('#etudiant-phone').val(tr.find("td:nth-child(11)").text());
-            $('#etudiant-wtsp').val(tr.find("td:nth-child(12)").text());
+            $('#etudiant-image').val(tr.find("td:nth-child(2)").text());
+            $('#etudiant-nni').val(tr.find("td:nth-child(3)").text());
+            $('#etudiant-nomprenom').val(tr.find("td:nth-child(4)").text());
+            $('#etudiant-nationalite').val(tr.find("td:nth-child(5)").text());
+            $('#etudiant-diplome').val(tr.find("td:nth-child(6)").text());
+            $('#etudiant-genre').val(tr.find("td:nth-child(7)").text());
+            $('#etudiant-lieunaissance').val(tr.find("td:nth-child(8)").text());
+            $('#etudiant-adress').val(tr.find("td:nth-child(9)").text());
+            $('#etudiant-age').val(tr.find("td:nth-child(10)").text());
+            $('#etudiant-email').val(tr.find("td:nth-child(11)").text());
+            $('#etudiant-phone').val(tr.find("td:nth-child(12)").text());
+            $('#etudiant-wtsp').val(tr.find("td:nth-child(13)").text());
         });
 
         // Update student
         $('body').on('click', '#etudiant-update', function () {
-            var id = $('#etudiant-id').val();
-            var data = {
-                nni: $('#etudiant-nni').val(),
-                nomprenom: $('#etudiant-nomprenom').val(),
-                nationalite: $('#etudiant-nationalite').val(),
-                diplome: $('#etudiant-diplome').val(),
-                genre: $('#etudiant-genre').val(),
-                lieunaissance: $('#etudiant-lieunaissance').val(),
-                adress: $('#etudiant-adress').val(),
-                age: $('#etudiant-age').val(),
-                email: $('#etudiant-email').val(),
-                phone: $('#etudiant-phone').val(),
-                wtsp: $('#etudiant-wtsp').val()
-            };
+    var id = $('#etudiant-id').val();
+    var formData = new FormData($('#etudiant-edit-form')[0]);
 
-            $.ajax({
-                url: '/etudiants/' + id,
-                type: 'PUT',
-                dataType: 'json',
-                data: data,
-                success: function(response) {
-                    $('#etudiantEditModal').modal('hide');
-                    if (response.success) {
-                        iziToast.success({
-                            message: response.success,
-                            position: 'topRight',
-                        });
-                        location.reload(); // Refresh the page to show the updated student
-                    } else {
-                        iziToast.error({
-                            message: response.error,
-                            position: 'topRight',
-                        });
-                    }
-                },
-                error: function(xhr, status, error) {
-                    iziToast.error({
-                        message: 'An error occurred: ' + error,
-                        position: 'topRight'
-                    });
-                }
+    $.ajax({
+        url: '/etudiants/' + id,
+        type: 'PUT',
+        dataType: 'json',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            $('#etudiantEditModal').modal('hide');
+            if (response.success) {
+                iziToast.success({
+                    message: response.success,
+                    position: 'topRight',
+                });
+                location.reload(); // Rafraîchir la page pour afficher l'étudiant mis à jour
+            } else {
+                iziToast.error({
+                    message: response.error,
+                    position: 'topRight',
+                });
+            }
+        },
+        error: function(xhr, status, error) {
+            iziToast.error({
+                message: 'Une erreur s\'est produite : ' + error,
+                position: 'topRight'
             });
-        });
+        }
+    });
+});
+
+        // $('body').on('click', '#etudiant-update', function () {
+        //     var id = $('#etudiant-id').val();
+        //     var data = {
+        //         image: $('#etudiant-image').val(),
+        //         nni: $('#etudiant-nni').val(),
+        //         nomprenom: $('#etudiant-nomprenom').val(),
+        //         nationalite: $('#etudiant-nationalite').val(),
+        //         diplome: $('#etudiant-diplome').val(),
+        //         genre: $('#etudiant-genre').val(),
+        //         lieunaissance: $('#etudiant-lieunaissance').val(),
+        //         adress: $('#etudiant-adress').val(),
+        //         age: $('#etudiant-age').val(),
+        //         email: $('#etudiant-email').val(),
+        //         phone: $('#etudiant-phone').val(),
+        //         wtsp: $('#etudiant-wtsp').val()
+        //     };
+
+        //     $.ajax({
+        //         url: '/etudiants/' + id,
+        //         type: 'PUT',
+        //         dataType: 'json',
+        //         data: data,
+        //         success: function(response) {
+        //             $('#etudiantEditModal').modal('hide');
+        //             if (response.success) {
+        //                 iziToast.success({
+        //                     message: response.success,
+        //                     position: 'topRight',
+        //                 });
+        //                 location.reload(); // Refresh the page to show the updated student
+        //             } else {
+        //                 iziToast.error({
+        //                     message: response.error,
+        //                     position: 'topRight',
+        //                 });
+        //             }
+        //         },
+        //         error: function(xhr, status, error) {
+        //             iziToast.error({
+        //                 message: 'An error occurred: ' + error,
+        //                 position: 'topRight'
+        //             });
+        //         }
+        //     });
+        // });
         
         $('body').on('click', '#delete-etudiant', function (e) {
             e.preventDefault();

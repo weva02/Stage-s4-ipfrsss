@@ -18,13 +18,17 @@ class FormationsController extends Component
         $request->validate([
             'code' => 'required|string|max:255',
             'nom' => 'required|string|max:255',
-            'duree' => 'required|string|max:255'
+            'duree' => 'required|string|max:255',
+            // 'prix' => 'required|integer|max:255'
+
         ]);
 
         $formation = new Formations([
             'code' => $request->code,
             'nom' => $request->nom,
-            'duree' => $request->duree
+            'duree' => $request->duree,
+            // 'prix' => $request->prix
+
         ]);
         
         if ($formation->save()) {

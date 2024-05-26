@@ -15,7 +15,7 @@
             <!-- <li class="nav-item mt-3">
                 <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Laravel examples</h6>
             </li>-->
-            <li class="nav-item">
+            <!-- <li class="nav-item">
                 <a class="nav-link text-white {{ Route::currentRouteName() == 'user-profile' ? ' active bg-gradient-primary' : '' }} "
                     href="{{ route('user-profile') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -23,7 +23,7 @@
                     </div>
                     <span class="nav-link-text ms-1">User Profile</span>
                 </a>
-            </li>
+            </li> -->
             <!--<li class="nav-item">
                 <a class="nav-link text-white {{ Route::currentRouteName() == 'user-management' ? ' active bg-gradient-primary' : '' }} "
                     href="{{ route('user-management') }}">
@@ -121,7 +121,7 @@
             <li class="nav-item mt-3">
                 <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Account pages</h6>
             </li> -->
-            <li class="nav-item">
+            <!-- <li class="nav-item">
                 <a class="nav-link text-white {{ Route::currentRouteName() == 'profile' ? ' active bg-gradient-primary' : '' }}  "
                     href="{{ route('profile') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -129,7 +129,7 @@
                     </div>
                     <span class="nav-link-text ms-1">Profile</span>
                 </a>
-            </li>
+            </li> -->
             <li class="nav-item">
                 <a class="nav-link text-white " href="{{ route('static-sign-in') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">

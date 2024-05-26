@@ -50,6 +50,7 @@
                                             <th
                                                 class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 Duree</th>
+                                            
                                             <!-- <th
                                                 class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 Portable</th>
@@ -75,11 +76,12 @@
                                             <td>{{ $formation->duree }}</td>
 
 
+
                                             <td>
                                             <!-- <a href="javascript:void(0)" id="edit-prof" class="btn btn-info">Modifier</a> -->
-                                            <a href="javascript:void(0)" id="edit-formation" class="btn btn-info">Modifier</a>
+                                            <a href="javascript:void(0)" id="edit-formation" class="btn btn-info"><i class="material-icons opacity-10">border_color</i></a>
 
-                                            <a href="/delete-formation/{{ $formation->id }}" id="delete-formation" class="btn btn-danger">Supprimer</a>
+                                            <a href="/delete-formation/{{ $formation->id }}" id="delete-formation" class="btn btn-danger"><i class="material-icons opacity-10">delete</i></a>
                                             </td>
 
                                         </tr>
@@ -127,6 +129,10 @@
                             <input type="text" class="form-control" id="new-formation-duree" name="duree" required>
                         </div>
                         <!-- <div class="mb-3">
+                            <label for="prix" class="form-label">Prix:</label>
+                            <input type="text" class="form-control" id="new-formation-prix" name="prix" required>
+                        </div> -->
+                        <!-- <div class="mb-3">
                             <label for="wtsp" class="form-label">WhatsApp:</label>
                             <input type="text" class="form-control" id="new-prof-wtsp" name="wtsp" required>
                         </div>
@@ -165,6 +171,8 @@
         <!-- <p><strong>Email:</strong> <br/> <input type="email" name="email" id="prof-email" class="form-control"></span></p> -->
         <p><strong>Nom:</strong> <br/> <input type="text" name="nom" id="formation-nom" class="form-control"></span></p>
         <p><strong>Duree:</strong> <br/> <input type="text" name="duree" id="formation-duree" class="form-control"></span></p>
+        <!-- <p><strong>Prix:</strong> <br/> <input type="text" name="prix" id="formation-prix" class="form-control"></span></p> -->
+
         <!-- <p><strong>WhatsApp:</strong> <br/> <input type="text" name="wtsp" id="prof-wtsp" class="form-control"></span></p> -->
       </div>
   
@@ -234,6 +242,8 @@ $(document).ready(function () {
             $('#formation-code').val(tr.find("td:nth-child(2)").text());
             $('#formation-nom').val(tr.find("td:nth-child(3)").text());
             $('#formation-duree').val(tr.find("td:nth-child(4)").text());
+            // $('#formation-prix').val(tr.find("td:nth-child(5)").text());
+
             // $('#prof-phone').val(tr.find("td:nth-child(5)").text());
             // $('#prof-wtsp').val(tr.find("td:nth-child(6)").text());
         });
@@ -245,6 +255,8 @@ $(document).ready(function () {
                 code: $('#formation-code').val(),
                 nom: $('#formation-nom').val(),
                 duree: $('#formation-duree').val(),
+                // prix: $('#formation-prix').val(),
+
                 // phone: $('#prof-phone').val(),
                 // wtsp: $('#prof-wtsp').val()
             };

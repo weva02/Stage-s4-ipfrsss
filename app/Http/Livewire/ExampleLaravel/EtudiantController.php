@@ -5,6 +5,8 @@ namespace App\Http\Livewire\ExampleLaravel;
 use Illuminate\Http\Request;
 use Livewire\Component;
 use App\Models\Etudiant;
+use App\Exports\EtudiantExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class EtudiantController extends Component
 {
@@ -13,85 +15,110 @@ class EtudiantController extends Component
         $etudiants = Etudiant::paginate(4);
         return view('livewire.example-laravel.etudiant-management', compact('etudiants'));
     }
-    // public function store(Request $request)
-    // {
-    //     $validatedData = $request->validate([
-    //         'nni' => 'required|integer|max:255',
-    //         'nomprenom' => 'required|string|max:255',
-    //         'nationalite' => 'required|string|max:255',
-    //         'diplome' => 'required|string|max:255',
-    //         'genre' => 'required|string|max:255',
-    //         'lieunaissance' => 'required|string|max:255',
-    //         'adress' => 'required|string|max:255',
-    //         'age' => 'required|integer|max:255',
-    //         'email' => 'required|email|max:255',
-    //         'phone' => 'required|integer|max:255',
-    //         'wtsp' => 'required|integer|max:255',
-    //     ], [
-    //         'nni.required' => 'Veuillez entrer le NNI de l\'étudiant',
-    //         'nomprenom.required' => 'Veuillez entrer le nom et le prénom de l\'étudiant',
-    //         'nationalite.required' => 'Veuillez entrer la nationalite de l\'étudiant',
-    //         'genre.required' => 'Veuillez entrer le genre de l\'étudiant',
-    //         'lieunaissance.required' => 'Veuillez entrer le lieunaissance de l\'étudiant',
-    //         'adress.required' => 'Veuillez entrer l\'adress de l\'étudiant',
-    //         'age.required' => 'Veuillez entrer l\'age de l\'étudiant',
-    //         'email.required' => 'Veuillez entrer l\'email de l\'étudiant',
-    //         'phone.required' => 'Veuillez entrer le numéro de téléphone de l\'étudiant',
-    //         'wtsp.required' => 'Veuillez entrer le numéro de WhatsApp de l\'étudiant',
 
-    //     ]);
-
-    //     $etudiant = new Etudiant([
-    //         'nni' => $validatedData['nni'],
-    //         'nomprenom' => $validatedData['nomprenom'],
-    //         'nationalite' => $validatedData['nationalite'],
-    //         'diplome' => $validatedData['diplome'],
-    //         'genre' => $validatedData['genre'],
-    //         'lieunaissance' => $validatedData['lieunaissance'],
-    //         'adress' => $validatedData['adress'],
-    //         'age' => $validatedData['age'],
-    //         'email' => $validatedData['email'],
-    //         'phone' => $validatedData['phone'],
-    //         'wtsp' => $validatedData['wtsp'],
-    //     ]);
     public function store(Request $request)
     {
         // Validation des données
-        $validatedData = $request->validate([
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'nni' => 'required|integer',
-            'nomprenom' => 'required|string|max:255',
-            'nationalite' => 'required|string|max:255',
-            'diplome' => 'required|string|max:255',
-            'genre' => 'required|string|max:1',
-            'lieunaissance' => 'required|string|max:255',
-            'adress' => 'required|string|max:255',
+            'nomprenom' => 'required|string',
+            'nationalite' => 'required|string',
+            'diplome' => 'required|string',
+            'genre' => 'required|string',
+            'lieunaissance' => 'required|string',
+            'adress' => 'required|string',
             'age' => 'required|integer',
-            'email' => 'required|email|max:255',
+            'email' => 'required|email',
             'phone' => 'required|integer',
             'wtsp' => 'required|integer',
         ]);
 
-        // Création d'un nouvel étudiant
-        $etudiant = new Etudiant([
-            'nni' => $validatedData['nni'],
-            'nomprenom' => $validatedData['nomprenom'],
-            'nationalite' => $validatedData['nationalite'],
-            'diplome' => $validatedData['diplome'],
-            'genre' => $validatedData['genre'],
-            'lieunaissance' => $validatedData['lieunaissance'],
-            'adress' => $validatedData['adress'],
-            'age' => $validatedData['age'],
-            'email' => $validatedData['email'],
-            'phone' => $validatedData['phone'],
-            'wtsp' => $validatedData['wtsp'],
-        ]);
+        $input = $request->all();
+  
+       
+        try {
+                  // fungsi dibawah digunakan untuk mengambil nama file
+                    $imageName =  $request->image->getClientOriginalName();
+                   // fungsi move untuk mengupload file ke lokal folder public
+                    $request->image->move(public_path('images'),$imageName);
+        
+                    Etudiant::create([
+                        'image'=>$imageName,
+                        'nni'=>$request->nni,
+                        'nomprenom'=>$request->nomprenom,
+                        'nationalite'=>$request->nationalite,
+                        'diplome'=>$request->diplome,
+                        'genre'=>$request->genre,
+                        'lieunaissance'=>$request->lieunaissance,
+                        'adress'=>$request->adress,
+                        'age'=>$request->age,
+                        'email'=>$request->email,
+                        'phone'=>$request->phone,
+                        'wtsp'=>$request->wtsp,
+        
+                    ]);
+                    return redirect()->route('etudiant-management')->with('success','Successfully to create new Etudiant');
+                        } catch (\Throwable $th) {
+                            //throw $th;
+                            return redirect()->route('etudiant-management')->with('error',$th->getMessage());
+                        }
 
-        // Sauvegarde dans la base de données
-        $etudiant->save();
-
-        // Réponse JSON
-        return response()->json(['success' => 'Étudiant enregistré avec succès!']);
     }
+//     public function update(Request $request, $id)
+// {
+//     // Validation des données
+//     $request->validate([
+//         'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+//         'nni' => 'required|integer',
+//         'nomprenom' => 'required|string',
+//         'nationalite' => 'required|string',
+//         'diplome' => 'required|string',
+//         'genre' => 'required|string',
+//         'lieunaissance' => 'required|string',
+//         'adress' => 'required|string',
+//         'age' => 'required|integer',
+//         'email' => 'required|email',
+//         'phone' => 'required|integer',
+//         'wtsp' => 'required|integer',
+//     ]);
+
+//     try {
+//         // Récupération de l'étudiant
+//         $etudiant = Etudiant::findOrFail($id);
+
+//         // Suppression de l'ancienne image si elle existe
+//         if ($etudiant->image) {
+//             Storage::delete('public/images/' . $etudiant->image);
+//         }
+
+//         // Enregistrement de la nouvelle image
+//         $imageName = $request->image->getClientOriginalName();
+//         $request->image->storeAs('public/images', $imageName);
+
+//         // Mise à jour des données de l'étudiant
+//         $etudiant->update([
+//             'image' => $imageName,
+//             'nni' => $request->nni,
+//             'nomprenom' => $request->nomprenom,
+//             'nationalite' => $request->nationalite,
+//             'diplome' => $request->diplome,
+//             'genre' => $request->genre,
+//             'lieunaissance' => $request->lieunaissance,
+//             'adress' => $request->adress,
+//             'age' => $request->age,
+//             'email' => $request->email,
+//             'phone' => $request->phone,
+//             'wtsp' => $request->wtsp,
+//         ]);
+
+//         return response()->json(['success' => 'Étudiant mis à jour avec succès']);
+//     } catch (\Throwable $th) {
+//         return response()->json(['error' => $th->getMessage()], 500);
+//     }
+// }
+
+
     public function delete_etudiant($id){
         $etudiant = Etudiant::find($id);
         if ($etudiant) {
@@ -101,6 +128,51 @@ class EtudiantController extends Component
             return redirect()->back()->with('status', 'Étudiant non trouvé');
         }
     }
+    // public function update(Request $request, $id)
+    // {
+
+      
+    //     if(!$request->image){
+    //         Etudiant::where('id',$id)->update([
+    //             'nni' => $request->nni,
+    //             'nomprenom' => $request->nomprenom,
+    //             'nationalite' => $request->nationalite,
+    //             'diplome' => $request->diplome,
+    //             'genre' => $request->genre,
+    //             'lieunaissance' => $request->lieunaissance,
+    //             'adress' => $request->adress,
+    //             'age' => $request->age,
+    //             'email' => $request->email,
+    //             'phone' => $request->phone,
+    //             'wtsp' => $request->wtsp,
+    
+    //         ]);
+    //     }else{
+    //         $imageName =  $request->image->getClientOriginalName();
+    //         $request->image->move(public_path('images'),$imageName);
+    
+    //         Etudiant::where('book_id',$id)->update([
+    //             'image'=> $imageName,
+    //             'nni' => $request->nni,
+    //             'nomprenom' => $request->nomprenom,
+    //             'nationalite' => $request->nationalite,
+    //             'diplome' => $request->diplome,
+    //             'genre' => $request->genre,
+    //             'lieunaissance' => $request->lieunaissance,
+    //             'adress' => $request->adress,
+    //             'age' => $request->age,
+    //             'email' => $request->email,
+    //             'phone' => $request->phone,
+    //             'wtsp' => $request->wtsp,
+        
+    //         ]);
+    //     }
+    //     //
+
+
+    //     return redirect()->route('etudiant-management')->with('success','Successfully update data');
+
+    // }
     public function update(Request $request, $id)
     {
         $etudiant = Etudiant::find($id);
@@ -116,4 +188,41 @@ class EtudiantController extends Component
         $etudiants = Etudiant::paginate(4);
         return view('livewire.example-laravel.etudiant-management', compact('etudiants'));
     }
+    public function export(){
+        return Excel::download(new EtudiantExport, 'Etudiants.xlsx');
+    }
+    
+    // Dans EtudiantController
+    public function search(Request $request)
+    {
+        // $query = $request->input('query');
+        $search = $request->search;
+        $etudiants =Etudiant::where(function($query) use ($search){
+
+            $query->where('id', 'like', "%$search%")
+            ->orWhere('nni', 'like', "%$search%")
+            ->orWhere('nomprenom', 'like', "%$search%")
+            ->orWhere('nationalite', 'like', "%$search%")
+            ->orWhere('diplome', 'like', "%$search%")
+            ->orWhere('genre', 'like', "%$search%")
+            ->orWhere('lieunaissance', 'like', "%$search%")
+            ->orWhere('adress', 'like', "%$search%")
+            ->orWhere('age', 'like', "%$search%")
+            ->orWhere('email', 'like', "%$search%")
+            ->orWhere('phone', 'like', "%$search%")
+            ->orWhere('wtsp', 'like', "%$search%");
+
+
+        })
+        // ->get();
+        ->
+        paginate(10);
+        return view('livewire.example-laravel.etudiant-management', compact('etudiants','search'));
+
+
+    }
+
+        
+
+
 }

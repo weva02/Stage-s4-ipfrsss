@@ -13,17 +13,18 @@ return new class extends Migration
     {
         Schema::create('etudiants', function (Blueprint $table) {
             $table->id();
+            $table->string('image'); 
             $table->integer('nni');
             $table->string('nomprenom');
             $table->string('nationalite');
-            $table->string('diplome');
+            $table->string('diplome')->nullable();
             $table->string('genre');
             $table->string('lieunaissance');
             $table->string('adress');
             $table->integer('age');
-            $table->string('email', 191)->unique(); // Corrected this line
+            $table->string('email', 191)->unique()->nullable(); // Corrected this line
             $table->integer('phone');
-            $table->integer('wtsp');
+            $table->integer('wtsp')->nullable();
             $table->timestamps();
         });
     }

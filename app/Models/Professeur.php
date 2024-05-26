@@ -10,9 +10,11 @@ class Professeur extends Model
     use HasFactory;
 
     protected $fillable = [
+        'image',
         'nomprenom',
-        'diplome',
+        'nationalite',
         'email',
+        'diplome',
         'phone',
         'wtsp',
         'typeymntprof_id',

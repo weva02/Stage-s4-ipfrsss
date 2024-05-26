@@ -10,6 +10,7 @@ class Etudiant extends Model
     use HasFactory;
 
     protected $fillable = [
+        'image',
         'nni',
         'nomprenom',
         'nationalite',
@@ -22,4 +23,8 @@ class Etudiant extends Model
         'phone',
         'wtsp',
     ];
+
+    // public function etudiants(){
+    //     return $this->hasMany(Etudiant::class);
+    // }
 }

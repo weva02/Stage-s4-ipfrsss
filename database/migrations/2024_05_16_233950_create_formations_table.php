@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,6 +17,8 @@ return new class extends Migration
                 $table->string('code');
                 $table->string('nom');
                 $table->string('duree');
+                // $table->integer('prix'); // Correction ici
+
                 // $table->decimal('prix', 8, 2);
                 // $table->unsignedBigInteger('id_domaine'); // Assurez-vous que le type correspond à celui de la clé primaire de Domaine
             
