@@ -13,6 +13,6 @@ class Formations extends Model
         'code',
         'nom',
         'duree',
-        // 'prix',
+        'prix',
     ];
 }

@@ -16,16 +16,10 @@ return new class extends Migration
                 $table->id();
                 $table->string('code');
                 $table->string('nom');
-                $table->string('duree');
-                // $table->integer('prix'); // Correction ici
-
-                // $table->decimal('prix', 8, 2);
-                // $table->unsignedBigInteger('id_domaine'); // Assurez-vous que le type correspond à celui de la clé primaire de Domaine
-            
+                $table->integer('duree')->unsigned(); // Utilisation d'un entier non signé pour garantir une valeur positive
+                $table->integer('prix'); // Correction ici
+                
                 $table->timestamps();
-            
-                // Contrainte de clé étrangère qui référence la table Domaine
-                // $table->foreign('id_domaine')->references('id')->on('domaine')->onDelete('cascade');
             });
         }
     }

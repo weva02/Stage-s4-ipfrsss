@@ -27,11 +27,26 @@
                     @endif
                     <div class="card my-4">
                         <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                        <div class="card my-4">
+                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 d-flex justify-content-between align-items-center">
+                        <div>
+                        <button type="button" class="btn bg-gradient-dark mb-0" data-bs-toggle="modal" data-bs-target="#formationAddModal"><i class="material-icons text-sm">add</i>&nbsp;&nbsp;Ajouter une formations</button>
+                                <!-- <i class="material-icons text-sm">add</i>&nbsp;&nbsp;Ajouter une formations -->
+                            
+                        <a href="{{ route('formations.export') }}" class="btn btn-success">Exporter foemations</a>
+                        </div>
+                        <form action="/search" method="get" class="d-flex align-items-center ms-auto">
+                            <div class="input-group input-group-sm" style="width: 250px;">
+                                <input type="text" name="search" id="search_bar" class="form-control" placeholder="Rechercher..." value="{{ isset($search) ? $search : ''}}">
+                                <button type="submit" class="btn btn-primary">Rechercher</button>
+                            </div>
+                        </form>
+                    </div>
                             
                         </div>
-                        <div class="me-3 my-3 text-end">
+                        <!-- <div class="me-3 my-3 text-end">
                     <button type="button" class="btn bg-gradient-dark mb-0" data-bs-toggle="modal" data-bs-target="#formationAddModal"><i class="material-icons text-sm">add</i>&nbsp;&nbsp;Ajouter un Apprenant</button>
-                </div>
+                </div> -->
                         <div class="card-body px-0 pb-2">
                             <div class="table-responsive p-0">
                                 <table class="table align-items-center mb-0">
@@ -50,16 +65,19 @@
                                             <th
                                                 class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 Duree</th>
-                                            
-                                            <!-- <th
-                                                class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Portable</th>
                                             <th
+                                                class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                prix</th>
+                                            
+                                            <th
+                                                class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                Actions</th>
+                                            <!-- <th
                                                 class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 WhatsApp</th>
                                             <th
                                                 class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Type</th> -->
+                                                Type</th> --> -->
                                             <!-- <th
                                                 class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 CREATION DATE
@@ -74,6 +92,7 @@
                                             <td>{{ $formation->code }}</td>
                                             <td>{{ $formation->nom }}</td>
                                             <td>{{ $formation->duree }}</td>
+                                            <td>{{ $formation->prix}}</td>
 
 
 
@@ -128,10 +147,10 @@
                             <label for="duree" class="form-label">Duree:</label>
                             <input type="text" class="form-control" id="new-formation-duree" name="duree" required>
                         </div>
-                        <!-- <div class="mb-3">
+                        <div class="mb-3">
                             <label for="prix" class="form-label">Prix:</label>
                             <input type="text" class="form-control" id="new-formation-prix" name="prix" required>
-                        </div> -->
+                        </div>
                         <!-- <div class="mb-3">
                             <label for="wtsp" class="form-label">WhatsApp:</label>
                             <input type="text" class="form-control" id="new-prof-wtsp" name="wtsp" required>
@@ -171,7 +190,7 @@
         <!-- <p><strong>Email:</strong> <br/> <input type="email" name="email" id="prof-email" class="form-control"></span></p> -->
         <p><strong>Nom:</strong> <br/> <input type="text" name="nom" id="formation-nom" class="form-control"></span></p>
         <p><strong>Duree:</strong> <br/> <input type="text" name="duree" id="formation-duree" class="form-control"></span></p>
-        <!-- <p><strong>Prix:</strong> <br/> <input type="text" name="prix" id="formation-prix" class="form-control"></span></p> -->
+        <p><strong>Prix:</strong> <br/> <input type="text" name="prix" id="formation-prix" class="form-control"></span></p>
 
         <!-- <p><strong>WhatsApp:</strong> <br/> <input type="text" name="wtsp" id="prof-wtsp" class="form-control"></span></p> -->
       </div>
@@ -242,7 +261,7 @@ $(document).ready(function () {
             $('#formation-code').val(tr.find("td:nth-child(2)").text());
             $('#formation-nom').val(tr.find("td:nth-child(3)").text());
             $('#formation-duree').val(tr.find("td:nth-child(4)").text());
-            // $('#formation-prix').val(tr.find("td:nth-child(5)").text());
+            $('#formation-prix').val(tr.find("td:nth-child(5)").text());
 
             // $('#prof-phone').val(tr.find("td:nth-child(5)").text());
             // $('#prof-wtsp').val(tr.find("td:nth-child(6)").text());
@@ -255,7 +274,7 @@ $(document).ready(function () {
                 code: $('#formation-code').val(),
                 nom: $('#formation-nom').val(),
                 duree: $('#formation-duree').val(),
-                // prix: $('#formation-prix').val(),
+                prix: $('#formation-prix').val(),
 
                 // phone: $('#prof-phone').val(),
                 // wtsp: $('#prof-wtsp').val()

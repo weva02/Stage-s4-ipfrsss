@@ -110,6 +110,7 @@ Route::get('/export-excel',[ProfesseurController::class , 'export'])->middleware
 
 Route::get('export/professeurs', [ExportController::class, 'exportProfesseurs'])->name('export.professeurs');
 Route::get('export/etudiants', [ExportController::class, 'exportEtudiants'])->name('export.etudiants');
+Route::get('export/formationa', [ExportController::class, 'formationsExport'])->name('formations.export');
 
 
 Route::get('formations-management', FormationsController::class)->middleware('auth')->name('formations-management');
