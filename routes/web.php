@@ -58,7 +58,9 @@ Route::put('etudiants/{id}', [EtudiantController::class, 'update'])->middleware(
 Route::post('/etudiants', [EtudiantController::class, 'store'])->middleware('auth')->name('etudiants.store');
 Route::get('/delete-etudiant/{id}',[EtudiantController::class , 'delete_etudiant'])->middleware('auth')->name('etudiants.delete_etudiant');
 Route::post('/etudiant/store', [EtudiantController::class,'store'])->name('etudiant.store');
-Route::get('/search',[EtudiantController::class,'search']);
+// Route::get('/search',[EtudiantController::class,'search']);
+Route::get('/search', [EtudiantController::class, 'search'])->name('search');
+// Route::get('/search', [EtudiantController::class, 'search']);
 Route::get('/export-excel',[EtudiantController::class , 'export'])->middleware('auth')->name('etudiants.export');
 // Route::get('/export-excel',[EtudiantController::class , 'export'])->middleware('auth')->name('etudiants.export');
 // Route::get('/export-excel', [EtudiantController::class, 'export'])->middleware('auth')->name('etudiants.export');
@@ -71,7 +73,11 @@ Route::put('profs/{id}', [ProfesseurController::class, 'update'])->middleware('a
 Route::post('/profs', [ProfesseurController::class, 'store'])->middleware('auth')->name('profs.store');
 Route::get('/delete-prof/{id}',[ProfesseurController::class , 'delete_prof'])->middleware('auth')->name('profs.delete_etudiant');
 Route::post('/prof/store', [ProfesseurController::class,'store'])->name('prof.store');
-Route::get('/search',[ProfesseurController::class,'search']);
+
+
+Route::put('/professeurs/{id}', [ProfesseurController::class, 'update'])->name('professeurs.update');
+
+// Route::get('/search',[ProfesseurController::class,'search']);
 
 
 
@@ -96,7 +102,7 @@ Route::get('/search',[ProfesseurController::class,'search']);
 // Route::post('/prof/store', [ProfesseurController::class, 'store'])->name('prof.store');
 
 Route::get('/export-excel',[ProfesseurController::class , 'export'])->middleware('auth')->name('profs.export');
-Route::get('/profs/search', [ProfesseurController::class, 'search'])->name('profs.search');
+// Route::get('/profs/search', [ProfesseurController::class, 'search'])->name('profs.search');
 
 // Route::get('/export-excel',[ProfesseurController::class , 'export'])->middleware('auth')->name('profs.export');
 
