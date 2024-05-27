@@ -54,9 +54,9 @@ Route::get('user-management', UserManagement::class)->middleware('auth')->name('
 
 //Etudiant routes
 Route::get('etudiant-management', EtudiantController::class)->middleware('auth')->name('etudiant-management');
-Route::put('etudiants/{id}', [EtudiantController::class, 'update'])->middleware('auth')->name('etudiants.update');
+Route::put('etudiants/{id}', [EtudiantController::class, 'update'])->middleware('auth')->name('etudiant.update');
 Route::post('/etudiants', [EtudiantController::class, 'store'])->middleware('auth')->name('etudiants.store');
-Route::get('/delete-etudiant/{id}',[EtudiantController::class , 'delete_etudiant'])->middleware('auth')->name('etudiants.delete_etudiant');
+Route::get('/delete-etudiant/{id}',[EtudiantController::class , 'delete_etudiant'])->middleware('auth')->name('etudiant.delete');
 Route::post('/etudiant/store', [EtudiantController::class,'store'])->name('etudiant.store');
 Route::get('/search',[EtudiantController::class,'search']);
 Route::get('/export-excel',[EtudiantController::class , 'export'])->middleware('auth')->name('etudiants.export');
