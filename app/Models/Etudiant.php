@@ -13,7 +13,6 @@ class Etudiant extends Model
         'image',
         'nni',
         'nomprenom',
-        'nationalite',
         'diplome',
         'genre',
         'lieunaissance',
@@ -22,10 +21,11 @@ class Etudiant extends Model
         'email',
         'phone',
         'wtsp',
-        'id_country'
+        'country_id'
     ];
 
-    // public function etudiants(){
-    //     return $this->hasMany(Etudiant::class);
-    // }
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
+    }
 }

@@ -18,5 +18,16 @@ class Professeur extends Model
         'phone',
         'wtsp',
         'typeymntprof_id',
+        'country_id',
     ];
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
+    }
+
+    public function typeymntprof()
+    {
+        return $this->belongsTo(Typeymntprofs::class);
+    }
 }
