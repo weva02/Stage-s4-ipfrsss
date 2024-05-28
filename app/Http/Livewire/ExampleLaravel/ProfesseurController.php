@@ -103,18 +103,14 @@ class ProfesseurController extends Component
             $query->where('id', 'like', "%$search1%")
                 ->orWhere('nomprenom', 'like', "%$search1%")
                 ->orWhere('nationalite', 'like', "%$search1%")
-                ->orWhere('diplome', 'like', "%$search1%")
-                ->orWhere('genre', 'like', "%$search1%")
-                ->orWhere('lieunaissance', 'like', "%$search1%")
-                ->orWhere('adress', 'like', "%$search1%")
-                ->orWhere('age', 'like', "%$search1%")
                 ->orWhere('email', 'like', "%$search1%")
+                ->orWhere('diplome', 'like', "%$search1%")
                 ->orWhere('phone', 'like', "%$search1%")
                 ->orWhere('wtsp', 'like', "%$search1%");
         })->paginate(10);
 
         $countries = Country::all();
         $types = Typeymntprofs::all(); // Add this line
-        return view('livewire.example-laravel.recherche', compact('profs', 'search1', 'countries', 'types'));
+        return view('livewire.example-laravel.recher-prof', compact('profs', 'search1', 'countries', 'types'));
     }
 }

@@ -60,6 +60,8 @@ Route::get('/delete-etudiant/{id}',[EtudiantController::class , 'delete_etudiant
 Route::post('/etudiant/store', [EtudiantController::class,'store'])->name('etudiant.store');
 // Route::get('/search',[EtudiantController::class,'search']);
 Route::get('/search', [EtudiantController::class, 'search'])->name('search');
+Route::get('/search1', [ProfesseurController::class, 'search1'])->name('search1');
+Route::get('/search2', [FormationsController::class, 'search2'])->name('search2');
 // Route::get('/search', [EtudiantController::class, 'search']);
 Route::get('/export-excel',[EtudiantController::class , 'export'])->middleware('auth')->name('etudiants.export');
 // Route::get('/export-excel',[EtudiantController::class , 'export'])->middleware('auth')->name('etudiants.export');

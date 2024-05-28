@@ -5,16 +5,17 @@ namespace App\Http\Livewire\ExampleLaravel;
 use Illuminate\Http\Request;
 use Livewire\Component;
 use App\Models\Formations;
-use App\Exports\formationsExport;
+use App\Exports\FormationsExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class FormationsController extends Component
 {
     public function liste_formation()
     {
-        $formation = Formations::paginate(4);
+        $formations = Formations::paginate(4);
         return view('livewire.example-laravel.formations-management', compact('formations'));
     }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -22,7 +23,6 @@ class FormationsController extends Component
             'nom' => 'required|string|max:255',
             'duree' => 'required|string|max:255',
             // 'prix' => 'required|integer|max:255'
-
         ]);
 
         $formation = new Formations([
@@ -30,32 +30,34 @@ class FormationsController extends Component
             'nom' => $request->nom,
             'duree' => $request->duree,
             // 'prix' => $request->prix
-
         ]);
         
         if ($formation->save()) {
-            return response()->json(['status' => 200, 'message' => 'Formations ajouté avec succès.']);
+            return response()->json(['status' => 200, 'message' => 'Formation ajoutée avec succès.']);
         } else {
-            return response()->json(['status' => 400, 'message' => 'Erreur lors de l\'ajout du Formations.']);
+            return response()->json(['status' => 400, 'message' => 'Erreur lors de l\'ajout de la formation.']);
         }
     }
-    public function delete_formation($id){
+
+    public function delete_formation($id)
+    {
         $formation = Formations::find($id);
         if ($formation) {
             $formation->delete();
-            return redirect()->back()->with('status', 'Formations supprimé avec succès');
+            return redirect()->back()->with('status', 'Formation supprimée avec succès');
         } else {
-            return redirect()->back()->with('status', 'Formations non trouvé');
+            return redirect()->back()->with('status', 'Formation non trouvée');
         }
     }
+
     public function update(Request $request, $id)
     {
         $formation = Formations::find($id);
         if ($formation) {
             $formation->update($request->all());
-            return response()->json(['success' => 'Formation modifié avec succès!']);
+            return response()->json(['success' => 'Formation modifiée avec succès!']);
         } else {
-            return response()->json(['error' => 'Formation non trouvé'], 404);
+            return response()->json(['error' => 'Formation non trouvée'], 404);
         }
     }
 
@@ -64,8 +66,23 @@ class FormationsController extends Component
         $formations = Formations::paginate(4);
         return view('livewire.example-laravel.formations-management', compact('formations'));
     }
+
     public function export()
     {
-        return Excel::download(new formationsExport, 'formations.xlsx');
+        return Excel::download(new FormationsExport, 'formations.xlsx');
+    }
+
+    public function search2(Request $request)
+    {
+        $search2 = $request->search1;
+        $formations = Formations::where(function ($query) use ($search2) {
+            $query->where('id', 'like', "%$search2%")
+                ->orWhere('code', 'like', "%$search2%")
+                ->orWhere('nom', 'like', "%$search2%")
+                ->orWhere('duree', 'like', "%$search2%")
+                ->orWhere('prix', 'like', "%$search2%");
+        })->paginate(10);
+
+        return view('livewire.example-laravel.recher-for', compact('formations', 'search2'));
     }
 }

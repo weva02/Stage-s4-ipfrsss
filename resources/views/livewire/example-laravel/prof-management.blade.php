@@ -36,9 +36,9 @@
                             </button>
                             <a href="{{ route('export.professeurs') }}" class="btn btn-success">Exporter Professeurs</a>
                         </div>
-                        <form action="/search" method="get" class="d-flex align-items-center ms-auto">
+                        <form action="/search1" method="get" class="d-flex align-items-center ms-auto">
                             <div class="input-group input-group-sm" style="width: 250px;">
-                                <input type="text" name="search" id="search_bar" class="form-control" placeholder="Rechercher..." value="{{ isset($search1) ? $search1 : ''}}">
+                                <input type="text" name="search1" id="search_bar" class="form-control" placeholder="Rechercher..." value="{{ isset($search1) ? $search1 : ''}}">
                                 <button type="submit" class="btn btn-primary">Rechercher</button>
                             </div>
                         </form>
