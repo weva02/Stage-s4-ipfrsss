@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Laravel Ajax PUT Request Example - ItSolutionStuff.com</title>
+    <title>Gestion des Étudiants</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js"></script>
@@ -12,6 +12,10 @@
             max-height: 70px;
             min-width: 50px;
             min-height: 50px;
+        }
+        .required::after {
+            content: " *";
+            color: red;
         }
     </style>
 </head>
@@ -34,13 +38,13 @@
                         </div>
                         <form action="/search" method="get" class="d-flex align-items-center ms-auto">
                             <div class="input-group input-group-sm" style="width: 250px;">
-                                <input type="text" name="search" id="sear_bar" class="form-control" placeholder="Rechercher..." value="{{ isset($search) ? $search : ''}}">
+                                <input type="text" name="search" id="search_bar" class="form-control" placeholder="Rechercher..." value="{{ isset($search) ? $search : ''}}">
                                 <button type="submit" class="btn btn-primary">Rechercher</button>
                             </div>
                         </form>
                     </div>
 
-                    <div class="me-3 my-3 text-end "></div>
+                    <div class="me-3 my-3 text-end"></div>
 
                     <div class="card-body px-0 pb-2">
                         <div class="table-responsive p-0">
@@ -51,13 +55,13 @@
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Image</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">NNI</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nom & Prenom</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nationalite</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nationalité</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Diplome</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Genre</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Lieu Naissance</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Address</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Adresse</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Age</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">EMAIL</th>
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Email</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Portable</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">WhatsApp</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Actions</th>
@@ -81,8 +85,8 @@
                                         <td>{{ $etudiant->phone }}</td>
                                         <td>{{ $etudiant->wtsp }}</td>
                                         <td>
-                                            <a href="javascript:void(0)" id="edit-etudiant" data-id="{{ $etudiant->id }}" class="btn btn-info"><i class="material-icons opacity-10">border_color</i></a>
-                                            <a href="javascript:void(0)" id="delete-etudiant" data-id="{{ $etudiant->id }}" class="btn btn-danger"><i class="material-icons opacity-10">delete</i></a>
+                                            <a href="javascript:void(0)" id="edit-etudiant" class="btn btn-info" data-url="{{ route('etudiants.update', $etudiant->id) }}"><i class="material-icons opacity-10">border_color</i></a>
+                                            <a href="/delete-etudiant/{{ $etudiant->id }}" id="delete-etudiant" class="btn btn-danger"><i class="material-icons opacity-10">delete</i></a>
                                         </td>
                                     </tr>
                                     @endforeach
@@ -107,24 +111,27 @@
                 <div class="modal-body">
                     <form id="etudiant-edit-form" enctype="multipart/form-data">
                         <input type="hidden" id="etudiant-id" name="id">
-                        <div class="row mb-3">
-                            <label for="inputImage" class="col-sm-2 col-form-label">Image</label>
-                            <div class="col-sm-10">
-                                <img src="" id="imagePreview" class="imgUpload" alt="">
-                                <input type="file" class="form-control" name="image" id="image">
-                            </div>
-                        </div>
-                        <p><strong>NNI:</strong> <br /> <input type="text" name="nni" id="etudiant-nni" class="form-control"></p>
-                        <p><strong>Nom & Prenom:</strong> <br /> <input type="text" name="nomprenom" id="etudiant-nomprenom" class="form-control"></p>
-                        <p><strong>Nationalite:</strong> <br /> <input type="text" name="nationalite" id="etudiant-nationalite" class="form-control"></p>
-                        <p><strong>Diplome:</strong> <br /> <input type="text" name="diplome" id="etudiant-diplome" class="form-control"></p>
-                        <p><strong>Genre:</strong> <br /> <input type="text" name="genre" id="etudiant-genre" class="form-control"></p>
-                        <p><strong>Lieu Naissance:</strong> <br /> <input type="text" name="lieunaissance" id="etudiant-lieunaissance" class="form-control"></p>
-                        <p><strong>Address:</strong> <br /> <input type="text" name="adress" id="etudiant-adress" class="form-control"></p>
-                        <p><strong>Age:</strong> <br /> <input type="text" name="age" id="etudiant-age" class="form-control"></p>
-                        <p><strong>Email:</strong> <br /> <input type="email" name="email" id="etudiant-email" class="form-control"></p>
-                        <p><strong>Portable:</strong> <br /> <input type="text" name="phone" id="etudiant-phone" class="form-control"></p>
-                        <p><strong>WhatsApp:</strong> <br /> <input type="text" name="wtsp" id="etudiant-wtsp" class="form-control"></p>
+                        <div class="row mb-3"></div>
+                        <p><strong>NNI <span class="required"></span>:</strong><br/><input type="text" name="nni" id="etudiant-nni" class="form-control" required></span></p>
+                        <p><strong>Nom & Prenom <span class="required"></span>:</strong><br/><input type="text" name="nomprenom" id="etudiant-nomprenom" class="form-control" required></span></p>
+                        <p><strong>Nationalité <span class="required"></span>:</strong><br/>
+                            <select class="form-control" id="etudiant-nationalite" name="nationalite" required>
+                                @foreach($countries as $country)
+                                    <option value="{{ $country->name }}">{{ $country->name }}</option>
+                                @endforeach
+                            </select>
+                        </p>
+                        <p><strong>Diplome:</strong><br/><input type="text" name="diplome" id="etudiant-diplome" class="form-control"></span></p>
+                        <p><strong>Genre:</strong><br/>
+                            <label><input type="radio" name="genre" value="Homme" id="etudiant-genre-homme"> Homme</label>
+                            <label><input type="radio" name="genre" value="Femme" id="etudiant-genre-femme"> Femme</label>
+                        </p>
+                        <p><strong>Lieu Naissance:</strong><br/><input type="text" name="lieunaissance" id="etudiant-lieunaissance" class="form-control"></span></p>
+                        <p><strong>Adresse:</strong><br/><input type="text" name="adress" id="etudiant-adress" class="form-control"></span></p>
+                        <p><strong>Age:</strong><br/><input type="text" name="age" id="etudiant-age" class="form-control"></span></p>
+                        <p><strong>Email:</strong><br/><input type="email" name="email" id="etudiant-email" class="form-control"></span></p>
+                        <p><strong>Portable <span class="required"></span>:</strong><br/><input type="text" name="phone" id="etudiant-phone" class="form-control" required></span></p>
+                        <p><strong>WhatsApp:</strong><br/><input type="text" name="wtsp" id="etudiant-wtsp" class="form-control"></span></p>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -135,7 +142,7 @@
         </div>
     </div>
 
-    <!-- Ajouter un prof Modal -->
+    <!-- Ajouter un étudiant Modal -->
     <div class="modal fade" id="etudiantAddModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -144,38 +151,43 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="etudiant-add-form" enctype="multipart/form-data">
+                    <form id="etudiant-add-form">
                         @csrf
                         <div class="mb-3">
                             <label for="image" class="form-label">Image:</label>
                             <input type="file" class="form-control" id="new-etudiant-image" name="image">
                         </div>
                         <div class="mb-3">
-                            <label for="nni" class="form-label">NNI:</label>
-                            <input type="text" class="form-control" id="new-etudiant-nni" name="nni">
+                            <label for="nni" class="form-label required">NNI:</label>
+                            <input type="text" class="form-control" id="new-etudiant-nni" name="nni" required>
                         </div>
                         <div class="mb-3">
-                            <label for="nomprenom" class="form-label">Nom & Prenom:</label>
-                            <input type="text" class="form-control" id="new-etudiant-nomprenom" name="nomprenom">
+                            <label for="nomprenom" class="form-label required">Nom & Prenom:</label>
+                            <input type="text" class="form-control" id="new-etudiant-nomprenom" name="nomprenom" required>
                         </div>
                         <div class="mb-3">
-                            <label for="nationalite" class="form-label">Nationalite:</label>
-                            <input type="text" class="form-control" id="new-etudiant-nationalite" name="nationalite">
+                            <label for="nationalite" class="form-label required">Nationalité:</label>
+                            <select class="form-control" id="new-etudiant-nationalite" name="nationalite" required>
+                                @foreach($countries as $country)
+                                    <option value="{{ $country->name }}">{{ $country->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label for="diplome" class="form-label">Diplome:</label>
                             <input type="text" class="form-control" id="new-etudiant-diplome" name="diplome">
                         </div>
-                        <div class="mb-3">
-                            <label for="genre" class="form-label">Genre:</label>
-                            <input type="text" class="form-control" id="new-etudiant-genre" name="genre">
-                        </div>
+                        <p><strong>Genre:</strong><br/>
+                            <label><input type="radio" name="genre" value="Homme" id="new-prof-genre-homme"> Homme</label>
+                            <br>
+                            <label><input type="radio" name="genre" value="Femme" id="new-prof-genre-femme"> Femme</label>
+                        </p>
                         <div class="mb-3">
                             <label for="lieunaissance" class="form-label">Lieu Naissance:</label>
                             <input type="text" class="form-control" id="new-etudiant-lieunaissance" name="lieunaissance">
                         </div>
                         <div class="mb-3">
-                            <label for="adress" class="form-label">Address:</label>
+                            <label for="adress" class="form-label">Adresse:</label>
                             <input type="text" class="form-control" id="new-etudiant-adress" name="adress">
                         </div>
                         <div class="mb-3">
@@ -187,8 +199,8 @@
                             <input type="email" class="form-control" id="new-etudiant-email" name="email">
                         </div>
                         <div class="mb-3">
-                            <label for="phone" class="form-label">Portable:</label>
-                            <input type="text" class="form-control" id="new-etudiant-phone" name="phone">
+                            <label for="phone" class="form-label required">Portable:</label>
+                            <input type="text" class="form-control" id="new-etudiant-phone" name="phone" required>
                         </div>
                         <div class="mb-3">
                             <label for="wtsp" class="form-label">WhatsApp:</label>
@@ -206,16 +218,18 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+            
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
 
+            // Fonction de soumission du formulaire pour ajouter un nouvel étudiant
             $("#add-new-etudiant").click(function(e){
                 e.preventDefault();
                 let form = $('#etudiant-add-form')[0];
-                let data = new FormData(form);
+                let data = new FormData(form); 
 
                 $.ajax({
                     url: "{{ route('etudiant.store') }}",
@@ -269,6 +283,7 @@
 
             $('#image').change(function (){
                 const file = this.files[0];
+
                 if(file){
                     let reader = new FileReader();
                     reader.onload = function (event){
@@ -276,11 +291,16 @@
                     }
                     reader.readAsDataURL(file);
                 }
-            });
+            })
 
+            // Edit student
             $('body').on('click', '#edit-etudiant', function () {
+                var etudiantURL = $(this).data('url');
+
+                $('#etudiantEditModal').modal('show');
                 var tr = $(this).closest('tr');
-                $('#etudiant-id').val($(this).data('id'));
+                $('#etudiant-id').val(tr.find("td:nth-child(1)").text());
+                $('#etudiant-image').val(tr.find("td:nth-child(2)").text());
                 $('#etudiant-nni').val(tr.find("td:nth-child(3)").text());
                 $('#etudiant-nomprenom').val(tr.find("td:nth-child(4)").text());
                 $('#etudiant-nationalite').val(tr.find("td:nth-child(5)").text());
@@ -292,18 +312,24 @@
                 $('#etudiant-email').val(tr.find("td:nth-child(11)").text());
                 $('#etudiant-phone').val(tr.find("td:nth-child(12)").text());
                 $('#etudiant-wtsp').val(tr.find("td:nth-child(13)").text());
-                $('#imagePreview').attr('src', tr.find("td:nth-child(2) img").attr('src'));
-                $('#etudiantEditModal').modal('show');
+
+                // Pré-sélection du genre
+                var genre = tr.find("td:nth-child(7)").text();
+                if(genre === "Homme") {
+                    $('#etudiant-genre-homme').prop('checked', true);
+                } else if(genre === "Femme") {
+                    $('#etudiant-genre-femme').prop('checked', true);
+                }
             });
 
+            // Update student
             $('body').on('click', '#etudiant-update', function () {
                 var id = $('#etudiant-id').val();
                 var formData = new FormData($('#etudiant-edit-form')[0]);
-                formData.append('_method', 'PUT');
 
                 $.ajax({
                     url: '/etudiants/' + id,
-                    type: 'POST',
+                    type: 'PUT',
                     dataType: 'json',
                     data: formData,
                     processData: false,
@@ -313,86 +339,34 @@
                         if (response.success) {
                             iziToast.success({
                                 message: response.success,
-                                position: 'topRight'
+                                position: 'topRight',
                             });
+                            location.reload();
                         } else {
                             iziToast.error({
                                 message: response.error,
-                                position: 'topRight'
+                                position: 'topRight',
                             });
                         }
-                        location.reload();
                     },
                     error: function(xhr, status, error) {
-                        var errorMsg = '';
-                        if (xhr.responseJSON && xhr.responseJSON.errors) {
-                            $.each(xhr.responseJSON.errors, function(field, errors) {
-                                $.each(errors, function(index, error) {
-                                    errorMsg += error + '<br>';
-                                });
-                            });
-                        } else {
-                            errorMsg = 'An error occurred: ' + error;
-                        }
                         iziToast.error({
-                            message: errorMsg,
+                            message: 'Une erreur s\'est produite : ' + error,
                             position: 'topRight'
                         });
                     }
                 });
             });
 
-            $(document).on('click', '.deletebtn', function () {
-                var id = $(this).data('id');
-                if (confirm("Are you sure want to delete?")) {
-                    $.ajax({
-                        url: '/etudiants/' + id,
-                        type: 'DELETE',
-                        data: {id: id},
-                        success: function (response) {
-                            if (response.success) {
-                                iziToast.success({
-                                    message: 'Etudiant supprimé avec succès',
-                                    position: 'topRight'
-                                });
-                            } else {
-                                iziToast.error({
-                                    message: response.error,
-                                    position: 'topRight'
-                                });
-                            }
-                            location.reload();
-                        }
-                    });
-                }
-            });
-
             $('body').on('click', '#delete-etudiant', function (e) {
                 e.preventDefault();
                 var confirmation = confirm("Êtes-vous sûr de vouloir supprimer cet étudiant ?");
                 if (confirmation) {
-                    var url = $(this).data('url');
-                    $.ajax({
-                        url: url,
-                        type: 'DELETE',
-                        success: function(response) {
-                            if (response.success) {
-                                iziToast.success({
-                                    message: response.success,
-                                    position: 'topRight'
-                                });
-                                location.reload();
-                            } else {
-                                iziToast.error({
-                                    message: response.error,
-                                    position: 'topRight'
-                                });
-                            }
-                        }
-                    });
+                    window.location.href = $(this).attr('href');
                 }
             });
 
+            // Fade out alert
             var alertElement = document.querySelector('.fade-out');
             if (alertElement) {
                 setTimeout(function() {

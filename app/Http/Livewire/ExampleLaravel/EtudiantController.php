@@ -1,10 +1,10 @@
 <?php
-
 namespace App\Http\Livewire\ExampleLaravel;
 
 use Illuminate\Http\Request;
 use Livewire\Component;
 use App\Models\Etudiant;
+use App\Models\Country;
 use App\Exports\EtudiantExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Validator;
@@ -14,7 +14,21 @@ class EtudiantController extends Component
     public function liste_etudiant()
     {
         $etudiants = Etudiant::paginate(4);
-        return view('livewire.example-laravel.etudiant-management', compact('etudiants'));
+        $countries = Country::all();
+        return view('livewire.example-laravel.etudiant-management', compact('etudiants', 'countries'));
+    }
+
+    public function edit($id)
+    {
+        $etudiant = Etudiant::findOrFail($id);
+        $countries = Country::all();
+        return view('livewire.example-laravel.etudiant-management', compact('etudiant', 'countries'));
+    }
+
+    public function create()
+    {
+        $countries = Country::all();
+        return view('livewire.example-laravel.etudiant-create', compact('countries'));
     }
 
     public function store(Request $request)
@@ -24,18 +38,20 @@ class EtudiantController extends Component
             'nni' => 'required|integer',
             'nomprenom' => 'required|string',
             'nationalite' => 'required|string',
-            'diplome' => 'required|string',
-            'genre' => 'required|string',
-            'lieunaissance' => 'required|string',
-            'adress' => 'required|string',
-            'age' => 'required|integer',
-            'email' => 'required|email',
+            'diplome' => 'nullable|string',
+            'genre' => 'nullable|string',
+            'lieunaissance' => 'nullable|string',
+            'adress' => 'nullable|string',
+            'age' => 'nullable|integer',
+            'email' => 'nullable|email',
             'phone' => 'required|integer',
-            'wtsp' => 'required|integer',
+            'wtsp' => 'nullable|integer',
         ]);
 
+        $input = $request->all();
+
         try {
-            $imageName = time() . '.' . $request->image->extension();
+            $imageName = $request->image->getClientOriginalName();
             $request->image->move(public_path('images'), $imageName);
 
             Etudiant::create([
@@ -53,52 +69,45 @@ class EtudiantController extends Component
                 'wtsp' => $request->wtsp,
             ]);
 
-            return response()->json(['success' => 'Étudiant créé avec succès']);
+            return redirect()->route('etudiant-management')->with('success', 'Successfully to create new Etudiant');
         } catch (\Throwable $th) {
-            return response()->json(['error' => $th->getMessage()], 500);
+            return redirect()->route('etudiant-management')->with('error', $th->getMessage());
         }
     }
 
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([
+        $etudiant = Etudiant::find($id);
+        if (!$etudiant) {
+            return response()->json(['error' => 'Étudiant non trouvé'], 404);
+        }
+
+        $request->validate([
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'nni' => 'required|integer',
             'nomprenom' => 'required|string',
             'nationalite' => 'required|string',
-            'diplome' => 'required|string',
-            'genre' => 'required|string',
-            'lieunaissance' => 'required|string',
-            'adress' => 'required|string',
-            'age' => 'required|integer',
-            'email' => 'required|email',
+            'diplome' => 'nullable|string',
+            'genre' => 'nullable|string',
+            'lieunaissance' => 'nullable|string',
+            'adress' => 'nullable|string',
+            'age' => 'nullable|integer',
+            'email' => 'nullable|email',
             'phone' => 'required|integer',
-            'wtsp' => 'required|integer',
+            'wtsp' => 'nullable|integer',
         ]);
 
         try {
-            $etudiant = Etudiant::findOrFail($id);
-
+            $data = $request->all();
             if ($request->hasFile('image')) {
-                $imageName = time() . '.' . $request->image->extension();
+                $imageName = $request->image->getClientOriginalName();
                 $request->image->move(public_path('images'), $imageName);
-                $etudiant->image = $imageName;
+                $data['image'] = $imageName;
             }
 
-            $etudiant->nni = $validated['nni'];
-            $etudiant->nomprenom = $validated['nomprenom'];
-            $etudiant->nationalite = $validated['nationalite'];
-            $etudiant->diplome = $validated['diplome'];
-            $etudiant->genre = $validated['genre'];
-            $etudiant->lieunaissance = $validated['lieunaissance'];
-            $etudiant->adress = $validated['adress'];
-            $etudiant->age = $validated['age'];
-            $etudiant->email = $validated['email'];
-            $etudiant->phone = $validated['phone'];
-            $etudiant->wtsp = $validated['wtsp'];
-            $etudiant->save();
-
-            return response()->json(['success' => 'Étudiant modifié avec succès']);
+            $etudiant->update($data);
+   
+            return response()->json(['success' => 'Étudiant modifié avec succès!']);
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 500);
         }
@@ -106,16 +115,31 @@ class EtudiantController extends Component
 
     public function delete_etudiant($id)
     {
-        $etudiant = Etudiant::findOrFail($id);
-        $etudiant->delete();
+        $etudiant = Etudiant::find($id);
+        if ($etudiant) {
+            $etudiant->delete();
+            return redirect()->back()->with('status', 'Etudiant supprimé avec succès');
+        } else {
+            return redirect()->back()->with('status', 'Étudiant non trouvé');
+        }
+    }
 
-        return response()->json(['success' => 'Étudiant supprimé avec succès']);
+    public function render()
+    {
+        $etudiants = Etudiant::paginate(4);
+        $countries = Country::all();
+        return view('livewire.example-laravel.etudiant-management', compact('etudiants', 'countries'));
+    }
+
+    public function export()
+    {
+        return Excel::download(new EtudiantExport, 'Etudiants.xlsx');
     }
 
     public function search(Request $request)
     {
         $search = $request->search;
-        $etudiants = Etudiant::where(function($query) use ($search) {
+        $etudiants = Etudiant::where(function ($query) use ($search) {
             $query->where('id', 'like', "%$search%")
                 ->orWhere('nni', 'like', "%$search%")
                 ->orWhere('nomprenom', 'like', "%$search%")
@@ -130,17 +154,7 @@ class EtudiantController extends Component
                 ->orWhere('wtsp', 'like', "%$search%");
         })->paginate(10);
 
-        return view('livewire.example-laravel.etudiant-management', compact('etudiants', 'search'));
-    }
-
-    public function render()
-    {
-        $etudiants = Etudiant::paginate(4);
-        return view('livewire.example-laravel.etudiant-management', compact('etudiants'));
-    }
-
-    public function export()
-    {
-        return Excel::download(new EtudiantExport, 'Etudiants.xlsx');
+        $countries = Country::all();
+        return view('livewire.example-laravel.recherche', compact('etudiants', 'search', 'countries'));
     }
 }

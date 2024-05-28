@@ -22,6 +22,7 @@ class Etudiant extends Model
         'email',
         'phone',
         'wtsp',
+        'id_country'
     ];
 
     // public function etudiants(){

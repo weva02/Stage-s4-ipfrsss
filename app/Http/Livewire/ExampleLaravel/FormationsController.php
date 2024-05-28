@@ -5,6 +5,8 @@ namespace App\Http\Livewire\ExampleLaravel;
 use Illuminate\Http\Request;
 use Livewire\Component;
 use App\Models\Formations;
+use App\Exports\formationsExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class FormationsController extends Component
 {
@@ -61,5 +63,9 @@ class FormationsController extends Component
     {
         $formations = Formations::paginate(4);
         return view('livewire.example-laravel.formations-management', compact('formations'));
+    }
+    public function export()
+    {
+        return Excel::download(new formationsExport, 'formations.xlsx');
     }
 }
