@@ -85,7 +85,7 @@
                                         <td>{{ $etudiant->phone }}</td>
                                         <td>{{ $etudiant->wtsp }}</td>
                                         <td>
-                                            <a href="javascript:void(0)" id="edit-etudiant" class="btn btn-info" data-url="{{ route('etudiants.update', $etudiant->id) }}"><i class="material-icons opacity-10">border_color</i></a>
+                                            <a href="javascript:void(0)" id="edit-etudiant" class="btn btn-info" data-url="{{ route('etudiant.update', $etudiant->id) }}"><i class="material-icons opacity-10">border_color</i></a>
                                             <a href="/delete-etudiant/{{ $etudiant->id }}" id="delete-etudiant" class="btn btn-danger"><i class="material-icons opacity-10">delete</i></a>
                                         </td>
                                     </tr>
