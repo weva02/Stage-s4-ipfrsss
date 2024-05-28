@@ -7,6 +7,7 @@ use App\Models\Etudiant;
 use App\Models\Country;
 use App\Exports\EtudiantExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Validator;
 
 class EtudiantController extends Component
 {
@@ -32,7 +33,6 @@ class EtudiantController extends Component
 
     public function store(Request $request)
     {
-        // Validation des données
         $request->validate([
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'nni' => 'required|integer',
