@@ -10,18 +10,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Vérifie si la table 'formations' existe déjà
-        if (!Schema::hasTable('formations')) {
-            Schema::create('formations', function (Blueprint $table) {
-                $table->id();
-                $table->string('code');
-                $table->string('nom');
-                $table->integer('duree')->unsigned(); // Utilisation d'un entier non signé pour garantir une valeur positive
-                $table->integer('prix'); // Correction ici
-                
-                $table->timestamps();
-            });
+        // Supprimer la table si elle existe déjà
+        if (Schema::hasTable('formations')) {
+            Schema::drop('formations');
         }
+
+        // Créer la table
+        Schema::create('formations', function (Blueprint $table) {
+            $table->id();
+            $table->string('code');
+            $table->string('nom');
+            $table->integer('duree')->unsigned(); // Utilisation d'un entier non signé pour garantir une valeur positive
+            $table->integer('prix'); // Correction ici
+            
+            $table->timestamps();
+        });
     }
 
     /**

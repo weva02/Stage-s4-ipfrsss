@@ -1,13 +1,14 @@
 <?php
+
 namespace App\Http\Livewire\ExampleLaravel;
 
 use Illuminate\Http\Request;
-use Livewire\Component;
 use App\Models\Professeur;
 use App\Models\Country;
 use App\Models\Typeymntprofs;
-use App\Exports\ProfesseurExport;
+use Livewire\Component;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ProfesseurExport;
 
 class ProfesseurController extends Component
 {
@@ -15,102 +16,108 @@ class ProfesseurController extends Component
     {
         $profs = Professeur::paginate(4);
         $countries = Country::all();
-        $types = Typeymntprofs::all(); // Add this line
+        $types = Typeymntprofs::all();
         return view('livewire.example-laravel.prof-management', compact('profs', 'countries', 'types'));
     }
-    public function typeymntprof()
-{
-    return $this->belongsTo(Typeymntprofs::class);
-}
-
 
     public function store(Request $request)
     {
-        // Validation des données
         $request->validate([
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'nomprenom' => 'required|string',
-            'nattionalite' => 'required|string',
             'email' => 'required|email',
             'diplome' => 'required|string',
             'phone' => 'required|integer',
             'wtsp' => 'required|integer',
-            'type' => 'required|string|max:50'
+            'country_id' => 'required|exists:countries,id',
+            'typeymntprof_id' => 'required|exists:typeymntprofs,id',
         ]);
 
-        $input = $request->all();
-       
         try {
-            $imageName = $request->image->getClientOriginalName();
+            $imageName = time() . '.' . $request->image->extension();
             $request->image->move(public_path('images'), $imageName);
-        
+
             Professeur::create([
                 'image' => $imageName,
                 'nomprenom' => $request->nomprenom,
-                'nattionalite' => $request->nattionalite,
                 'email' => $request->email,
                 'diplome' => $request->diplome,
                 'phone' => $request->phone,
                 'wtsp' => $request->wtsp,
-                'typeymntprof_id' => $request->type
+                'country_id' => $request->country_id,
+                'typeymntprof_id' => $request->typeymntprof_id,
             ]);
 
-            return redirect()->route('prof-management')->with('success', 'Successfully to create new Professeur');
+            return response()->json(['success' => 'Professeur créé avec succès']);
         } catch (\Throwable $th) {
-            return redirect()->route('prof-management')->with('error', $th->getMessage());
-        }
-    }
-
-    public function delete_prof($id)
-    {
-        $prof = Professeur::find($id);
-        if ($prof) {
-            $prof->delete();
-            return redirect()->back()->with('status', 'Professeur supprimé avec succès');
-        } else {
-            return redirect()->back()->with('status', 'Professeur non trouvé');
+            return response()->json(['error' => $th->getMessage()], 500);
         }
     }
 
     public function update(Request $request, $id)
     {
-        $prof = Professeur::find($id);
-        if ($prof) {
-            $prof->update($request->all());
-            return response()->json(['success' => 'Professeur modifié avec succès!']);
-        } else {
-            return response()->json(['error' => 'Professeur non trouvé'], 404);
+        $validated = $request->validate([
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'nomprenom' => 'required|string',
+            'email' => 'required|email',
+            'diplome' => 'required|string',
+            'phone' => 'required|integer',
+            'wtsp' => 'required|integer',
+            'country_id' => 'required|exists:countries,id',
+            'typeymntprof_id' => 'required|exists:typeymntprofs,id',
+        ]);
+
+        try {
+            $prof = Professeur::findOrFail($id);
+
+            if ($request->hasFile('image')) {
+                $imageName = time() . '.' . $request->image->extension();
+                $request->image->move(public_path('images'), $imageName);
+                $prof->image = $imageName;
+            }
+
+            $prof->update($validated);
+
+            return response()->json(['success' => 'Professeur modifié avec succès']);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => $th->getMessage()], 500);
         }
+    }
+
+    public function delete_prof($id)
+    {
+        try {
+            $prof = Professeur::findOrFail($id);
+            $prof->delete();
+
+            return response()->json(['success' => 'Professeur supprimé avec succès']);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => $th->getMessage()], 500);
+        }
+    }
+
+    public function search(Request $request)
+    {
+        $search = $request->search;
+        $profs = Professeur::where(function($query) use ($search) {
+            $query->where('id', 'like', "%$search%")
+                ->orWhere('nomprenom', 'like', "%$search%")
+                ->orWhere('email', 'like', "%$search%")
+                ->orWhere('diplome', 'like', "%$search%")
+                ->orWhere('phone', 'like', "%$search%")
+                ->orWhere('wtsp', 'like', "%$search%");
+        })->paginate(4);
+
+        $countries = Country::all();
+        $types = Typeymntprofs::all();
+        return view('livewire.example-laravel.prof-management', compact('profs', 'countries', 'search', 'types'));
     }
 
     public function render()
     {
         $profs = Professeur::paginate(4);
         $countries = Country::all();
-        $types = Typeymntprofs::all(); // Add this line
-        return view('livewire.example-laravel.prof-management', compact('profs', 'countries', 'types'));
-    }
-
-    public function export()
-    {
-        return Excel::download(new ProfesseurExport, 'professeurs.xlsx');
-    }
-
-    public function search1(Request $request)
-    {
-        $search1 = $request->search1;
-        $profs = Professeur::where(function ($query) use ($search1) {
-            $query->where('id', 'like', "%$search1%")
-                ->orWhere('nomprenom', 'like', "%$search1%")
-                ->orWhere('nationalite', 'like', "%$search1%")
-                ->orWhere('email', 'like', "%$search1%")
-                ->orWhere('diplome', 'like', "%$search1%")
-                ->orWhere('phone', 'like', "%$search1%")
-                ->orWhere('wtsp', 'like', "%$search1%");
-        })->paginate(10);
-
-        $countries = Country::all();
-        $types = Typeymntprofs::all(); // Add this line
-        return view('livewire.example-laravel.recher-prof', compact('profs', 'search1', 'countries', 'types'));
+        $types = Typeymntprofs::all();
+        return view('livewire.example-laravel.prof-management', compact('profs', 'countries' , 'types'));
     }
 }

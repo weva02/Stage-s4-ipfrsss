@@ -14,6 +14,7 @@ use App\Http\Livewire\ExampleLaravel\EtudiantController;
 use App\Http\Livewire\ExampleLaravel\ProfesseurController;
 use App\Http\Livewire\ExampleLaravel\FormationsController;
 
+use App\Http\Livewire\ExampleLaravel\ContenusFormationController;
 use App\Http\Controllers\ExportController;
 
 
@@ -41,6 +42,20 @@ Route::get('/', function(){
     return redirect('sign-in');
 });
 
+Route::get('/contenues', [ContenusFormationController::class, 'liste_contenue'])->name('contenue.list');
+Route::post('/contenues', [ContenusFormationController::class, 'store'])->name('contenue.store');
+Route::put('/contenues/{id}', [ContenusFormationController::class, 'update'])->name('contenue.update');
+Route::delete('/contenues/{id}', [ContenusFormationController::class, 'delete_contenue'])->name('contenue.delete');
+Route::get('/search', [ContenusFormationController::class, 'search'])->name('contenue.search');
+Route::get('/export/contenues', [ContenusFormationController::class, 'export'])->name('export.contenues');
+Route::get('contenusformation-management', ContenusFormationController::class)->middleware('auth')->name('contenusformation-management');
+
+
+
+
+
+
+
 Route::get('forgot-password', ForgotPassword::class)->middleware('guest')->name('password.forgot');
 Route::get('reset-password/{id}', ResetPassword::class)->middleware('signed')->name('reset-password');
 
@@ -53,17 +68,28 @@ Route::get('user-profile', UserProfile::class)->middleware('auth')->name('user-p
 Route::get('user-management', UserManagement::class)->middleware('auth')->name('user-management');
 
 //Etudiant routes
+Route::get('/etudiants', [EtudiantController::class, 'liste_etudiant'])->name('etudiant.list');
+Route::post('/etudiants', [EtudiantController::class, 'store'])->name('etudiant.store');
+Route::put('/etudiants/{id}', [EtudiantController::class, 'update'])->name('etudiant.update');
+Route::delete('/etudiants/{id}', [EtudiantController::class, 'delete_etudiant'])->name('etudiant.delete');
+Route::get('/search', [EtudiantController::class, 'search'])->name('etudiant.search');
+Route::get('/export/etudiants', [EtudiantController::class, 'export'])->name('export.etudiants');
 Route::get('etudiant-management', EtudiantController::class)->middleware('auth')->name('etudiant-management');
-Route::put('etudiants/{id}', [EtudiantController::class, 'update'])->middleware('auth')->name('etudiant.update');
-Route::post('/etudiants', [EtudiantController::class, 'store'])->middleware('auth')->name('etudiants.store');
-Route::get('/delete-etudiant/{id}',[EtudiantController::class , 'delete_etudiant'])->middleware('auth')->name('etudiant.delete');
-Route::post('/etudiant/store', [EtudiantController::class,'store'])->name('etudiant.store');
+// Route::put('etudiants/{id}', [EtudiantController::class, 'update'])->middleware('auth')->name('etudiant.update');
+// Route::post('/etudiants', [EtudiantController::class, 'store'])->middleware('auth')->name('etudiants.store');
+// Route::get('/delete-etudiant/{id}',[EtudiantController::class , 'delete_etudiant'])->middleware('auth')->name('etudiant.delete');
+// Route::post('/etudiant/store', [EtudiantController::class,'store'])->name('etudiant.store');
 // Route::get('/search',[EtudiantController::class,'search']);
-Route::get('/search', [EtudiantController::class, 'search'])->name('search');
-Route::get('/search1', [ProfesseurController::class, 'search1'])->name('search1');
-Route::get('/search2', [FormationsController::class, 'search2'])->name('search2');
-// Route::get('/search', [EtudiantController::class, 'search']);
-Route::get('/export-excel',[EtudiantController::class , 'export'])->middleware('auth')->name('etudiants.export');
+// Route::get('/export-excel',[EtudiantController::class , 'export'])->middleware('auth')->name('etudiants.export');
+// Route::get('etudiant-management', EtudiantController::class)->middleware('auth')->name('etudiant-management');
+// Route::put('etudiants/{id}', [EtudiantController::class, 'update'])->middleware('auth')->name('etudiant.update');
+// Route::post('/etudiants', [EtudiantController::class, 'store'])->middleware('auth')->name('etudiants.store');
+// Route::get('/delete-etudiant/{id}',[EtudiantController::class , 'delete_etudiant'])->middleware('auth')->name('etudiant.delete');
+// Route::post('/etudiant/store', [EtudiantController::class,'store'])->name('etudiant.store');
+
+// Route::get('/search', [EtudiantController::class, 'search'])->name('search');
+
+// Route::get('/export-excel',[EtudiantController::class , 'export'])->middleware('auth')->name('etudiants.export');
 // Route::get('/export-excel',[EtudiantController::class , 'export'])->middleware('auth')->name('etudiants.export');
 // Route::get('/export-excel', [EtudiantController::class, 'export'])->middleware('auth')->name('etudiants.export');
 // Route::get('/etudiants/search', [EtudiantController::class, 'search'])->name('etudiants.search');
@@ -75,6 +101,8 @@ Route::put('profs/{id}', [ProfesseurController::class, 'update'])->middleware('a
 Route::post('/profs', [ProfesseurController::class, 'store'])->middleware('auth')->name('profs.store');
 Route::get('/delete-prof/{id}',[ProfesseurController::class , 'delete_prof'])->middleware('auth')->name('profs.delete_etudiant');
 Route::post('/prof/store', [ProfesseurController::class,'store'])->name('prof.store');
+Route::get('/export/profs', [ProfesseurController::class, 'export'])->name('export.profs');
+Route::put('/profs/{id}', [ProfesseurController::class, 'update'])->name('prof.update');
 
 
 Route::put('/professeurs/{id}', [ProfesseurController::class, 'update'])->name('professeurs.update');
@@ -121,7 +149,27 @@ Route::post('/formations', [FormationsController::class, 'store'])->middleware('
 Route::get('/delete-formation/{id}',[FormationsController::class , 'delete_formation'])->middleware('auth')->name('formations.delete_etudiant');
 Route::post('/formation/store', [FormationsController::class,'store'])->name('formation.store');
 
+Route::get('/contenus', [ContenusFormationController::class, 'liste_contenus'])->name('contennus-management');
+Route::get('contennus-management', ContenusFormationController::class)->middleware('auth')->name('contenuus-management');
+Route::post('/contenu/store', [ContenusFormationController::class,'store'])->name('contenu.store');
+// Afficher la liste des contenus de formation
+// Route::get('/contenus', [ContenusFormationController::class, 'index'])->name('contenus.index');
 
+// Afficher le formulaire pour ajouter un nouveau contenu
+// Route::get('/contenus/create', [ContenusFormationController::class, 'create'])->name('contenus.create');
+
+// // Enregistrer un nouveau contenu
+// Route::post('/contenus', [ContenusFormationController::class, 'store'])->name('contenus.store');
+
+// // Afficher le formulaire pour modifier un contenu existant
+// Route::get('/contenus/{id}/edit', [ContenusFormationController::class, 'edit'])->name('contenus.edit');
+
+// // Mettre à jour un contenu existant
+// Route::put('/contenus/{id}', [ContenusFormationController::class, 'update'])->name('contenus.update');
+
+// // Supprimer un contenu existant
+// Route::delete('/contenus/{id}', [ContenusFormationController::class, 'destroy'])->name('contenus.destroy');
+// Route::get('/contenus-management', [ContenusFormationController::class, 'index'])->name('contenus-management');
 
 
 Route::group(['middleware' => 'auth'], function () {
