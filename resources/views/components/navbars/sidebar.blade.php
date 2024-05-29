@@ -65,18 +65,19 @@
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">format_list_bulleted</i>
                     </div>
-                    <span class="nav-link-text ms-1">Programme </span>
+                    <span class="nav-link-text ms-1">programmes </span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white {{ Route::currentRouteName() == 'contenusformation-management' ? ' active bg-gradient-primary' : '' }}  "
-                    href="{{ route('contenusformation-management') }}">
-                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">format_list_bulleted</i>
-                    </div>
-                    <span class="nav-link-text ms-1">Liste des Contenue du Formations</span>
-                </a>
-            </li>
+    <a class="nav-link text-white {{ Route::currentRouteName() == 'contenusformation-management' ? ' active bg-gradient-primary' : '' }}  "
+        href="{{ route('contenusformation-management') }}">
+        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+            <i class="material-icons opacity-10">format_list_bulleted</i>
+        </div>
+        <span class="nav-link-text ms-1">Contenus de programme</span>
+    </a>
+</li>
+
             
             <li class="nav-item">
                 <a class="nav-link text-white " href="{{ route('static-sign-in') }}">

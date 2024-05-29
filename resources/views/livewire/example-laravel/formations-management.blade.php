@@ -24,9 +24,9 @@
                             </button>
                             <a href="{{ route('formations.export') }}" class="btn btn-success">Exporter formations</a>
                         </div>
-                        <form action="/search" method="get" class="d-flex align-items-center ms-auto">
+                        <form action="/search2" method="get" class="d-flex align-items-center ms-auto">
                             <div class="input-group input-group-sm" style="width: 250px;">
-                                <input type="text" name="search" id="search_bar" class="form-control" placeholder="Rechercher..." value="{{ isset($search) ? $search : ''}}">
+                                <input type="text" name="search2" id="search_bar" class="form-control" placeholder="Rechercher..." value="{{ isset($search2) ? $search2 : ''}}">
                                 <button type="submit" class="btn btn-primary">Rechercher</button>
                             </div>
                         </form>

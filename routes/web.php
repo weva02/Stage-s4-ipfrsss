@@ -43,6 +43,20 @@ Route::get('/', function(){
     return redirect('sign-in');
 });
 
+Route::get('/contenues', [ContenusFormationController::class, 'liste_contenue'])->name('contenue.list');
+Route::post('/contenues', [ContenusFormationController::class, 'store'])->name('contenue.store');
+Route::put('/contenues/{id}', [ContenusFormationController::class, 'update'])->name('contenue.update');
+Route::delete('/contenues/{id}', [ContenusFormationController::class, 'delete_contenue'])->name('contenue.delete');
+Route::get('/search', [ContenusFormationController::class, 'search'])->name('contenue.search');
+Route::get('/export/contenues', [ContenusFormationController::class, 'export'])->name('export.contenues');
+Route::get('contenusformation-management', ContenusFormationController::class)->middleware('auth')->name('contenusformation-management');
+
+
+
+
+
+
+
 Route::get('forgot-password', ForgotPassword::class)->middleware('guest')->name('password.forgot');
 Route::get('reset-password/{id}', ResetPassword::class)->middleware('signed')->name('reset-password');
 
@@ -66,24 +80,42 @@ Route::get('etudiant-management', EtudiantController::class)->middleware('auth')
 //Professeur routes
 Route::get('/profs', [ProfesseurController::class, 'liste_prof'])->name('prof.list');
 Route::post('/profs', [ProfesseurController::class, 'store'])->name('prof.store');
-Route::put('/profs/{id}', [ProfesseurController::class, 'update'])->name('prof.update');
+Route::put('/profs/{id}', [ProfesseurController::class, 'update'])->name('profs.update');
 Route::delete('/profs/{id}', [ProfesseurController::class, 'delete_prof'])->name('prof.delete');
 Route::get('/search', [ProfesseurController::class, 'search'])->name('prof.search');
 Route::get('/export/profs', [ProfesseurController::class, 'export'])->name('export.profs');
 Route::get('prof-management', ProfesseurController::class)->middleware('auth')->name('prof-management');
+Route::put('profs/{id}', [ProfesseurController::class, 'update'])->middleware('auth')->name('profs.update');
+Route::post('/profs', [ProfesseurController::class, 'store'])->middleware('auth')->name('profs.store');
+Route::get('/delete-prof/{id}',[ProfesseurController::class , 'delete_prof'])->middleware('auth')->name('profs.delete_etudiant');
+Route::post('/prof/store', [ProfesseurController::class,'store'])->name('prof.store');
 
 
-//contenue formation routes
-Route::get('/contenues', [ContenusFormationController::class, 'liste_contenue'])->name('contenue.list');
-Route::post('/contenues', [ContenusFormationController::class, 'store'])->name('contenue.store');
-Route::put('/contenues/{id}', [ContenusFormationController::class, 'update'])->name('contenue.update');
-Route::delete('/contenues/{id}', [ContenusFormationController::class, 'delete_contenue'])->name('contenue.delete');
-Route::get('/search', [ContenusFormationController::class, 'search'])->name('contenue.search');
-Route::get('/export/contenues', [ContenusFormationController::class, 'export'])->name('export.contenues');
-Route::get('contenusformation-management', ContenusFormationController::class)->middleware('auth')->name('contenusformation-management');
+Route::put('/professeurs/{id}', [ProfesseurController::class, 'update'])->name('professeurs.update');
+
+// Route::get('/search',[ProfesseurController::class,'search']);
 
 
 
+// Route::put('profs/{id}', [ProfesseurController::class, 'update'])->middleware('auth')->name('profs.update');
+// Route::post('/profs', [ProfesseurController::class, 'store'])->middleware('auth')->name('profs.store');
+// Route::get('/delete-prof/{id}',[ProfesseurController::class , 'delete_prof'])->middleware('auth')->name('profs.delete_etudiant');
+// Route::post('/prof/store', [ProfesseurController::class,'store'])->name('prof.store');
+// Route::post('/prof/store', [ProfesseurController::class, 'store'])->name('prof.store');
+
+
+// Route::post('/prof/store', [ProfesseurController::class, 'store'])->name('prof.store');
+
+// Route::post('/profs/{id}/update', [ProfesseurController::class, 'update'])->name('prof.update');
+// Route::get('/profs/{id}', [ProfesseurController::class, 'edit']);
+// Route::get('/prof/delete/{id}', [ProfesseurController::class, 'delete'])->name('prof.delete');
+// Route::get('/profs/export', [ProfesseurController::class, 'export'])->name('profs.export');
+
+// Route::get('/edit-prof/{id}', [ProfesseurController::class, 'edit']);
+// Route::post('/update-prof/{id}', [ProfesseurController::class, 'update']);
+
+// Route::post('/prof/store', [ProfesseurController::class,'store'])->name('prof.store');
+// Route::post('/prof/store', [ProfesseurController::class, 'store'])->name('prof.store');
 
 Route::get('/export-excel',[ProfesseurController::class , 'export'])->middleware('auth')->name('profs.export');
 
@@ -98,7 +130,27 @@ Route::post('/formations', [FormationsController::class, 'store'])->middleware('
 Route::get('/delete-formation/{id}',[FormationsController::class , 'delete_formation'])->middleware('auth')->name('formations.delete_etudiant');
 Route::post('/formation/store', [FormationsController::class,'store'])->name('formation.store');
 
+Route::get('/contenus', [ContenusFormationController::class, 'liste_contenus'])->name('contennus-management');
+Route::get('contennus-management', ContenusFormationController::class)->middleware('auth')->name('contenuus-management');
+Route::post('/contenu/store', [ContenusFormationController::class,'store'])->name('contenu.store');
+// Afficher la liste des contenus de formation
+// Route::get('/contenus', [ContenusFormationController::class, 'index'])->name('contenus.index');
 
+// Afficher le formulaire pour ajouter un nouveau contenu
+// Route::get('/contenus/create', [ContenusFormationController::class, 'create'])->name('contenus.create');
+
+// // Enregistrer un nouveau contenu
+// Route::post('/contenus', [ContenusFormationController::class, 'store'])->name('contenus.store');
+
+// // Afficher le formulaire pour modifier un contenu existant
+// Route::get('/contenus/{id}/edit', [ContenusFormationController::class, 'edit'])->name('contenus.edit');
+
+// // Mettre à jour un contenu existant
+// Route::put('/contenus/{id}', [ContenusFormationController::class, 'update'])->name('contenus.update');
+
+// // Supprimer un contenu existant
+// Route::delete('/contenus/{id}', [ContenusFormationController::class, 'destroy'])->name('contenus.destroy');
+// Route::get('/contenus-management', [ContenusFormationController::class, 'index'])->name('contenus-management');
 
 
 Route::group(['middleware' => 'auth'], function () {

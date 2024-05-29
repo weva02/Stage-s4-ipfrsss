@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Livewire\ExampleLaravel;
-
 use Illuminate\Http\Request;
 use Livewire\Component;
 use App\Models\Formations;

@@ -86,7 +86,7 @@
                                         <td>{{ $prof->diplome }}</td>
                                         <td>{{ $prof->phone }}</td>
                                         <td>{{ $prof->wtsp }}</td>
-                                        <td data-country-id="{{ $prof->typeymntprof_id }}">{{ $prof->types->type ?? 'N/A' }}</td>
+                                        <td>{{ $prof->types->type ?? 'N/A' }}</td>
                                         <td>
                                             <a href="javascript:void(0)" id="edit-prof" data-id="{{ $prof->id }}" class="btn btn-info"><i class="material-icons opacity-10">border_color</i></a>
                                             <a href="{{ route('prof.delete', $prof->id) }}" id="delete-prof" class="btn btn-danger"><i class="material-icons opacity-10">delete</i></a>
@@ -321,7 +321,7 @@
                 formData.append('_method', 'PUT');
 
                 $.ajax({
-                    url: "{{ route('prof.update', '') }}/" + id,
+                    url: "{{ route('profs.update', '') }}/" + id,
                     type: 'POST',
                     dataType: 'json',
                     data: formData,
