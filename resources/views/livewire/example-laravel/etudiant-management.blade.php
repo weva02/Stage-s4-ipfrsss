@@ -17,6 +17,14 @@
             content: " *";
             color: red;
         }
+        .form-control {
+            border: 1px solid #ccc;
+        }
+        .form-control:focus {
+            border-color: #66afe9;
+            outline: 0;
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+        }
     </style>
 </head>
 <body>
@@ -36,7 +44,7 @@
                             </button>
                             <a href="{{ route('export.etudiants') }}" class="btn btn-success">Exporter Étudiants</a>
                         </div>
-                        <form action="{{ route('etudiant.search') }}" method="get" class="d-flex align-items-center ms-auto">
+                        <form action="" method="get" class="d-flex align-items-center ms-auto">
                             <div class="input-group input-group-sm" style="width: 250px;">
                                 <input type="text" name="search" id="sear_bar" class="form-control" placeholder="Rechercher..." value="{{ isset($search) ? $search : ''}}">
                                 <button type="submit" class="btn btn-primary">Rechercher</button>
@@ -75,7 +83,7 @@
                                         <td><img src="{{ asset('images/'.$etudiant->image)}}" alt="" width="60px"></td>
                                         <td>{{ $etudiant->nni }}</td>
                                         <td>{{ $etudiant->nomprenom }}</td>
-                                        <td>{{ $etudiant->country->name ?? 'N/A' }}</td>
+                                        <td data-country-id="{{ $etudiant->country_id }}">{{ $etudiant->country->name ?? 'N/A' }}</td>
                                         <td>{{ $etudiant->diplome }}</td>
                                         <td>{{ $etudiant->genre }}</td>
                                         <td>{{ $etudiant->lieunaissance }}</td>
@@ -101,86 +109,61 @@
     </div>
 
     <!-- Model modifier -->
-    <div class="modal fade" id="etudiantEditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modifier Etudiant</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- <form id="etudiant-edit-form" enctype="multipart/form-data">
-                        <input type="hidden" id="etudiant-id" name="id">
-                        <div class="row mb-3">
-                            <label for="inputImage" class="col-sm-2 col-form-label">Image</label>
-                            <div class="col-sm-10">
-                                <img src="" id="imagePreview" class="imgUpload" alt="">
-                                <input type="file" class="form-control" name="image" id="image">
-                            </div>
+  
+    <!-- Edit Student Modal -->
+<div class="modal fade" id="etudiantEditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modifier Etudiant</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="etudiant-edit-form" enctype="multipart/form-data">
+                    <input type="hidden" id="etudiant-id" name="id">
+                    <div class="row mb-3">
+                        <label for="inputImage" class="col-sm-2 col-form-label">Image</label>
+                        <div class="col-sm-10">
+                            <img src="" id="imagePreview" class="imgUpload" alt="">
+                            <input type="file" class="form-control" name="image" id="image">
                         </div>
-                        <p><strong>NNI:</strong> <br /> <input type="text" name="nni" id="etudiant-nni" class="form-control"></p>
-                        <p><strong>Nom & Prenom:</strong> <br /> <input type="text" name="nomprenom" id="etudiant-nomprenom" class="form-control"></p>
-                        
-                        <div class="form-group">
-                                <label for="country">Country</label>
-                                <select class="form-control" id="country-dropdown">
-                                    <option value="">Select Country</option>
-                                    @foreach ($countries as $country)
-                                    <option value="{{$country->country_id}}">
-                                        {{$country->name}}
-                                    </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        <p><strong>Diplome:</strong> <br /> <input type="text" name="diplome" id="etudiant-diplome" class="form-control"></p>
-                        
-                        <p><strong>Genre:</strong> <br /> <input type="text" name="genre" id="etudiant-genre" class="form-control"></p>
-
-                        <p><strong>Lieu Naissance:</strong> <br /> <input type="text" name="lieunaissance" id="etudiant-lieunaissance" class="form-control"></p>
-                        <p><strong>Address:</strong> <br /> <input type="text" name="adress" id="etudiant-adress" class="form-control"></p>
-                        <p><strong>Age:</strong> <br /> <input type="text" name="age" id="etudiant-age" class="form-control"></p>
-                        <p><strong>Email:</strong> <br /> <input type="email" name="email" id="etudiant-email" class="form-control"></p>
-                        <p><strong>Portable:</strong> <br /> <input type="text" name="phone" id="etudiant-phone" class="form-control"></p>
-                        <p><strong>WhatsApp:</strong> <br /> <input type="text" name="wtsp" id="etudiant-wtsp" class="form-control"></p>
-                    </form> -->
-                    <form id="etudiant-edit-form" enctype="multipart/form-data">
-    <input type="hidden" id="etudiant-id" name="id">
-    <div class="row mb-3">
-        <label for="inputImage" class="col-sm-2 col-form-label">Image</label>
-        <div class="col-sm-10">
-            <img src="" id="imagePreview" class="imgUpload" alt="">
-            <input type="file" class="form-control" name="image" id="image">
-        </div>
-    </div>
-    <p><strong>NNI:</strong> <br /> <input type="text" name="nni" id="etudiant-nni" class="form-control"></p>
-    <p><strong>Nom & Prenom:</strong> <br /> <input type="text" name="nomprenom" id="etudiant-nomprenom" class="form-control"></p>
-    <div class="form-group">
-        <label for="country_id">Country</label>
-        <select class="form-control" id="etudiant-country_id" name="country_id">
-            <option value="">Select Country</option>
-            @foreach ($countries as $country)
-                <option value="{{ $country->id }}">{{ $country->name }}</option>
-            @endforeach
-        </select>
-    </div>
-    <p><strong>Diplome:</strong> <br /> <input type="text" name="diplome" id="etudiant-diplome" class="form-control"></p>
-    <p><strong>Genre:</strong> <br /> <input type="text" name="genre" id="etudiant-genre" class="form-control"></p>
-    <p><strong>Lieu Naissance:</strong> <br /> <input type="text" name="lieunaissance" id="etudiant-lieunaissance" class="form-control"></p>
-    <p><strong>Address:</strong> <br /> <input type="text" name="adress" id="etudiant-adress" class="form-control"></p>
-    <p><strong>Age:</strong> <br /> <input type="text" name="age" id="etudiant-age" class="form-control"></p>
-    <p><strong>Email:</strong> <br /> <input type="email" name="email" id="etudiant-email" class="form-control"></p>
-    <p><strong>Portable:</strong> <br /> <input type="text" name="phone" id="etudiant-phone" class="form-control"></p>
-    <p><strong>WhatsApp:</strong> <br /> <input type="text" name="wtsp" id="etudiant-wtsp" class="form-control"></p>
-</form>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-info" id="etudiant-update">Modifier</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                </div>
+                    </div>
+                    <p><strong>NNI:</strong> <br /> <input type="text" name="nni" id="etudiant-nni" class="form-control"></p>
+                    <p><strong>Nom & Prenom:</strong> <br /> <input type="text" name="nomprenom" id="etudiant-nomprenom" class="form-control"></p>
+                    <div class="form-group">
+                        <label for="country_id">Country</label>
+                        <select class="form-control" id="etudiant-country_id" name="country_id">
+                            <option value="">Select Country</option>
+                            @foreach ($countries as $country)
+                                <option value="{{ $country->id }}">{{ $country->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <p><strong>Diplome:</strong> <br /> <input type="text" name="diplome" id="etudiant-diplome" class="form-control"></p>
+                    <div class="mb-3">
+                        <label for="genre" class="form-label">Genre:</label>
+                        <div>
+                            <input type="radio" id="male" name="genre" value="Male">
+                            <label for="male">Male</label><br>
+                            <input type="radio" id="female" name="genre" value="Female">
+                            <label for="female">Female</label><br>
+                        </div>
+                    </div>
+                    <p><strong>Lieu Naissance:</strong> <br /> <input type="text" name="lieunaissance" id="etudiant-lieunaissance" class="form-control"></p>
+                    <p><strong>Address:</strong> <br /> <input type="text" name="adress" id="etudiant-adress" class="form-control"></p>
+                    <p><strong>Age:</strong> <br /> <input type="text" name="age" id="etudiant-age" class="form-control"></p>
+                    <p><strong>Email:</strong> <br /> <input type="email" name="email" id="etudiant-email" class="form-control"></p>
+                    <p><strong>Portable:</strong> <br /> <input type="text" name="phone" id="etudiant-phone" class="form-control"></p>
+                    <p><strong>WhatsApp:</strong> <br /> <input type="text" name="wtsp" id="etudiant-wtsp" class="form-control"></p>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" id="etudiant-update">Modifier</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
             </div>
         </div>
     </div>
+</div>
 
     <!-- Ajouter un prof Modal -->
     <!-- Ajouter un étudiant Modal -->
@@ -221,7 +204,12 @@
                     </div>
                     <div class="mb-3">
                         <label for="genre" class="form-label">Genre:</label>
-                        <input type="text" class="form-control" id="new-etudiant-genre" name="genre">
+                        <div>
+                            <input type="radio" id="male" name="genre" value="Male">
+                            <label for="male">Male</label><br>
+                            <input type="radio" id="female" name="genre" value="Female">
+                            <label for="female">Female</label><br>
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label for="lieunaissance" class="form-label">Lieu Naissance:</label>
@@ -338,7 +326,8 @@
         $('#etudiant-nomprenom').val(tr.find("td:nth-child(4)").text());
         $('#etudiant-country_id').val(tr.find("td:nth-child(5)").data('country-id'));
         $('#etudiant-diplome').val(tr.find("td:nth-child(6)").text());
-        $('#etudiant-genre').val(tr.find("td:nth-child(7)").text());
+        var genre = tr.find("td:nth-child(7)").text();
+        $('input[name="genre"][value="' + genre + '"]').prop('checked', true);
         $('#etudiant-lieunaissance').val(tr.find("td:nth-child(8)").text());
         $('#etudiant-adress').val(tr.find("td:nth-child(9)").text());
         $('#etudiant-age').val(tr.find("td:nth-child(10)").text());

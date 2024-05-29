@@ -15,14 +15,17 @@ class TyppymentProfSeeder extends Seeder
     {
         Typeymntprofs::truncate();
 
-        $typpeyments = [
+        $typeymntprofs = [
             ['type' => 'pourcentage'],
             ['type' => 'mensuelle'],
             ['type' => 'heures'],
         ];
 
-        foreach ($typpeyments as $typpeyment) {
-            Typeymntprofs::create($typpeyment);
+        // foreach ($typeymntprof as $typeymntprof_id) {
+        //     Typeymntprofs::create($typeymntprof);
+        // }
+        foreach ($typeymntprofs as $key => $value) {
+            Typeymntprofs::create($value);
         }
     }
 }

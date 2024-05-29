@@ -26,7 +26,7 @@ class Professeur extends Model
         return $this->belongsTo(Country::class);
     }
 
-    public function typeymntprof()
+    public function types()
     {
         return $this->belongsTo(Typeymntprofs::class);
     }

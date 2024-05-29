@@ -13,6 +13,8 @@ use App\Http\Livewire\ExampleLaravel\UserProfile;
 use App\Http\Livewire\ExampleLaravel\EtudiantController;
 use App\Http\Livewire\ExampleLaravel\ProfesseurController;
 use App\Http\Livewire\ExampleLaravel\FormationsController;
+use App\Http\Livewire\ExampleLaravel\ContenusFormationController;
+
 
 use App\Http\Controllers\ExportController;
 
@@ -60,66 +62,30 @@ Route::delete('/etudiants/{id}', [EtudiantController::class, 'delete_etudiant'])
 Route::get('/search', [EtudiantController::class, 'search'])->name('etudiant.search');
 Route::get('/export/etudiants', [EtudiantController::class, 'export'])->name('export.etudiants');
 Route::get('etudiant-management', EtudiantController::class)->middleware('auth')->name('etudiant-management');
-// Route::put('etudiants/{id}', [EtudiantController::class, 'update'])->middleware('auth')->name('etudiant.update');
-// Route::post('/etudiants', [EtudiantController::class, 'store'])->middleware('auth')->name('etudiants.store');
-// Route::get('/delete-etudiant/{id}',[EtudiantController::class , 'delete_etudiant'])->middleware('auth')->name('etudiant.delete');
-// Route::post('/etudiant/store', [EtudiantController::class,'store'])->name('etudiant.store');
-// Route::get('/search',[EtudiantController::class,'search']);
-// Route::get('/export-excel',[EtudiantController::class , 'export'])->middleware('auth')->name('etudiants.export');
-// Route::get('etudiant-management', EtudiantController::class)->middleware('auth')->name('etudiant-management');
-// Route::put('etudiants/{id}', [EtudiantController::class, 'update'])->middleware('auth')->name('etudiant.update');
-// Route::post('/etudiants', [EtudiantController::class, 'store'])->middleware('auth')->name('etudiants.store');
-// Route::get('/delete-etudiant/{id}',[EtudiantController::class , 'delete_etudiant'])->middleware('auth')->name('etudiant.delete');
-// Route::post('/etudiant/store', [EtudiantController::class,'store'])->name('etudiant.store');
-
-// Route::get('/search', [EtudiantController::class, 'search'])->name('search');
-
-// Route::get('/export-excel',[EtudiantController::class , 'export'])->middleware('auth')->name('etudiants.export');
-// Route::get('/export-excel',[EtudiantController::class , 'export'])->middleware('auth')->name('etudiants.export');
-// Route::get('/export-excel', [EtudiantController::class, 'export'])->middleware('auth')->name('etudiants.export');
-// Route::get('/etudiants/search', [EtudiantController::class, 'search'])->name('etudiants.search');
 
 //Professeur routes
+Route::get('/profs', [ProfesseurController::class, 'liste_prof'])->name('prof.list');
+Route::post('/profs', [ProfesseurController::class, 'store'])->name('prof.store');
+Route::put('/profs/{id}', [ProfesseurController::class, 'update'])->name('prof.update');
+Route::delete('/profs/{id}', [ProfesseurController::class, 'delete_prof'])->name('prof.delete');
+Route::get('/search', [ProfesseurController::class, 'search'])->name('prof.search');
+Route::get('/export/profs', [ProfesseurController::class, 'export'])->name('export.profs');
 Route::get('prof-management', ProfesseurController::class)->middleware('auth')->name('prof-management');
-Route::get('prof-management', ProfesseurController::class)->middleware('auth')->name('prof-management');
-Route::put('profs/{id}', [ProfesseurController::class, 'update'])->middleware('auth')->name('profs.update');
-Route::post('/profs', [ProfesseurController::class, 'store'])->middleware('auth')->name('profs.store');
-Route::get('/delete-prof/{id}',[ProfesseurController::class , 'delete_prof'])->middleware('auth')->name('profs.delete_etudiant');
-Route::post('/prof/store', [ProfesseurController::class,'store'])->name('prof.store');
 
 
-Route::put('/professeurs/{id}', [ProfesseurController::class, 'update'])->name('professeurs.update');
-
-// Route::get('/search',[ProfesseurController::class,'search']);
-
-
-
-// Route::put('profs/{id}', [ProfesseurController::class, 'update'])->middleware('auth')->name('profs.update');
-// Route::post('/profs', [ProfesseurController::class, 'store'])->middleware('auth')->name('profs.store');
-// Route::get('/delete-prof/{id}',[ProfesseurController::class , 'delete_prof'])->middleware('auth')->name('profs.delete_etudiant');
-// Route::post('/prof/store', [ProfesseurController::class,'store'])->name('prof.store');
-// Route::post('/prof/store', [ProfesseurController::class, 'store'])->name('prof.store');
+//contenue formation routes
+Route::get('/contenues', [ContenusFormationController::class, 'liste_contenue'])->name('contenue.list');
+Route::post('/contenues', [ContenusFormationController::class, 'store'])->name('contenue.store');
+Route::put('/contenues/{id}', [ContenusFormationController::class, 'update'])->name('contenue.update');
+Route::delete('/contenues/{id}', [ContenusFormationController::class, 'delete_contenue'])->name('contenue.delete');
+Route::get('/search', [ContenusFormationController::class, 'search'])->name('contenue.search');
+Route::get('/export/contenues', [ContenusFormationController::class, 'export'])->name('export.contenues');
+Route::get('contenusformation-management', ContenusFormationController::class)->middleware('auth')->name('contenusformation-management');
 
 
-// Route::post('/prof/store', [ProfesseurController::class, 'store'])->name('prof.store');
 
-// Route::post('/profs/{id}/update', [ProfesseurController::class, 'update'])->name('prof.update');
-// Route::get('/profs/{id}', [ProfesseurController::class, 'edit']);
-// Route::get('/prof/delete/{id}', [ProfesseurController::class, 'delete'])->name('prof.delete');
-// Route::get('/profs/export', [ProfesseurController::class, 'export'])->name('profs.export');
-
-// Route::get('/edit-prof/{id}', [ProfesseurController::class, 'edit']);
-// Route::post('/update-prof/{id}', [ProfesseurController::class, 'update']);
-
-// Route::post('/prof/store', [ProfesseurController::class,'store'])->name('prof.store');
-// Route::post('/prof/store', [ProfesseurController::class, 'store'])->name('prof.store');
 
 Route::get('/export-excel',[ProfesseurController::class , 'export'])->middleware('auth')->name('profs.export');
-// Route::get('/profs/search', [ProfesseurController::class, 'search'])->name('profs.search');
-
-// Route::get('/export-excel',[ProfesseurController::class , 'export'])->middleware('auth')->name('profs.export');
-
-
 
 Route::get('export/professeurs', [ExportController::class, 'exportProfesseurs'])->name('export.professeurs');
 Route::get('export/etudiants', [ExportController::class, 'exportEtudiants'])->name('export.etudiants');

@@ -17,10 +17,15 @@ return new class extends Migration
             $table->string('diplome');
             $table->integer('phone');
             $table->integer('wtsp');
-            $table->unsignedBigInteger('typeymntprof_id');
-            $table->foreign('typeymntprof_id')->references('id')->on('typeymntprofs')->onDelete('cascade');
-            $table->unsignedBigInteger('country_id');
-            $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade');
+            $table->foreignId('typeymntprof_id')->constrained('typeymntprofs');
+            $table->foreignId('country_id')->constrained('countries');
+
+
+
+            // $table->unsignedBigInteger('typeymntprof_id');
+            // $table->foreign('typeymntprof_id')->references('id')->on('typeymntprofs')->onDelete('cascade');
+            // $table->unsignedBigInteger('country_id');
+            // $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade');
             $table->timestamps();
         });
     }
