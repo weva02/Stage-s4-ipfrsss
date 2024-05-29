@@ -15,4 +15,9 @@ class Formations extends Model
         'duree',
         'prix',
     ];
+    public function contenusFormation()
+    {
+        return $this->hasMany(ContenusFormation::class, 'formation_id');
+    }
 }
+

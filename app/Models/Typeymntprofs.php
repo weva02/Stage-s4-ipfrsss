@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,4 +11,9 @@ class Typeymntprofs extends Model
     protected $fillable = [
         'type',
     ];
+
+    public function professeurs()
+    {
+        return $this->hasMany(Professeur::class, 'typeymntprof_id');
+    }
 }

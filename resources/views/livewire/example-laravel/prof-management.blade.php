@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Laravel Ajax PUT Request Example</title>
+    <title>Laravel Ajax CRUD Example</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js"></script>
@@ -17,17 +17,14 @@
             content: " *";
             color: red;
         }
-
         .form-control {
             border: 1px solid #ccc;
-            box-shadow: none;
         }
-
         .form-control:focus {
             border-color: #66afe9;
             outline: 0;
             box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
-        }   
+        }
     </style>
 </head>
 <body>
@@ -45,7 +42,7 @@
                             <button type="button" class="btn bg-gradient-dark" data-bs-toggle="modal" data-bs-target="#profAddModal">
                                 <i class="material-icons text-sm">add</i>&nbsp;&nbsp;Ajouter un Professeur
                             </button>
-                            <a href="{{ route('export.profs') }}" class="btn btn-success">Exporter Étudiants</a>
+                            <a href="{{ route('export.profs') }}" class="btn btn-success">Exporter Professeurs</a>
                         </div>
                         <form action="" method="get" class="d-flex align-items-center ms-auto">
                             <div class="input-group input-group-sm" style="width: 250px;">
@@ -65,31 +62,30 @@
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">ID</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Image</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nom & Prenom</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nationalite</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">EMAIL</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nationalité</th>
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Email</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Diplome</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Portable</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">WhatsApp</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Type Contrats</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Type Contrat</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Actions</th>
-                                        <th class="text-secondary opacity-7"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($profs as $prof)
                                     <tr>
                                         <td>{{ $prof->id }}</td>
-                                        <td><img src="{{ asset('images/'.$prof->image)}}" alt="" width="60px"></td>
+                                        <td><img src="{{ asset('images/'.$prof->image) }}" alt="" width="60px"></td>
                                         <td>{{ $prof->nomprenom }}</td>
-                                        <td>{{ $prof->country->name ?? 'N/A' }}</td>
+                                        <td data-country-id="{{ $prof->country_id }}">{{ $prof->country->name ?? 'N/A' }}</td>
                                         <td>{{ $prof->email }}</td>
                                         <td>{{ $prof->diplome }}</td>
                                         <td>{{ $prof->phone }}</td>
                                         <td>{{ $prof->wtsp }}</td>
-                                        <td>{{ $prof->types->type ?? 'N/A' }}</td>
-                                        <td>
+                                        <td data-typeymntprof-id="{{ $prof->typeymntprof_id }}">{{ $prof->typeymntprof->type ?? 'N/A' }}</td>
+                                        <td class="text-center">
                                             <a href="javascript:void(0)" id="edit-prof" data-id="{{ $prof->id }}" class="btn btn-info"><i class="material-icons opacity-10">border_color</i></a>
-                                            <a href="{{ route('prof.delete', $prof->id) }}" id="delete-prof" class="btn btn-danger"><i class="material-icons opacity-10">delete</i></a>
+                                            <a href="javascript:void(0)" id="delete-prof" data-id="{{ $prof->id }}" class="btn btn-danger"><i class="material-icons opacity-10">delete</i></a>
                                         </td>
                                     </tr>
                                     @endforeach
@@ -155,9 +151,9 @@
                                 <input type="text" class="form-control" id="new-prof-wtsp" name="wtsp">
                             </div>
                             <div class="col-md-6">
-                                <label for="typeymntprof_id" class="form-label">Type Contrats</label>
+                                <label for="typeymntprof_id" class="form-label">Type Contrat</label>
                                 <select class="form-control" id="new-prof-typeymntprof_id" name="typeymntprof_id">
-                                    <option value="">Select Type Contrats</option>
+                                    <option value="">Select Type Contrat</option>
                                     @foreach ($types as $type)
                                         <option value="{{ $type->id }}">{{ $type->type }}</option>
                                     @endforeach
@@ -207,7 +203,7 @@
                         <p><strong>Portable:</strong> <br /> <input type="text" name="phone" id="prof-phone" class="form-control"></p>
                         <p><strong>WhatsApp:</strong> <br /> <input type="text" name="wtsp" id="prof-wtsp" class="form-control"></p>
                         <div class="form-group">
-                            <label for="typeymntprof_id">Type Contrats</label>
+                            <label for="typeymntprof_id">Type Contrat</label>
                             <select class="form-control" id="prof-typeymntprof_id" name="typeymntprof_id">
                                 <option value="">Select Type</option>
                                 @foreach ($types as $type)
@@ -263,7 +259,26 @@
                                 position: 'topRight'
                             });
                             $('#profAddModal').modal('hide');
-                            location.reload();
+                            // Ajouter le nouvel enregistrement à la table sans recharger la page
+                            const prof = response.prof;
+                            const row = `
+                                <tr>
+                                    <td>${prof.id}</td>
+                                    <td><img src="{{ asset('images') }}/${prof.image}" alt="" width="60px"></td>
+                                    <td>${prof.nomprenom}</td>
+                                    <td data-country-id="${prof.country_id}">${prof.country.name}</td>
+                                    <td>${prof.email}</td>
+                                    <td>${prof.diplome}</td>
+                                    <td>${prof.phone}</td>
+                                    <td>${prof.wtsp}</td>
+                                    <td data-typeymntprof-id="${prof.typeymntprof_id}">${prof.typeymntprof.type}</td>
+                                    <td class="text-center">
+                                        <a href="javascript:void(0)" id="edit-prof" data-id="${prof.id}" class="btn btn-info"><i class="material-icons opacity-10">border_color</i></a>
+                                        <a href="javascript:void(0)" id="delete-prof" data-id="${prof.id}" class="btn btn-danger"><i class="material-icons opacity-10">delete</i></a>
+                                    </td>
+                                </tr>
+                            `;
+                            $('table tbody').prepend(row);
                         }
                     },
                     error: function(xhr, status, error) {
@@ -334,13 +349,23 @@
                                 message: response.success,
                                 position: 'topRight'
                             });
+                            // Mettre à jour la ligne dans le tableau sans recharger la page
+                            const prof = response.prof;
+                            const tr = $(`a[data-id='${id}']`).closest('tr');
+                            tr.find("td:nth-child(2) img").attr('src', `{{ asset('images') }}/${prof.image}`);
+                            tr.find("td:nth-child(3)").text(prof.nomprenom);
+                            tr.find("td:nth-child(4)").text(prof.country.name).attr('data-country-id', prof.country_id);
+                            tr.find("td:nth-child(5)").text(prof.email);
+                            tr.find("td:nth-child(6)").text(prof.diplome);
+                            tr.find("td:nth-child(7)").text(prof.phone);
+                            tr.find("td:nth-child(8)").text(prof.wtsp);
+                            tr.find("td:nth-child(9)").text(prof.typeymntprof.type).attr('data-typeymntprof-id', prof.typeymntprof_id);
                         } else {
                             iziToast.error({
                                 message: response.error,
                                 position: 'topRight'
                             });
                         }
-                        location.reload();
                     },
                     error: function(xhr, status, error) {
                         var errorMsg = '';
@@ -363,17 +388,19 @@
 
             $('body').on('click', '#delete-prof', function (e) {
                 e.preventDefault();
-                var confirmation = confirm("Êtes-vous sûr de vouloir supprimer cet professeur ?");
+                var confirmation = confirm("Êtes-vous sûr de vouloir supprimer ce professeur ?");
                 if (confirmation) {
+                    var id = $(this).data('id');
                     $.ajax({
-                        url: $(this).attr('href'),
+                        url: "{{ route('prof.delete', '') }}/" + id,
                         type: 'DELETE',
                         success: function(response) {
                             iziToast.success({
                                 message: response.success,
                                 position: 'topRight'
                             });
-                            location.reload();
+                            // Supprimer la ligne du tableau sans recharger la page
+                            $(`a[data-id='${id}']`).closest('tr').remove();
                         },
                         error: function(xhr, status, error) {
                             iziToast.error({
