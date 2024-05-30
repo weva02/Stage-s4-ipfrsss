@@ -48,6 +48,9 @@
                                     @foreach($formations as $formation)
                                     <tr>
                                         <td>{{ $formation->id }}</td>
+                                        <td>
+                                            <a href="{{ route('formations.show', $formation->id) }}">{{ $formation->code }}</a>
+                                        </td>
                                         <td>{{ $formation->code }}</td>
                                         <td>{{ $formation->nom }}</td>
                                         <td>{{ $formation->duree }}</td>

@@ -11,7 +11,7 @@ class ContenusFormationController extends Component
 {
     public function liste_contenue()
     {
-        $contenues = ContenusFormation::paginate(4);
+        $contenues = ContenusFormation::with('formation')->paginate(4);
         $formations = Formations::all();
         return view('livewire.example-laravel.contenusformation-management', compact('contenues', 'formations'));
     }
@@ -72,13 +72,12 @@ class ContenusFormationController extends Component
     public function search(Request $request)
     {
         $search = $request->search;
-        $contenues = ContenusFormation::where(function($query) use ($search) {
-            $query->where('id', 'like', "%$search%")
-                ->orWhere('numchap', 'like', "%$search%")
-                ->orWhere('numunite', 'like', "%$search%")
-                ->orWhere('description', 'like', "%$search%")
-                ->orWhere('nombreheures', 'like', "%$search%");
-        })->paginate(4);
+        $contenues = ContenusFormation::with('formation')
+            ->where('numchap', 'like', "%$search%")
+            ->orWhere('numunite', 'like', "%$search%")
+            ->orWhere('description', 'like', "%$search%")
+            ->orWhere('nombreheures', 'like', "%$search%")
+            ->paginate(4);
 
         $formations = Formations::all();
         return view('livewire.example-laravel.contenusformation-management', compact('contenues', 'formations', 'search'));
@@ -86,7 +85,7 @@ class ContenusFormationController extends Component
 
     public function render()
     {
-        $contenues = ContenusFormation::paginate(4);
+        $contenues = ContenusFormation::with('formation')->paginate(4);
         $formations = Formations::all();
         return view('livewire.example-laravel.contenusformation-management', compact('contenues', 'formations'));
     }

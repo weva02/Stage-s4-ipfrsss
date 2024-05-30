@@ -7,14 +7,12 @@ use App\Models\Professeur;
 use App\Models\Country;
 use App\Models\Typeymntprofs;
 use Livewire\Component;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\ProfesseurExport;
 
 class ProfesseurController extends Component
 {
     public function liste_prof()
     {
-        $profs = Professeur::paginate(4);
+        $profs = Professeur::with('country', 'typeymntprof')->paginate(4);
         $countries = Country::all();
         $types = Typeymntprofs::all();
         return view('livewire.example-laravel.prof-management', compact('profs', 'countries', 'types'));
@@ -34,11 +32,13 @@ class ProfesseurController extends Component
         ]);
 
         try {
-            $imageName = time() . '.' . $request->image->extension();
-            $request->image->move(public_path('images'), $imageName);
+            if ($request->hasFile('image')) {
+                $imageName = time() . '.' . $request->image->getClientOriginalExtension();
+                $request->image->move(public_path('images'), $imageName);
+            }
 
-            Professeur::create([
-                'image' => $imageName,
+            $prof = Professeur::create([
+                'image' => $imageName ?? null,
                 'nomprenom' => $request->nomprenom,
                 'email' => $request->email,
                 'diplome' => $request->diplome,
@@ -48,7 +48,7 @@ class ProfesseurController extends Component
                 'typeymntprof_id' => $request->typeymntprof_id,
             ]);
 
-            return response()->json(['success' => 'Professeur créé avec succès']);
+            return response()->json(['success' => 'Professeur créé avec succès', 'prof' => $prof->load('country', 'typeymntprof')]);
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 500);
         }
@@ -71,14 +71,14 @@ class ProfesseurController extends Component
             $prof = Professeur::findOrFail($id);
 
             if ($request->hasFile('image')) {
-                $imageName = time() . '.' . $request->image->extension();
+                $imageName = time() . '.' . $request->image->getClientOriginalExtension();
                 $request->image->move(public_path('images'), $imageName);
-                $prof->image = $imageName;
+                $validated['image'] = $imageName;
             }
 
             $prof->update($validated);
 
-            return response()->json(['success' => 'Professeur modifié avec succès']);
+            return response()->json(['success' => 'Professeur modifié avec succès', 'prof' => $prof->load('country', 'typeymntprof')]);
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 500);
         }
@@ -99,14 +99,13 @@ class ProfesseurController extends Component
     public function search(Request $request)
     {
         $search = $request->search;
-        $profs = Professeur::where(function($query) use ($search) {
-            $query->where('id', 'like', "%$search%")
-                ->orWhere('nomprenom', 'like', "%$search%")
-                ->orWhere('email', 'like', "%$search%")
-                ->orWhere('diplome', 'like', "%$search%")
-                ->orWhere('phone', 'like', "%$search%")
-                ->orWhere('wtsp', 'like', "%$search%");
-        })->paginate(4);
+        $profs = Professeur::with('country', 'typeymntprof')
+            ->where('nomprenom', 'like', "%$search%")
+            ->orWhere('email', 'like', "%$search%")
+            ->orWhere('diplome', 'like', "%$search%")
+            ->orWhere('phone', 'like', "%$search%")
+            ->orWhere('wtsp', 'like', "%$search%")
+            ->paginate(4);
 
         $countries = Country::all();
         $types = Typeymntprofs::all();
@@ -115,9 +114,9 @@ class ProfesseurController extends Component
 
     public function render()
     {
-        $profs = Professeur::paginate(4);
+        $profs = Professeur::with('country', 'typeymntprof')->paginate(4);
         $countries = Country::all();
         $types = Typeymntprofs::all();
-        return view('livewire.example-laravel.prof-management', compact('profs', 'countries' , 'types'));
+        return view('livewire.example-laravel.prof-management', compact('profs', 'countries', 'types'));
     }
 }

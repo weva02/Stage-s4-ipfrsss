@@ -14,7 +14,24 @@ class EtudiantExport implements FromCollection, WithHeadings, ShouldAutoSize
     */
     public function collection()
     {
-        return Etudiant::all(['id','nni', 'nomprenom', 'nationalite','diplome','genre', 'lieunaissance', 'adress', 'age', 'email',  'phone', 'wtsp']);
+        return Etudiant::with('country')
+            ->get()
+            ->map(function ($etudiant) {
+                return [
+                    'ID' => $etudiant->id,
+                    'NNI' => $etudiant->nni,
+                    'Nom & Prénom' => $etudiant->nomprenom,
+                    'Nationalité' => $etudiant->country ? $etudiant->country->name : '',
+                    'Diplôme' => $etudiant->diplome,
+                    'Genre' => $etudiant->genre,
+                    'Lieu de naissance' => $etudiant->lieunaissance,
+                    'Adresse' => $etudiant->adress,
+                    'Age' => $etudiant->age,
+                    'Email' => $etudiant->email,
+                    'Portable' => $etudiant->phone,
+                    'WhatsApp' => $etudiant->wtsp,
+                ];
+            });
     }
 
     /**
@@ -32,7 +49,7 @@ class EtudiantExport implements FromCollection, WithHeadings, ShouldAutoSize
             'Diplôme',
             'Genre',
             'Lieu Naissance',
-            'Adress',
+            'Adresse',
             'Age',
             'Email',
             'Portable',
@@ -41,4 +58,3 @@ class EtudiantExport implements FromCollection, WithHeadings, ShouldAutoSize
         ];
     }
 }
-

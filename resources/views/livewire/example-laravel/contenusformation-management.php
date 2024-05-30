@@ -1,16 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <title>Laravel Ajax PUT Request Example</title>
+    <title>Laravel Ajax CRUD Example</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
-        .imgUpload { max-width: 90px; max-height: 70px; min-width: 50px; min-height: 50px; }
-        .required::after { content: " *"; color: red; }
-        .form-control { border: 1px solid #ccc; }
-        .form-control:focus { border-color: #66afe9; outline: 0; box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6); }
+        .imgUpload {
+            max-width: 90px;
+            max-height: 70px;
+            min-width: 50px;
+            min-height: 50px;
+        }
+        .required::after {
+            content: " *";
+            color: red;
+        }
+        .form-control {
+            border: 1px solid #ccc;
+        }
+        .form-control:focus {
+            border-color: #66afe9;
+            outline: 0;
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+        }
     </style>
 </head>
 <body>
@@ -28,7 +42,7 @@
                             <button type="button" class="btn bg-gradient-dark" data-bs-toggle="modal" data-bs-target="#contenueAddModal">
                                 <i class="material-icons text-sm">add</i>&nbsp;&nbsp;Ajouter un contenu
                             </button>
-                            <a href="{{ route('export.contenues') }}" class="btn btn-success">Exporter Étudiants</a>
+                            <a href="{{ route('export.contenues') }}" class="btn btn-success">Exporter Contenus</a>
                         </div>
                         <form action="" method="get" class="d-flex align-items-center ms-auto">
                             <div class="input-group input-group-sm" style="width: 250px;">
@@ -37,36 +51,35 @@
                             </div>
                         </form>
                     </div>
-                    <div class="me-3 my-3 text-end"></div>
+
+                    <div class="me-3 my-3 text-end "></div>
+
                     <div class="card-body px-0 pb-2">
                         <div class="table-responsive p-0">
                             <table class="table align-items-center mb-0">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
-                                        <th>Nom du Chapitre</th>
-                                        <th>Nom de l'unite</th>
-                                        <th>Description</th>
-                                        <th>Nombre des Heures</th>
-                                        <th class="text-center">Actions</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">ID</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nom du Chapitre</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nom de l'unité</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Description</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nombre des Heures</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Formation</th>
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($contenues as $contenue)
                                     <tr>
                                         <td>{{ $contenue->id }}</td>
-                                        <td>{{ $contenue->numchap }}</td>
-                                        <td>{{ $contenue->numunite }}</td>
+                                        <td>{{ $contenue->NumChap}}</td>
+                                        <td>{{ $contenue->NumUnite}}</td>
                                         <td>{{ $contenue->description }}</td>
-                                        <td>{{ $contenue->nombreheures }}</td>
-                                        <td data-formation-id="{{ $contenue->formation_id }}">{{ $contenue->formation->nom ?? 'N/A' }}</td>
-                                        <td>
-                                            <a href="javascript:void(0)" id="edit-contenue" data-id="{{ $contenue->id }}" class="btn btn-info">
-                                                <i class="material-icons">border_color</i>
-                                            </a>
-                                            <a href="{{ route('contenue.delete', $contenue->id) }}" id="delete-contenue" class="btn btn-danger">
-                                                <i class="material-icons">delete</i>
-                                            </a>
+                                        <td>{{ $contenue->NombreHeures }}</td>
+                                        <td>{{ $contenue->formation->nom ?? 'N/A' }}</td>
+                                        <td class="text-center">
+                                            <a href="javascript:void(0)" id="edit-contenue" data-id="{{ $contenue->id }}" class="btn btn-info"><i class="material-icons opacity-10">border_color</i></a>
+                                            <a href="javascript:void(0)" id="delete-contenue" data-id="{{ $contenue->id }}" class="btn btn-danger"><i class="material-icons opacity-10">delete</i></a>
                                         </td>
                                     </tr>
                                     @endforeach
@@ -80,57 +93,23 @@
         </div>
     </div>
 
-    <!-- Edit Content Modal -->
-    <div class="modal fade" id="contenueEditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Modifier contenu</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="contenue-edit-form" enctype="multipart/form-data">
-                        <input type="hidden" id="contenue-id" name="id">
-                        <p><strong>Nom du Chapitre:</strong> <br /> <input type="text" name="numchap" id="contenue-numchap" class="form-control"></p>
-                        <p><strong>Nom de L'unite:</strong> <br /> <input type="text" name="numunite" id="contenue-numunite" class="form-control"></p>
-                        <p><strong>Description:</strong> <br /> <input type="text" name="description" id="contenue-description" class="form-control"></p>
-                        <p><strong>NombreHeures:</strong> <br /> <input type="text" name="nombreheures" id="contenue-nombreheures" class="form-control"></p>
-                        <div class="form-group">
-                            <label for="formation_id">Formation</label>
-                            <select class="form-control" id="contenue-formation_id" name="formation_id">
-                                <option value="">Select Formation</option>
-                                @foreach ($formations as $formation)
-                                    <option value="{{ $formation->id }}">{{ $formation->nom }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-info" id="contenue-update">Modifier</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Add Content Modal -->
+    <!-- Modal Ajouter Contenu -->
     <div class="modal fade" id="contenueAddModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Ajouter un nouvel contenu</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Ajouter un nouveau contenu</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="contenue-add-form" enctype="multipart/form-data">
+                    <form id="contenue-add-form">
                         @csrf
                         <div class="mb-3">
                             <label for="numchap" class="form-label">Nom du Chapitre:</label>
                             <input type="text" class="form-control" id="new-contenue-numchap" name="numchap">
                         </div>
                         <div class="mb-3">
-                            <label for="numunite" class="form-label">Nom de l'unite:</label>
+                            <label for="numunite" class="form-label">Nom de l'unité:</label>
                             <input type="text" class="form-control" id="new-contenue-numunite" name="numunite">
                         </div>
                         <div class="mb-3">
@@ -138,13 +117,13 @@
                             <input type="text" class="form-control" id="new-contenue-description" name="description">
                         </div>
                         <div class="mb-3">
-                            <label for="nombreheures" class="form-label">NombreHeures:</label>
-                            <input type="text" class="form-control" id="new-contenue-nombreheures" name="nombreheures">
+                            <label for="nombreheures" class="form-label">Nombre Heures:</label>
+                            <input type="number" class="form-control" id="new-contenue-nombreheures" name="nombreheures">
                         </div>
                         <div class="form-group">
                             <label for="formation_id">Formation</label>
                             <select class="form-control" id="new-contenue-formation_id" name="formation_id">
-                                <option value="">Select Formation</option>
+                                <option value="">Sélectionner Formation</option>
                                 @foreach ($formations as $formation)
                                     <option value="{{ $formation->id }}">{{ $formation->nom }}</option>
                                 @endforeach
@@ -154,6 +133,53 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-info" id="add-new-contenue">Ajouter</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Modifier Contenu -->
+    <div class="modal fade" id="contenueEditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modifier contenu</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="contenue-edit-form">
+                        @csrf
+                        <input type="hidden" id="contenue-id" name="id">
+                        <div class="mb-3">
+                            <label for="numchap" class="form-label">Nom du Chapitre:</label>
+                            <input type="text" class="form-control" id="contenue-numchap" name="numchap">
+                        </div>
+                        <div class="mb-3">
+                            <label for="numunite" class="form-label">Nom de l'unité:</label>
+                            <input type="text" class="form-control" id="contenue-numunite" name="numunite">
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description:</label>
+                            <input type="text" class="form-control" id="contenue-description" name="description">
+                        </div>
+                        <div class="mb-3">
+                            <label for="nombreheures" class="form-label">Nombre Heures:</label>
+                            <input type="number" class="form-control" id="contenue-nombreheures" name="nombreheures">
+                        </div>
+                        <div class="form-group">
+                            <label for="formation_id">Formation</label>
+                            <select class="form-control" id="contenue-formation_id" name="formation_id">
+                                <option value="">Sélectionner Formation</option>
+                                @foreach ($formations as $formation)
+                                    <option value="{{ $formation->id }}">{{ $formation->nom }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" id="contenue-update">Modifier</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
                 </div>
             </div>
@@ -188,9 +214,15 @@
                                     errorMsg += error + '<br>';
                                 });
                             });
-                            iziToast.error({ message: errorMsg, position: 'topRight' });
+                            iziToast.error({
+                                message: errorMsg,
+                                position: 'topRight'
+                            });
                         } else {
-                            iziToast.success({ message: response.success, position: 'topRight' });
+                            iziToast.success({
+                                message: response.success,
+                                position: 'topRight'
+                            });
                             $('#contenueAddModal').modal('hide');
                             location.reload();
                         }
@@ -203,9 +235,15 @@
                                     errorMsg += error + '<br>';
                                 });
                             });
-                            iziToast.error({ message: errorMsg, position: 'topRight' });
+                            iziToast.error({
+                                message: errorMsg,
+                                position: 'topRight'
+                            });
                         } else {
-                            iziToast.error({ message: 'An error occurred: ' + error, position: 'topRight' });
+                            iziToast.error({
+                                message: 'An error occurred: ' + error,
+                                position: 'topRight'
+                            });
                         }
                     }
                 });
@@ -219,6 +257,7 @@
                 $('#contenue-description').val(tr.find("td:nth-child(4)").text());
                 $('#contenue-nombreheures').val(tr.find("td:nth-child(5)").text());
                 $('#contenue-formation_id').val(tr.find("td:nth-child(6)").data('formation-id'));
+
                 $('#contenueEditModal').modal('show');
             });
 
@@ -237,9 +276,15 @@
                     success: function(response) {
                         $('#contenueEditModal').modal('hide');
                         if (response.success) {
-                            iziToast.success({ message: response.success, position: 'topRight' });
+                            iziToast.success({
+                                message: response.success,
+                                position: 'topRight'
+                            });
                         } else {
-                            iziToast.error({ message: response.error, position: 'topRight' });
+                            iziToast.error({
+                                message: response.error,
+                                position: 'topRight'
+                            });
                         }
                         location.reload();
                     },
@@ -254,24 +299,34 @@
                         } else {
                             errorMsg = 'An error occurred: ' + error;
                         }
-                        iziToast.error({ message: errorMsg, position: 'topRight' });
+                        iziToast.error({
+                            message: errorMsg,
+                            position: 'topRight'
+                        });
                     }
                 });
             });
 
             $('body').on('click', '#delete-contenue', function (e) {
                 e.preventDefault();
-                var confirmation = confirm("Êtes-vous sûr de vouloir supprimer cet étudiant ?");
+                var confirmation = confirm("Êtes-vous sûr de vouloir supprimer ce contenu ?");
                 if (confirmation) {
+                    var id = $(this).data('id');
                     $.ajax({
-                        url: $(this).attr('href'),
+                        url: "{{ route('contenue.delete', '') }}/" + id,
                         type: 'DELETE',
                         success: function(response) {
-                            iziToast.success({ message: response.success, position: 'topRight' });
+                            iziToast.success({
+                                message: response.success,
+                                position: 'topRight'
+                            });
                             location.reload();
                         },
                         error: function(xhr, status, error) {
-                            iziToast.error({ message: 'An error occurred: ' + error, position: 'topRight' });
+                            iziToast.error({
+                                message: 'An error occurred: ' + error,
+                                position: 'topRight'
+                            });
                         }
                     });
                 }

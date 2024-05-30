@@ -10,15 +10,15 @@ class ContenusFormation extends Model
     use HasFactory;
 
     protected $fillable = [
-        'NumChap',
-         'NumUnite',
-          'description',
-            'NombreHeures',
-            'formation_id'
+        'numchap',
+        'numunite',
+        'description',
+        'nombreheures',
+        'formation_id'
     ];
 
-    public function formations()
+    public function formation()
     {
-        return $this->belongsTo(formations::class);
+        return $this->belongsTo(Formations::class, 'formation_id');
     }
 }

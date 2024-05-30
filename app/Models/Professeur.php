@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,8 +16,8 @@ class Professeur extends Model
         'diplome',
         'phone',
         'wtsp',
-        'typeymntprof_id',
         'country_id',
+        'typeymntprof_id',
     ];
 
     public function country()
@@ -26,8 +25,8 @@ class Professeur extends Model
         return $this->belongsTo(Country::class);
     }
 
-    public function types()
+    public function typeymntprof()
     {
-        return $this->belongsTo(Typeymntprofs::class);
+        return $this->belongsTo(Typeymntprofs::class, 'typeymntprof_id');
     }
 }

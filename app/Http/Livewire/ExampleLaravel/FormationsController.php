@@ -4,6 +4,7 @@ namespace App\Http\Livewire\ExampleLaravel;
 use Illuminate\Http\Request;
 use Livewire\Component;
 use App\Models\Formations;
+use App\Models\ContenusFormation;
 use App\Exports\FormationsExport;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -79,5 +80,12 @@ class FormationsController extends Component
     {
         $formations = Formations::paginate(4);
         return view('livewire.example-laravel.formations-management', compact('formations'));
+    }
+    public function show($id)
+    {
+        $formation = Formations::findOrFail($id);
+        $contenus = ContenusFormation::where('formation_id', $id)->get();
+
+        return view('livewire.example-laravel.formation-details', compact('formation', 'contenus'));
     }
 }

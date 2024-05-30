@@ -60,19 +60,88 @@ class EtudiantController extends Component
         }
     }
 
+    // public function update(Request $request, $id)
+    // {
+    //     $validated = $request->validate([
+    //         'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+    //         'nni' => 'required|integer',
+    //         'nomprenom' => 'required|string',
+    //         'diplome' => 'required|string',
+    //         'genre' => 'required|string',
+    //         'lieunaissance' => 'required|string',
+    //         'adress' => 'required|string',
+    //         'age' => 'required|integer',
+    //         'email' => 'required|email',
+    //         'phone' => 'required|integer',
+    //         'wtsp' => 'required|integer',
+    //         'country_id' => 'required|exists:countries,id',
+    //     ]);
+
+    //     try {
+    //         $etudiant = Etudiant::findOrFail($id);
+
+    //         if ($request->hasFile('image')) {
+    //             $imageName = time() . '.' . $request->image->extension();
+    //             $request->image->move(public_path('images'), $imageName);
+    //             $etudiant->image = $imageName;
+    //         }
+
+    //         $etudiant->update($validated);
+
+    //         return response()->json(['success' => 'Étudiant modifié avec succès']);
+    //     } catch (\Throwable $th) {
+    //         return response()->json(['error' => $th->getMessage()], 500);
+    //     }
+    // }
+
+//     public function update(Request $request, $id)
+// {
+//     $validated = $request->validate([
+//         'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+//         'nni' => 'required|integer',
+//         'nomprenom' => 'required|string',
+//         'diplome' => 'required|string',
+//         'genre' => 'required|string',
+//         'lieunaissance' => 'required|string',
+//         'adress' => 'required|string',
+//         'age' => 'required|integer',
+//         'email' => 'required|email',
+//         'phone' => 'required|integer',
+//         'wtsp' => 'required|integer',
+//         'country_id' => 'required|exists:countries,id',
+//     ]);
+
+//     try {
+//         $etudiant = Etudiant::findOrFail($id);
+
+//         if ($request->hasFile('image')) {
+//             $imageName = time() . '.' . $request->image->extension();
+//             $request->image->move(public_path('images'), $imageName);
+//             $etudiant->image = $imageName;
+//         }
+
+//         $etudiant->update($validated);
+
+//         return response()->json(['success' => 'Étudiant modifié avec succès', 'etudiant' => $etudiant]);
+//     } catch (\Throwable $th) {
+//         return response()->json(['error' => $th->getMessage()], 500);
+//     }
+// }
+
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'nni' => 'required|integer',
-            'nomprenom' => 'required|string',
-            'diplome' => 'required|string',
-            'genre' => 'required|string',
+            
+             'nni' => 'required|integer',
+             'nomprenom' => 'required|string',
+             'diplome' => 'required|string',
+             'genre' => 'required|string',
             'lieunaissance' => 'required|string',
-            'adress' => 'required|string',
+             'adress' => 'required|string',
             'age' => 'required|integer',
             'email' => 'required|email',
-            'phone' => 'required|integer',
+           'phone' => 'required|integer',
             'wtsp' => 'required|integer',
             'country_id' => 'required|exists:countries,id',
         ]);
@@ -81,18 +150,19 @@ class EtudiantController extends Component
             $etudiant = Etudiant::findOrFail($id);
 
             if ($request->hasFile('image')) {
-                $imageName = time() . '.' . $request->image->extension();
+                $imageName = time() . '.' . $request->image->getClientOriginalExtension();
                 $request->image->move(public_path('images'), $imageName);
-                $etudiant->image = $imageName;
+                $validated['image'] = $imageName;
             }
 
             $etudiant->update($validated);
 
-            return response()->json(['success' => 'Étudiant modifié avec succès']);
+            return response()->json(['success' => 'etudiant modifié avec succès', 'etudiant' => $etudiant->load('country', 'typeymntprof')]);
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 500);
         }
     }
+
 
     public function delete_etudiant($id)
     {
@@ -121,6 +191,10 @@ class EtudiantController extends Component
 
         $countries = Country::all();
         return view('livewire.example-laravel.etudiant-management', compact('etudiants', 'countries', 'search'));
+    }
+    public function export()
+    {
+        return Excel::download(new EtudiantExport, 'Etudiants.xlsx');
     }
 
     public function render()
