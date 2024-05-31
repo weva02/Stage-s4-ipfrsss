@@ -83,9 +83,14 @@ class FormationsController extends Component
     }
     public function show($id)
     {
-        $formation = Formations::findOrFail($id);
-        $contenus = ContenusFormation::where('formation_id', $id)->get();
+        $formation = Formations::with('contenusFormation')->find($id);
 
-        return view('livewire.example-laravel.formation-details', compact('formation', 'contenus'));
+        if ($formation) {
+            return response()->json(['formation' => $formation, 'contenus' => $formation->contenusFormation]);
+        } else {
+            return response()->json(['error' => 'Formation non trouvée'], 404);
+        }
     }
+
+
 }

@@ -19,5 +19,6 @@ class Formations extends Model
     {
         return $this->hasMany(ContenusFormation::class, 'formation_id');
     }
+    
 }
 

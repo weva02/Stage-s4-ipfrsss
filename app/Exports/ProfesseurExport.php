@@ -21,7 +21,6 @@ class ProfesseurExport implements FromCollection, WithHeadings, ShouldAutoSize
             ->map(function ($prof) {
                 return [
                     'ID' => $prof->id,
-                    'NNI' => $prof->nni,
                     'Nom & Prénom' => $prof->nomprenom,
                     'Nationalité' => $prof->country ? $prof->country->name : '',
                     'Email' => $prof->email,
@@ -43,7 +42,6 @@ class ProfesseurExport implements FromCollection, WithHeadings, ShouldAutoSize
     {
         return [
             'ID',
-            'NNI',
             'Nom & Prénom',
             'Nationalité',
             'Email',

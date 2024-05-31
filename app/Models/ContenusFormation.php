@@ -10,8 +10,8 @@ class ContenusFormation extends Model
     use HasFactory;
 
     protected $fillable = [
-        'numchap',
-        'numunite',
+        'nomchap',
+        'nomunite',
         'description',
         'nombreheures',
         'formation_id'

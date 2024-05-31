@@ -19,17 +19,17 @@ class ContenusFormationController extends Component
     public function store(Request $request)
     {
         $request->validate([
-            'numchap' => 'required|string',
-            'numunite' => 'required|string',
-            'description' => 'required|string',
+            'nomchap' => 'required|string',
+            'nomunite' => 'required|string',
+            'description' => 'nullable|string',
             'nombreheures' => 'required|integer',
             'formation_id' => 'required|exists:formations,id',
         ]);
 
         try {
             ContenusFormation::create([
-                'numchap' => $request->numchap,
-                'numunite' => $request->numunite,
+                'nomchap' => $request->nomchap,
+                'nomunite' => $request->nomunite,
                 'description' => $request->description,
                 'nombreheures' => $request->nombreheures,
                 'formation_id' => $request->formation_id,
@@ -44,9 +44,9 @@ class ContenusFormationController extends Component
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'numchap' => 'required|string',
-            'numunite' => 'required|string',
-            'description' => 'required|string',
+            'nomchap' => 'required|string',
+            'nomunite' => 'required|string',
+            'description' => 'nullable|string',
             'nombreheures' => 'required|integer',
             'formation_id' => 'required|exists:formations,id',
         ]);
@@ -63,18 +63,22 @@ class ContenusFormationController extends Component
 
     public function delete_contenue($id)
     {
-        $contenue = ContenusFormation::findOrFail($id);
-        $contenue->delete();
+        try {
+            $contenue = ContenusFormation::findOrFail($id);
+            $contenue->delete();
 
-        return response()->json(['success' => 'Contenu supprimé avec succès']);
+            return response()->json(['success' => 'Contenu supprimé avec succès']);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => $th->getMessage()], 500);
+        }
     }
 
     public function search(Request $request)
     {
         $search = $request->search;
         $contenues = ContenusFormation::with('formation')
-            ->where('numchap', 'like', "%$search%")
-            ->orWhere('numunite', 'like', "%$search%")
+            ->where('nomchap', 'like', "%$search%")
+            ->orWhere('nomunite', 'like', "%$search%")
             ->orWhere('description', 'like', "%$search%")
             ->orWhere('nombreheures', 'like', "%$search%")
             ->paginate(4);
@@ -89,4 +93,15 @@ class ContenusFormationController extends Component
         $formations = Formations::all();
         return view('livewire.example-laravel.contenusformation-management', compact('contenues', 'formations'));
     }
+    public function show($id)
+    {
+        $formation = Formations::with('contenusFormation')->find($id);
+
+        if ($formation) {
+            return response()->json(['formation' => $formation, 'contenus' => $formation->contenusFormation]);
+        } else {
+            return response()->json(['error' => 'Formation non trouvée'], 404);
+        }
+    }
+
 }

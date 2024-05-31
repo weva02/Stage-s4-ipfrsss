@@ -96,7 +96,7 @@
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Genre</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Lieu de naissance</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Addresse</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Age</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Date de naissance</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">EMAIL</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Portable</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">WhatsApp</th>
@@ -116,7 +116,7 @@
                                         <td>{{ $etudiant->genre }}</td>
                                         <td>{{ $etudiant->lieunaissance }}</td>
                                         <td>{{ $etudiant->adress }}</td>
-                                        <td>{{ $etudiant->age }}</td>
+                                        <td>{{ $etudiant->datenaissance }}</td>
                                         <td>{{ $etudiant->email }}</td>
                                         <td>{{ $etudiant->phone }}</td>
                                         <td>{{ $etudiant->wtsp }}</td>
@@ -141,7 +141,7 @@
     <!-- Add Student Modal -->
     <div class="modal fade" id="etudiantAddModal"  tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" >
-            <div class="modal-content" style="width: 22cm; height:13.8cm;">
+            <div class="modal-content" style="width: 22cm; ">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Ajouter un nouvel étudiant</h5>
                     <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
@@ -202,8 +202,8 @@
                                 <input type="text" class="form-control" id="new-etudiant-adress" placeholder="Adresse..." name="adress">
                             </div>
                             <div class="col-md-4">
-                                <label for="age" class="form-label">Age:</label>
-                                <input type="number" class="form-control" id="new-etudiant-age" placeholder="Age" name="age">
+                                <label for="datenaissance" class="form-label">Date de naissance:</label>
+                                <input type="date" class="form-control" id="new-etudiant-datenaissance" placeholder="Date de naissance" name="datenaissance">
                             </div>
                         </div>
                         <div class="row mb-3">
@@ -213,11 +213,11 @@
                             </div>
                             <div class="col-md-4">
                                 <label for="phone" class="form-label required">Portable:</label>
-                                <input type="number" class="form-control" id="new-etudiant-phone" placeholder="Portable" name="phone">
+                                <input type="number" class="form-control" id="new-etudiant-phone" placeholder="Portable"  name="phone">
                             </div>
                             <div class="col-md-4">
                                 <label for="wtsp" class="form-label">WhatsApp:</label>
-                                <input type="number" class="form-control" id="new-etudiant-wtsp" placeholder="WhatsApp" name="wtsp">
+                                <input type="number" class="form-control" id="new-etudiant-wtsp" placeholder="WhatsApp"  name="wtsp">
                             </div>
                         </div>
                     </form>
@@ -305,7 +305,7 @@
                         
                             </div>
                             <div class="col-md-4">    
-                                <p><strong>Age:</strong> <br /> <input type="text" name="age" id="etudiant-age" class="form-control"></p>
+                                <p><strong>Date de naissance:</strong> <br /> <input type="date" name="datenaissance" id="etudiant-datenaissance" class="form-control"></p>
                         </div>
                             </div>
                         <div class="row mb-3">
@@ -408,7 +408,7 @@
                 $('input[name="genre"][value="' + genre + '"]').prop('checked', true);
                 $('#etudiant-lieunaissance').val(tr.find("td:nth-child(8)").text());
                 $('#etudiant-adress').val(tr.find("td:nth-child(9)").text());
-                $('#etudiant-age').val(tr.find("td:nth-child(10)").text());
+                $('#etudiant-datenaissance').val(tr.find("td:nth-child(10)").text());
                 $('#etudiant-email').val(tr.find("td:nth-child(11)").text());
                 $('#etudiant-phone').val(tr.find("td:nth-child(12)").text());
                 $('#etudiant-wtsp').val(tr.find("td:nth-child(13)").text());
@@ -478,6 +478,9 @@
         contentType: false,
         success: function(response) {
             $('#etudiantEditModal').modal('hide');
+            setTimeout(function () {
+                                location.reload();
+                            }, 1000);
             if (response.success) {
                 iziToast.success({
                     message: response.success,
@@ -547,7 +550,7 @@
                     <td>${etudiant.genre}</td>
                     <td>${etudiant.lieunaissance}</td>
                     <td>${etudiant.adress}</td>
-                    <td>${etudiant.age}</td>
+                    <td>${etudiant.datenaissance}</td>
                     <td>${etudiant.email}</td>
                     <td>${etudiant.phone}</td>
                     <td>${etudiant.wtsp}</td>
@@ -584,7 +587,7 @@
                 row.find('td:nth-child(7)').text(etudiant.genre);
                 row.find('td:nth-child(8)').text(etudiant.lieunaissance);
                 row.find('td:nth-child(9)').text(etudiant.adress);
-                row.find('td:nth-child(10)').text(etudiant.age);
+                row.find('td:nth-child(10)').text(etudiant.datenaissance);
                 row.find('td:nth-child(11)').text(etudiant.email);
                 row.find('td:nth-child(12)').text(etudiant.phone);
                 row.find('td:nth-child(13)').text(etudiant.wtsp);

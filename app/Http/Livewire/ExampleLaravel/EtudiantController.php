@@ -21,23 +21,26 @@ class EtudiantController extends Component
     public function store(Request $request)
     {
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'nni' => 'required|integer',
             'nomprenom' => 'required|string',
-            'diplome' => 'required|string',
+            'diplome' => 'nullable|string',
             'genre' => 'required|string',
-            'lieunaissance' => 'required|string',
-            'adress' => 'required|string',
-            'age' => 'required|integer',
-            'email' => 'required|email',
+            'lieunaissance' => 'nullable|string',
+            'adress' => 'nullable|string',
+            'datenaissance' => 'nullable|date',
+            'email' => 'nullable|email',
             'phone' => 'required|integer',
-            'wtsp' => 'required|integer',
+            'wtsp' => 'nullable|integer',
             'country_id' => 'required|exists:countries,id',
         ]);
 
         try {
-            $imageName = time() . '.' . $request->image->extension();
-            $request->image->move(public_path('images'), $imageName);
+            $imageName = $request->hasFile('image') ? time() . '.' . $request->image->extension() : null;
+
+            if ($imageName) {
+                $request->image->move(public_path('images'), $imageName);
+            }
 
             Etudiant::create([
                 'image' => $imageName,
@@ -47,7 +50,7 @@ class EtudiantController extends Component
                 'genre' => $request->genre,
                 'lieunaissance' => $request->lieunaissance,
                 'adress' => $request->adress,
-                'age' => $request->age,
+                'datenaissance' => $request->datenaissance,
                 'email' => $request->email,
                 'phone' => $request->phone,
                 'wtsp' => $request->wtsp,
@@ -60,89 +63,20 @@ class EtudiantController extends Component
         }
     }
 
-    // public function update(Request $request, $id)
-    // {
-    //     $validated = $request->validate([
-    //         'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-    //         'nni' => 'required|integer',
-    //         'nomprenom' => 'required|string',
-    //         'diplome' => 'required|string',
-    //         'genre' => 'required|string',
-    //         'lieunaissance' => 'required|string',
-    //         'adress' => 'required|string',
-    //         'age' => 'required|integer',
-    //         'email' => 'required|email',
-    //         'phone' => 'required|integer',
-    //         'wtsp' => 'required|integer',
-    //         'country_id' => 'required|exists:countries,id',
-    //     ]);
-
-    //     try {
-    //         $etudiant = Etudiant::findOrFail($id);
-
-    //         if ($request->hasFile('image')) {
-    //             $imageName = time() . '.' . $request->image->extension();
-    //             $request->image->move(public_path('images'), $imageName);
-    //             $etudiant->image = $imageName;
-    //         }
-
-    //         $etudiant->update($validated);
-
-    //         return response()->json(['success' => 'Étudiant modifié avec succès']);
-    //     } catch (\Throwable $th) {
-    //         return response()->json(['error' => $th->getMessage()], 500);
-    //     }
-    // }
-
-//     public function update(Request $request, $id)
-// {
-//     $validated = $request->validate([
-//         'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-//         'nni' => 'required|integer',
-//         'nomprenom' => 'required|string',
-//         'diplome' => 'required|string',
-//         'genre' => 'required|string',
-//         'lieunaissance' => 'required|string',
-//         'adress' => 'required|string',
-//         'age' => 'required|integer',
-//         'email' => 'required|email',
-//         'phone' => 'required|integer',
-//         'wtsp' => 'required|integer',
-//         'country_id' => 'required|exists:countries,id',
-//     ]);
-
-//     try {
-//         $etudiant = Etudiant::findOrFail($id);
-
-//         if ($request->hasFile('image')) {
-//             $imageName = time() . '.' . $request->image->extension();
-//             $request->image->move(public_path('images'), $imageName);
-//             $etudiant->image = $imageName;
-//         }
-
-//         $etudiant->update($validated);
-
-//         return response()->json(['success' => 'Étudiant modifié avec succès', 'etudiant' => $etudiant]);
-//     } catch (\Throwable $th) {
-//         return response()->json(['error' => $th->getMessage()], 500);
-//     }
-// }
-
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            
-             'nni' => 'required|integer',
-             'nomprenom' => 'required|string',
-             'diplome' => 'required|string',
-             'genre' => 'required|string',
-            'lieunaissance' => 'required|string',
-             'adress' => 'required|string',
-            'age' => 'required|integer',
-            'email' => 'required|email',
-           'phone' => 'required|integer',
-            'wtsp' => 'required|integer',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'nni' => 'required|integer',
+            'nomprenom' => 'required|string',
+            'diplome' => 'nullable|string',
+            'genre' => 'required|string',
+            'lieunaissance' => 'nullable|string',
+            'adress' => 'nullable|string',
+            'datenaissance' => 'nullable|date',
+            'email' => 'nullable|email',
+            'phone' => 'required|integer',
+            'wtsp' => 'nullable|integer',
             'country_id' => 'required|exists:countries,id',
         ]);
 
@@ -157,12 +91,11 @@ class EtudiantController extends Component
 
             $etudiant->update($validated);
 
-            return response()->json(['success' => 'etudiant modifié avec succès', 'etudiant' => $etudiant->load('country', 'typeymntprof')]);
+            return response()->json(['success' => 'Étudiant modifié avec succès', 'etudiant' => $etudiant->load('country')]);
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 500);
         }
     }
-
 
     public function delete_etudiant($id)
     {
@@ -183,7 +116,7 @@ class EtudiantController extends Component
                 ->orWhere('genre', 'like', "%$search%")
                 ->orWhere('lieunaissance', 'like', "%$search%")
                 ->orWhere('adress', 'like', "%$search%")
-                ->orWhere('age', 'like', "%$search%")
+                ->orWhere('datenaissance', 'like', "%$search%")
                 ->orWhere('email', 'like', "%$search%")
                 ->orWhere('phone', 'like', "%$search%")
                 ->orWhere('wtsp', 'like', "%$search%");
@@ -192,6 +125,7 @@ class EtudiantController extends Component
         $countries = Country::all();
         return view('livewire.example-laravel.etudiant-management', compact('etudiants', 'countries', 'search'));
     }
+
     public function export()
     {
         return Excel::download(new EtudiantExport, 'Etudiants.xlsx');

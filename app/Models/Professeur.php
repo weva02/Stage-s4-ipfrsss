@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,15 +10,7 @@ class Professeur extends Model
     use HasFactory;
 
     protected $fillable = [
-        'image',
-        'nomprenom',
-        'nationalite',
-        'email',
-        'diplome',
-        'phone',
-        'wtsp',
-        'country_id',
-        'typeymntprof_id',
+        'image', 'nomprenom', 'diplome', 'genre', 'lieunaissance', 'adress', 'datenaissance', 'email', 'phone', 'wtsp', 'country_id', 'type_id',
     ];
 
     public function country()
@@ -25,8 +18,8 @@ class Professeur extends Model
         return $this->belongsTo(Country::class);
     }
 
-    public function typeymntprof()
+    public function type()
     {
-        return $this->belongsTo(Typeymntprofs::class, 'typeymntprof_id');
+        return $this->belongsTo(Typeymntprofs::class, 'type_id');
     }
 }

@@ -1,33 +1,37 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateProfesseursTable extends Migration
 {
-    public function up(): void
+    public function up()
     {
-        if (!Schema::hasTable('professeurs')) {
-            Schema::create('professeurs', function (Blueprint $table) {
+        if (!Schema::hasTable('Professeurs')) {
+            Schema::create('Professeurs', function (Blueprint $table) {
                 $table->id();
-                $table->string('image');
+                $table->string('image')->nullable();
                 $table->string('nomprenom');
-                $table->string('nationalite');
-                $table->string('email');
-                $table->string('diplome');
+                $table->string('diplome')->nullable();
+                $table->string('genre');
+                $table->string('lieunaissance')->nullable();
+                $table->string('adress')->nullable();
+                $table->date('datenaissance')->nullable();
+                $table->string('email', 191)->unique()->nullable();
                 $table->integer('phone');
-                $table->integer('wtsp');
-                $table->unsignedBigInteger('typeymntprof_id');
-                $table->foreign('typeymntprof_id')->references('id')->on('typeymntprofs')->onDelete('cascade');
-                $table->unsignedBigInteger('country_id');
-                $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade');
+                $table->integer('wtsp')->nullable();
+                $table->foreignId('country_id')->constrained('countries');
+                $table->foreignId('type_id')->constrained('typeymntprofs');
+
                 $table->timestamps();
             });
         }
     }
 
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('professeurs');
     }
-};
+}
+?>

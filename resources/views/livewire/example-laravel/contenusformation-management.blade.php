@@ -67,18 +67,16 @@
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Description</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Actions</th>
                                     </tr>
-                                </thead>
+                                </thead> 
                                 <tbody>
                                     @foreach($contenues as $contenue)
                                     <tr>
                                         <td>{{ $contenue->id }}</td>
-                                        <td>{{ $contenue->formation->nom ?? 'N/A' }}</td>
-                                        <td>{{ $contenue->NumChap}}</td>
-                                        <td>{{ $contenue->NumUnite}}</td>
-                                        <td>{{ $contenue->NombreHeures }}</td>
+                                        <td><a href="javascript:void(0)" id="show-formation" data-id="{{ $contenue->id }}" >{{ $contenue->formation->nom ?? 'N/A' }}</a></td>
+                                        <td>{{ $contenue->nomchap}}</td>
+                                        <td>{{ $contenue->nomunite}}</td>
+                                        <td>{{ $contenue->nombreheures }}</td>
                                         <td>{{ $contenue->description }}</td>
-
-                                        
                                         <td class="text-center">
                                             <a href="javascript:void(0)" id="edit-contenue" data-id="{{ $contenue->id }}" class="btn btn-info"><i class="material-icons opacity-10">border_color</i></a>
                                             <a href="javascript:void(0)" id="delete-contenue" data-id="{{ $contenue->id }}" class="btn btn-danger"><i class="material-icons opacity-10">delete</i></a>
@@ -94,6 +92,26 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="formationDetailModal" tabindex="-1" aria-labelledby="formationDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="width: 10cm; height:8cm;  ">
+            <div class="modal-header">
+                <h5 class="modal-title" id="formationDetailModalLabel">Détails de la Formation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="formation-details">
+                    <!-- <h4>Detaille de la Formation</h4> -->
+                    <ul id="formation-contents-details"></ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
 
     <!-- Modal Ajouter Contenu -->
     <div class="modal fade" id="contenueAddModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -116,23 +134,22 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="numchap" class="form-label">Nom du Chapitre:</label>
-                            <input type="text" class="form-control" id="new-contenue-numchap" name="numchap">
+                            <label for="nomchap" class="form-label">Nom du Chapitre:</label>
+                            <input type="text" class="form-control" id="new-contenue-nomchap" name="nomchap">
                         </div>
                         <div class="mb-3">
-                            <label for="numunite" class="form-label">Nom de l'unité:</label>
-                            <input type="text" class="form-control" id="new-contenue-numunite" name="numunite">
+                            <label for="nomunite" class="form-label">Nom de l'unité:</label>
+                            <input type="text" class="form-control" id="new-contenue-nomunite" name="nomunite">
                         </div>
                         <div class="mb-3">
                             <label for="nombreheures" class="form-label">Nombre Heures:</label>
                             <input type="number" class="form-control" id="new-contenue-nombreheures" name="nombreheures">
                         </div>
-                        
-                        
                         <div class="mb-3">
                             <label for="description" class="form-label">Description:</label>
                             <input type="text" class="form-control" id="new-contenue-description" name="description">
                         </div>
+                        
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -165,12 +182,12 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="numchap" class="form-label">Nom du Chapitre:</label>
-                            <input type="text" class="form-control" id="contenue-numchap" name="numchap">
+                            <label for="nomchap" class="form-label">Nom du Chapitre:</label>
+                            <input type="text" class="form-control" id="contenue-nomchap" name="nomchap">
                         </div>
                         <div class="mb-3">
-                            <label for="numunite" class="form-label">Nom de l'unité:</label>
-                            <input type="text" class="form-control" id="contenue-numunite" name="numunite">
+                            <label for="nomunite" class="form-label">Nom de l'unité:</label>
+                            <input type="text" class="form-control" id="contenue-nomunite" name="nomunite">
                         </div>
                         <div class="mb-3">
                             <label for="nombreheures" class="form-label">Nombre Heures:</label>
@@ -180,6 +197,7 @@
                             <label for="description" class="form-label">Description:</label>
                             <input type="text" class="form-control" id="contenue-description" name="description">
                         </div>
+                        
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -197,6 +215,78 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
+
+            // $('body').on('click', '#show-formation', function () {
+            //     var id = $(this).data('id');
+
+            //     $.ajax({
+            //         url: '/contenus/' + id,
+            //         type: 'GET',
+            //         dataType: 'json',
+            //         success: function (response) {
+            //             var contenusList = $('#formation-contents-details');
+            //             contenusList.empty();
+
+            //             if (response.froramtions && response.froramtions.length > 0) {
+            //                 response.froramtions.forEach(function (formation) {
+            //                     froramtionsList.append('<li><strong>Code </strong> ' + formation.code + ', <strong> Nom</strong>: ' + formation.nom + '<strong> Durre</strong>:' + formation.duree + ' (' + formation.prix + ' MRU)</li>');
+            //                 });
+            //             } else {
+            //                 froramtionsList.append('<p>Aucun detaille trouvé pour cette formation.</p>');
+            //             }
+
+            //             // Show the modal
+            //             $('#formationDetailModal').modal('show');
+            //         },
+            //         error: function (xhr, status, error) {
+            //             var errorMessage = xhr.status + ': ' + xhr.statusText;
+            //             iziToast.error({
+            //                 title: 'Erreur',
+            //                 message: 'Une erreur s\'est produite: ' + errorMessage,
+            //                 position: 'topRight'
+            //             });
+            //         }
+            //     });
+            // });
+
+            $('body').on('click', '#show-formation', function () {
+            var id = $(this).data('id');
+
+            $.ajax({
+                url: '/contenus/' + id,
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    var contenusList = $('#formation-contents-details');
+                    contenusList.empty();
+
+                    if (response.formation) {
+                        var formation = response.formation;
+                        contenusList.append('<li><strong>Code: </strong>' + formation.code + ',</br> <strong>Nom:</strong> ' + formation.nom + ',</br> <strong>Durée:</strong> ' + formation.duree + ',</br> <strong>Prix:</strong> ' + formation.prix + ' MRU</li>');
+                        
+                        // if (response.contenus && response.contenus.length > 0) {
+                        //     response.contenus.forEach(function (contenu) {
+                        //         // contenusList.append('<li><strong>Chapitre:</strong> ' + contenu.nomchap + ', <strong>Unité:</strong> ' + contenu.nomunite + ', <strong>Nombre d\'heures:</strong> ' + contenu.nombreheures + ', <strong>Description:</strong> ' + contenu.description + '</li>');
+                        //     });
+                        // } else {
+                        //     contenusList.append('<p>Aucun contenu trouvé pour cette formation.</p>');
+                        // }
+                    } else {
+                        contenusList.append('<p>Aucune formation trouvée.</p>');
+                    }
+
+                    $('#formationDetailModal').modal('show');
+                },
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText;
+                    iziToast.error({
+                        title: 'Erreur',
+                        message: 'Une erreur s\'est produite: ' + errorMessage,
+                        position: 'topRight'
+                    });
+                }
+            });
+        });
 
             $("#add-new-contenue").click(function(e){
                 e.preventDefault();
@@ -255,13 +345,12 @@
 
             $('body').on('click', '#edit-contenue', function () {
                 var tr = $(this).closest('tr');
-                $('#contenue-id').val($(this).data('id'));
+                $('#contenue-id').val(tr.find("td:nth-child(1)").text());
                 $('#contenue-formation_id').val(tr.find("td:nth-child(2)").data('formation-id'));
-                $('#contenue-numchap').val(tr.find("td:nth-child(3)").text());
-                $('#contenue-numunite').val(tr.find("td:nth-child(4)").text());
+                $('#contenue-nomchap').val(tr.find("td:nth-child(3)").text());
+                $('#contenue-nomunite').val(tr.find("td:nth-child(4)").text());
                 $('#contenue-nombreheures').val(tr.find("td:nth-child(5)").text());
                 $('#contenue-description').val(tr.find("td:nth-child(6)").text());
-
 
                 $('#contenueEditModal').modal('show');
             });

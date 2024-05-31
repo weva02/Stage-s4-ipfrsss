@@ -1,7 +1,7 @@
 <?php
   
   namespace App\Http\Livewire\ExampleLaravel;
-    use Illuminate\Http\Request;
+  use Illuminate\Http\Request;
     use Livewire\Component;
 
     use App\Models\Typeymntprofs;
@@ -15,7 +15,7 @@
          */
         public function index()
         {
-            $typeymntprofs = Typeymntprofs::all();
-            return view('types',compact('typeymntprofs'));
+            $countries = Typeymntprofs::all();
+            return view('type',compact('typeymntprofs'));
         }
     }

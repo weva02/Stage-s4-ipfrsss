@@ -17,7 +17,7 @@ class Etudiant extends Model
         'genre',
         'lieunaissance',
         'adress',
-        'age',
+        'datenaissance',
         'email',
         'phone',
         'wtsp',
