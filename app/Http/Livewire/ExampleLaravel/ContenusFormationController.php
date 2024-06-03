@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\ContenusFormation;
 use App\Models\Formations;
 use Livewire\Component;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ContenusFormationExport;
 
 class ContenusFormationController extends Component
 {
@@ -73,25 +75,58 @@ class ContenusFormationController extends Component
         }
     }
 
-    public function search(Request $request)
+    // public function search3(Request $request)
+    // {
+    //     $search3 = $request->search3;
+    //     $contenues = ContenusFormation::with('formation')
+    //         ->where('nomchap', 'like', "%$search3%")
+    //         ->orWhere('nomunite', 'like', "%$search3%")
+    //         ->orWhere('description', 'like', "%$search3%")
+    //         ->orWhere('nombreheures', 'like', "%$search3%")
+    //         ->paginate(4);
+
+    //     $formations = Formations::all();
+    //     return view('livewire.example-laravel.contenus-recher', compact('contenues', 'formations', 'search3'));
+    // }
+    // public function search3(Request $request)
+    // {
+    //     $search3 = $request->search3;
+    //     $contenues = ContenusFormation::with('formation')
+    //         ->where('nomchap', 'like', "%$search3%")
+    //         ->orWhere('nomunite', 'like', "%$search3%")
+    //         ->orWhere('description', 'like', "%$search3%")
+    //         ->orWhere('nombreheures', 'like', "%$search3%")
+    //         ->paginate(4);
+
+
+    //     return view('livewire.example-laravel.contenus-recher', compact('contenues', 'search3'));
+    // }
+    public function search3(Request $request)
     {
-        $search = $request->search;
-        $contenues = ContenusFormation::with('formation')
-            ->where('nomchap', 'like', "%$search%")
-            ->orWhere('nomunite', 'like', "%$search%")
-            ->orWhere('description', 'like', "%$search%")
-            ->orWhere('nombreheures', 'like', "%$search%")
-            ->paginate(4);
+        $search3 = $request->search3;
+        $contenues = ContenusFormation::where(function($query) use ($search3) {
+            $query->where('id', 'like', "%$search3%")
+                    ->where('nomchap', 'like', "%$search3%")
+                    ->orWhere('nomunite', 'like', "%$search3%")
+                    ->orWhere('description', 'like', "%$search3%")
+                    ->orWhere('nombreheures', 'like', "%$search3%")
+                    ->paginate(4);
+        })->paginate(4);
 
         $formations = Formations::all();
-        return view('livewire.example-laravel.contenusformation-management', compact('contenues', 'formations', 'search'));
+        return view('livewire.example-laravel.recherche', compact('etudiants', 'countries', 'search'));
     }
+
 
     public function render()
     {
         $contenues = ContenusFormation::with('formation')->paginate(4);
         $formations = Formations::all();
         return view('livewire.example-laravel.contenusformation-management', compact('contenues', 'formations'));
+    }
+    public function export()
+    {
+        return Excel::download(new ContenusFormation(), 'ContenusFormation.xlsx');
     }
     public function show($id)
     {

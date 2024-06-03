@@ -41,15 +41,20 @@
                     <table class="table table-bordered">
                         <thead class="thead-light">
                             <tr>
-                                <th>ID</th>
-                                <th>Nom Prénom</th>
-                                <th>Nationalité</th>
-                                <th>Email</th>
-                                <th>Diplôme</th>
-                                <th>Phone</th>
-                                <th>WhatsApp</th>
-                                <th>Actions</th>
-                            </tr>
+                            <th>ID</th>
+                            <th>NNI</th>
+                            <th>Nom Prénom</th>
+                            <th>Nationalité</th>
+                            <th>Diplôme</th>
+                            <th>Genre</th>
+                            <th>Lieu de Naissance</th>
+                            <th>Adresse</th>
+                            <th>Date de naissance</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>WhatsApp</th>
+                            <th>Actions</th>
+                        </tr>
                         </thead>
                         <tbody>
                             @foreach($profs as $prof)

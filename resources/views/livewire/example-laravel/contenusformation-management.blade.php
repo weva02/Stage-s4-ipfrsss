@@ -42,12 +42,12 @@
                             <button type="button" class="btn bg-gradient-dark" data-bs-toggle="modal" data-bs-target="#contenueAddModal">
                                 <i class="material-icons text-sm">add</i>&nbsp;&nbsp;Ajouter un contenu
                             </button>
-                            <a href="{{ route('export.contenues') }}" class="btn btn-success">Exporter Contenus</a>
+                            <a href="{{ route('contenues.export') }}" class="btn btn-success">Exporter Contenus</a>
                         </div>
-                        <form action="" method="get" class="d-flex align-items-center ms-auto">
+                        <form action="{{ route('search3') }}" method="get" class="d-flex align-items-center ms-auto">
                             <div class="input-group input-group-sm" style="width: 250px;">
-                                <input type="text" name="search" id="sear_bar" class="form-control" placeholder="Rechercher..." value="{{ isset($search) ? $search : ''}}">
-                                <button type="submit" class="btn btn-primary">Rechercher</button>
+                                <input type="text" name="search3" id="sear_bar" class="form-control" placeholder="Rechercher..." value="{{ isset($search3) ? $search3 : ''}}">
+                                <!-- <button type="submit" class="btn btn-primary">Rechercher</button> -->
                             </div>
                         </form>
                     </div>

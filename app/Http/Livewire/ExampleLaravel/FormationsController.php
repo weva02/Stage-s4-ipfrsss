@@ -92,5 +92,20 @@ class FormationsController extends Component
         }
     }
 
+    public function search1(Request $request)
+    {
+        $search1 = $request->search1;
+        $formations = Formations::where(function($query) use ($search1) {
+            $query->where('id', 'like', "%$search1%")
+                ->orWhere('code', 'like', "%$search1%")
+                ->orWhere('nom', 'like', "%$search1%")
+                ->orWhere('duree', 'like', "%$search1%");
+        })->paginate(4);
+        
+        return view('livewire.example-laravel.recher-for', compact('formations', 'search1'));
+    }
+    
+
+
 
 }

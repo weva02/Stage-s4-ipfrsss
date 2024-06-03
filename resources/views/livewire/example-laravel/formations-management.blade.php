@@ -46,10 +46,10 @@
                             </button>
                             <a href="{{ route('formations.export') }}" class="btn btn-success">Exporter Formations</a>
                         </div>
-                        <form action="/search" method="get" class="d-flex align-items-center ms-auto">
+                        <form action="/search1" method="get" class="d-flex align-items-center ms-auto">
                             <div class="input-group input-group-sm" style="width: 250px;">
-                                <input type="text" name="search" id="search_bar" class="form-control" placeholder="Rechercher..." value="{{ isset($search) ? $search : ''}}">
-                                <button type="submit" class="btn btn-primary">Rechercher</button>
+                                <input type="text" name="search1" id="search_bar" class="form-control" placeholder="Rechercher..." value="{{ isset($search1) ? $search1 : ''}}">
+                         
                             </div>
                         </form>
                     </div>
@@ -198,7 +198,7 @@
     <!-- Modal Détails Formation -->
 <div class="modal fade" id="formationDetailModal" tabindex="-1" aria-labelledby="formationDetailModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content" >
+        <div class="modal-content" style="width: 15cm;">
             <div class="modal-header">
                 <h5 class="modal-title" id="formationDetailModalLabel">Détails de la Formation</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

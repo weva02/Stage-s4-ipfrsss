@@ -72,10 +72,11 @@
                             </button>
                             <a href="{{ route('export.etudiants') }}" class="btn btn-success">Exporter Étudiants</a>
                         </div>
-                        <form action="" method="get" class="d-flex align-items-center ms-auto">
+                        
+                        <form action="{{ route('search') }}" method="get" class="d-flex align-items-center ms-auto">
                             <div class="input-group input-group-sm" style="width: 250px;">
                                 <input type="text" name="search" id="sear_bar" class="form-control" placeholder="Rechercher..." value="{{ isset($search) ? $search : ''}}">
-                                <button type="submit" class="btn btn-primary">Rechercher</button>
+                                <!-- <button type="submit" class="btn btn-primary">Rechercher</button> -->
                             </div>
                         </form>
                     </div>
@@ -340,6 +341,8 @@
                 }
             });
 
+            
+
             // Add new student
             $("#add-new-etudiant").click(function(e){
                 e.preventDefault();
@@ -563,8 +566,8 @@
             }
 
             // function updateStudentInTable(etudiant) {
-            //     var row = $(`#student-${etudiant.id}`);
-            //     row.find('td:nth-child(2) img').attr('src', `${asset('images/')}/${etudiant.image}`);
+            //     var row = $(#student-${etudiant.id});
+            //     row.find('td:nth-child(2) img').attr('src', ${asset('images/')}/${etudiant.image});
             //     row.find('td:nth-child(3)').text(etudiant.nni);
             //     row.find('td:nth-child(4)').text(etudiant.nomprenom);
             //     row.find('td:nth-child(5)').text(etudiant.country ? etudiant.country.name : 'N/A').attr('data-country-id', etudiant.country_id);
@@ -594,7 +597,7 @@
             }
 
         function removeStudentFromTable(id) {
-            $(`#student-${id}`).remove();
+            $('#student-${id}').remove();
         }
 
         var alertElement = document.querySelector('.fade-out');

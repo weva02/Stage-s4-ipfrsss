@@ -123,8 +123,18 @@ class EtudiantController extends Component
         })->paginate(4);
 
         $countries = Country::all();
-        return view('livewire.example-laravel.etudiant-management', compact('etudiants', 'countries', 'search'));
+        return view('livewire.example-laravel.recherche', compact('etudiants', 'countries', 'search'));
     }
+
+    // public function search(Request $request)
+    // {
+    //     $search = $request->input('search');
+    //     $etudiants = Etudiant::where('nomprenom', 'like', "%$search%")->paginate(10);
+    //     $countries = Country::all(); // Assurez-vous d'importer le modèle Country
+
+    //     return view('livewire.example-laravel.etudiant-management', compact('etudiants', 'countries', 'search'));
+    // }
+
 
     public function export()
     {

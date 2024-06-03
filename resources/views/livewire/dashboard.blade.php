@@ -11,7 +11,7 @@
                               <i class="material-icons opacity-10">access_time</i>
                           </div>
                           <div class="text-end pt-1">
-                              <p class="text-sm mb-0 text-capitalize">Session en court</p>
+                              <p class="text-sm mb-0 text-capitalize"><strong>Formations en court</strong></p>
                               <h4 class="mb-0">$53k</h4>
                           </div>
                       </div>
@@ -27,10 +27,10 @@
                       <div class="card-header p-3 pt-2">
                           <div
                               class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
-                              <i class="material-icons opacity-10">person</i>
+                              <i class="material-icons opacity-10">done_all</i>
                           </div>
                           <div class="text-end pt-1">
-                              <p class="text-sm mb-0 text-capitalize">Today's Users</p>
+                              <p class="text-sm mb-0 text-capitalize"><strong>Formations Termine</strong></p>
                               <h4 class="mb-0">2,300</h4>
                           </div>
                       </div>

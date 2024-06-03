@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Résultats de recherche</title>
+    <title>Résultats de recherche - Contenus de Formation</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
@@ -82,7 +82,7 @@
             margin-bottom: 1rem;
             color: #212529;
             border-collapse: collapse;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add box shadow */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .table-custom th,
         .table-custom td {
@@ -223,175 +223,83 @@
     <!-- Main Content -->
     <div class="main-content">
         <div class="container mt-5">
-            <h1>Résultats de recherche</h1>
+            <h1>Résultats de recherche - Contenus de Formation</h1>
 
             <!-- Formulaire de recherche -->
-            <form action="{{ route('search1') }}" method="GET" class="form-inline mb-4">
-                <input type="text" name="search1" class="form-control mr-2" placeholder="Recherche..." value="{{ request()->input('search1') }}">
-                <!-- <button type="submit" class="btn">Rechercher</button> -->
+            <form action="{{ route('search3') }}" method="GET" class="form-inline mb-4">
+                <input type="text" name="search3" id="sear_bar" class="form-control mr-2" placeholder="Recherche..." value="{{ request()->input('search3') }}">
             </form>
 
-            <!-- Affichage des résultats -->
-            @if($formations->count())
+            @if($contenues->count())
                 <div class="table-responsive">
                     <table class="table-custom table">
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Code</th>
-                                <th>Nom</th>
-                                <th>Durée</th>
-                                <th>Prix</th>
-                                <th>Actions</th>
+                                <th>Nom du Chapitre</th>
+                                <th>Nom de l'Unité</th>
+                                <th>Description</th>
+                                <th>Nombre d'heures</th>
+                                <th>Formation</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($formations as $formation)
-                                <tr id="formation-{{ $formation->id }}">
-                                    <td>{{ $formation->id }}</td>
-                                    <td>{{ $formation->code }}</td>
-                                    <td>{{ $formation->nom }}</td>
-                                    <td>{{ $formation->duree }}</td>
-                                    <td>{{ $formation->prix }}</td>
-                                    <td>
-                                        <div class="btn-group" role="group">
-                                        <td>
-                                            <a href="javascript:void(0)" id="edit-formation" data-id="{{ $formation->id }}" class="btn btn-info"><i class="material-icons opacity-10">border_color</i></a>
-                                            <a href="javascript:void(0)" id="delete-formation" data-id="{{ $formation->id }}" class="btn btn-danger"><i class="material-icons opacity-10">delete</i></a>
-                                        </td>
-                                        </div>
-                                    </td>
+                            @foreach($contenues as $contenu)
+                                <tr id="contenu-{{ $contenu->id }}">
+                                    <td>{{ $contenu->id }}</td>
+                                    <td>{{ $contenu->nomchap }}</td>
+                                    <td>{{ $contenu->nomunite }}</td>
+                                    <td>{{ $contenu->description }}</td>
+                                    <td>{{ $contenu->nombreheures }}</td>
+                                    <td>{{ $contenu->formation->nomformation ?? 'N/A' }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
                 </div>
 
-                <!-- Pagination des résultats -->
                 <nav>
                     <ul class="pagination">
-                        {{ $formations->appends(['search1' => $search1])->links() }}
+                        {{ $contenues->appends(['search3' => $search3])->links() }}
                     </ul>
                 </nav>
             @else
-                <p>Aucune formation trouvée.</p>
+                <p>Aucun contenu de formation trouvé.</p>
             @endif
+
+
+            <!-- Affichage des résultats -->
+            <div class="results-table">
+                @include('partials.table_contenus', ['contenues' => $contenues])
+            </div>
         </div>
     </div>
 
-    <!-- Inclure le script de Bootstrap -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.min.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-            // Edit formation
-            $('body').on('click', '#edit-formation', function () {
-                var tr = $(this).closest('tr');
-                $('#formation-id').val($(this).data('id'));
-                $('#formation-code').val(tr.find("td:nth-child(2)").text());
-                $('#formation-nom').val(tr.find("td:nth-child(3)").text());
-                $('#formation-duree').val(tr.find("td:nth-child(4)").text());
-                $('#formation-prix').val(tr.find("td:nth-child(5)").text());
-
-                $('#formationEditModal').modal('show');
-            });
-
-            $('body').on('click', '#formation-update', function () {
-                var id = $('#formation-id').val();
-                var formData = new FormData($('#formation-edit-form')[0]);
-                formData.append('_method', 'PUT');
-
-                $.ajax({
-                    url: "{{ route('formations.update', '') }}/" + id,
-                    type: 'POST',
-                    dataType: 'json',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function(response) {
-                        $('#formationEditModal').modal('hide');
-                        if (response.success) {
-                            iziToast.success({
-                                message: response.success,
-                                position: 'topRight'
-                            });
-                            updateFormationInTable(response.formation);
-                        } else {
-                            iziToast.error({
-                                message: response.error,
-                                position: 'topRight'
-                            });
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        var errorMsg = '';
-                        if (xhr.responseJSON && xhr.responseJSON.errors) {
-                            $.each(xhr.responseJSON.errors, function(field, errors) {
-                                $.each(errors, function(index, error) {
-                                    errorMsg += error + '<br>';
-                                });
-                            });
-                        } else {
-                            errorMsg = 'An error occurred: ' + error;
-                        }
-                        iziToast.error({
-                            message: errorMsg,
-                            position: 'topRight'
-                        });
-                    }
-                });
-            });
-
-            // Delete formation
-            $('body').on('click', '#delete-formation', function (e) {
-                e.preventDefault();
-                var id = $(this).data('id');
-                var confirmation = confirm("Êtes-vous sûr de vouloir supprimer cette formation ?");
-                if (confirmation) {
-                    $.ajax({
-                        url: "{{ route('formations.delete_etudiant', '') }}/" + id,
-                        type: 'DELETE',
-                        success: function(response) {
-                            iziToast.success({
-                                message: response.success,
-                                position: 'topRight'
-                            });
-                            removeFormationFromTable(id);
-                        },
-                        error: function(xhr, status, error) {
-                            iziToast.error({
-                                message: 'An error occurred: ' + error,
-                                position: 'topRight'
-                            });
-                        }
-                    });
-                }
-            });
-
-            function updateFormationInTable(formation) {
-                var row = $('#formation-' +formation.id);
-                row.find('td:nth-child(2)').text(formation.code);
-                row.find('td:nth-child(3)').text(formation.nom);
-                row.find('td:nth-child(4)').text(formation.duree);
-                row.find('td:nth-child(5)').text(formation.prix);
-            }
-
-            function removeFormationFromTable(id) {
-                $('#formation-${id}').remove();
-            }
-
-            var alertElement = document.querySelector('.fade-out');
-            if (alertElement) {
-                setTimeout(function() {
-                    alertElement.style.display = 'none';
-                }, 2000);
-            }
-        });
-    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="path/to/your/js/file.js"></script>
 </body>
 </html>
+
+
+
+    <!-- Main Content -->
+    
+
+</body>
+<script>
+    $(document).ready(function () {
+    $('#sear_bar').on('keyup', function() {
+        var search = $(this).val();
+        $.ajax({
+            url: "{{ route('search3') }}",
+            type: "GET",
+            data: { search3: search },
+            success: function(data) {
+                $('.results-table').html(data);
+            }
+        });
+    });
+});
+
+</script>
+</html> 
