@@ -12,7 +12,7 @@ class FormationsController extends Component
 {
     public function liste_formation()
     {
-        $formations = Formations::paginate(4);
+        $formations = Formations::orderBy('nom')->paginate(4);
         return view('livewire.example-laravel.formations-management', compact('formations'));
     }
 
@@ -78,8 +78,8 @@ class FormationsController extends Component
 
     public function render()
     {
-        $formations = Formations::paginate(4);
-        return view('livewire.example-laravel.formations-management', compact('formations'));
+        return $this->liste_formation();
+
     }
     public function show($id)
     {

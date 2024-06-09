@@ -28,7 +28,7 @@
             border-radius: solid 2px;
         }
         .modal-content {
-            max-width: 600px;
+            max-width: 800px;
             margin: 0 auto;
         }
 
@@ -111,7 +111,7 @@
                                         <td>{{ $prof->id }}</td>
                                         <td><img src="{{ asset('images/'.$prof->image)}}" alt="" width="60px"></td>
                                         <td>{{ $prof->nomprenom }}</td>
-                                        <td data-country-id="{{ $prof->type_id }}">{{ $prof->type->type ?? 'N/A' }}</td>
+                                        <td data-type-id="{{ $prof->type_id }}">{{ $prof->type->type ?? 'N/A' }}</td>
                                         <td data-country-id="{{ $prof->country_id }}">{{ $prof->country->name ?? 'N/A' }}</td>
                                         <td>{{ $prof->diplome }}</td>
                                         <td>{{ $prof->genre }}</td>
@@ -143,7 +143,7 @@
     <!-- Add Student Modal -->
     <div class="modal fade" id="profAddModal"  tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" >
-            <div class="modal-content" style="width: 22cm; height:13.8cm;">
+            <div class="modal-content" style="width: 40cm;">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Ajouter un nouvel Professeur</h5>
                     <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
@@ -151,30 +151,31 @@
                 <div class="modal-body" >
                     <form id="prof-add-form"  enctype="multipart/form-data" >
                         @csrf
-                        <div class="row mb-3">
-                            <div class="col-md-4">
+                        <div class="row mb-4">
+                            <div class="col-md-3">
                                 <!-- <img src="" id="imagePreview" class="imgUpload" alt=""> -->
                                 <label for="image" class="form-label">Image:</label>
                                 <input  type="file" class="form-control" id="new-prof-image" name="image">
                             </div>
-                            <!-- <div class="col-md-4">
-                                <label for="nni" class="form-label required">NNI:</label>
-                                <input type="number" class="form-control" id="new-prof-nni" placeholder="NNI" name="nni">
-                            </div> -->
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label for="nomprenom" class="form-label required">Nom & Prénom:</label>
                                 <input type="text" class="form-control" id="new-prof-nomprenom" placeholder="Nom & Prénom" name="nomprenom">
+                                <div class="text-danger" id="nomprenom-warning"></div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label for="diplome" class="form-label">Diplôme:</label>
                                 <input type="text" class="form-control" id="new-prof-diplome" placeholder="Diplôme" name="diplome">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="lieunaissance" class="form-label">Lieu de naissance:</label>
+                                <input type="text" class="form-control" id="new-prof-lieunaissance" placeholder="Lieu de naissance" name="lieunaissance">
                             </div>
                         </div>
 
                         
-                        <div class="row mb-3">
+                        <div class="row mb-4">
 
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="country_id" class="form-label required">Nationalité</label>
                                 <select class="form-control" id="new-prof-country_id" name="country_id">
                                     <option value="">Choisir la mationalité</option>
@@ -182,8 +183,10 @@
                                         <option value="{{ $country->id }}">{{ $country->name }}</option>
                                     @endforeach
                                 </select>
+                                <div class="text-danger" id="country_id-warning"></div>
+
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="type_id" class="form-label required">type de contrat </label>
                                 <select class="form-control" id="new-prof-type_id" name="type_id">
                                     <option value="">Choisir la type de contrat</option>
@@ -191,48 +194,47 @@
                                         <option value="{{ $type->id }}">{{ $type->type }}</option>
                                     @endforeach
                                 </select>
+                                <div class="text-danger" id="type_id-warning"></div>
+
                             </div>
                             <!-- <div class="col-md-4">
                                 <label for="diplome" class="form-label">Diplôme:</label>
                                 <input type="text" class="form-control" id="new-prof-diplome" placeholder="Diplôme" name="diplome">
                             </div> -->
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label class="form-label required">Genre:</label>
                                 <div>
-                                    <input type="radio" id="male" name="genre" value="Male">
+                                    <input type="radio" id="male" name="genre" value="Male" >
                                     <label for="male">Male</label>
                                     <input type="radio" id="female" name="genre" value="Female">
                                     <label for="female">Female</label>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
+                                <div class="text-danger" id="genre-warning"></div>
 
-                            <div class="col-md-4">
-                                <label for="lieunaissance" class="form-label">Lieu de naissance:</label>
-                                <input type="text" class="form-control" id="new-prof-lieunaissance" placeholder="Lieu de naissance..." name="lieunaissance">
                             </div>
-                            <div class="col-md-4">
-                                <label for="adress" class="form-label">Adresse:</label>
-                                <input type="text" class="form-control" id="new-prof-adress" placeholder="Adresse..." name="adress">
-                            </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label for="datenaissance" class="form-label">Date de naissance:</label>
                                 <input type="date" class="form-control" id="new-prof-datenaissance" placeholder="Date de naissance" name="datenaissance">
                             </div>
                         </div>
-                        <div class="row mb-3">
-                            <div class="col-md-4">
+                        <div class="row mb-4">
+                            <div class="col-md-3">
                                 <label for="email" class="form-label">Email:</label>
                                 <input type="email" class="form-control" id="new-prof-email" placeholder="email@example.com" name="email">
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label for="phone" class="form-label required">Portable:</label>
                                 <input type="number" class="form-control" id="new-prof-phone" placeholder="Portable" name="phone">
+                                <div class="text-danger" id="phone-warning"></div>
+
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label for="wtsp" class="form-label">WhatsApp:</label>
                                 <input type="number" class="form-control" id="new-prof-wtsp" placeholder="WhatsApp" name="wtsp">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="adress" class="form-label">Adresse:</label>
+                                <input type="text" class="form-control" id="new-prof-adress" placeholder="Adresse" name="adress">
                             </div>
                         </div>
                     </form>
@@ -247,118 +249,106 @@
 
 
     <!-- Edit Student Modal -->
-     <div class="modal fade" id="profEditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" >
-            <div class="modal-content" style="width: 24cm; height:16.2cm;  ">
-                <div class="modal-header"  >
-                    <h5 class="modal-title" id="exampleModalLabel" >Modifier Professeur</h5>
-                </div>
-                <div class="modal-body">
-                    <form id="prof-edit-form" enctype="multipart/form-data">
-                        <input type="hidden" id="prof-id" name="id">
-                        
-                        <div class="d-flex align-items-center mb-3">
-                        <div class="row mb-3">
-
-                            <div class="col-md-4">
-                                <!-- <label for="inputImage" class="col-form-label">Image</label> -->
+    <div class="modal fade" id="profEditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="width: 40cm;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modifier Professeur</h5>
+            </div>
+            <div class="modal-body">
+                <form id="prof-edit-form" enctype="multipart/form-data">
+                    <input type="hidden" id="prof-id" name="id">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="row mb-4">
+                            <div class="col-md-3">
                                 <label for="image" class="form-label">Image:</label>
                                 <img src="" id="imagePreview" class="imgUpload" alt="">
-
                                 <div>
                                     <input type="file" class="form-control" id="image" name="image">
                                 </div>
                             </div>
-                            <!-- <div class="col-md-4">
-                                <p><strong>NNI:</strong> <br /> <input type="text" name="nni" id="prof-nni" class="form-control"></p>
-                            </div> -->
-                            <div class="col-md-4">
-                                <p><strong>Nom & Prénom:</strong> <br /> <input type="text" name="nomprenom" id="prof-nomprenom" class="form-control"></p>
+                            <div class="col-md-3">
+                                <label for="nomprenom" class="form-label required">Nom & Prénom:</label>
+                                <input type="text" class="form-control" id="prof-nomprenom" placeholder="Nom & Prénom" name="nomprenom">
+                                <div class="text-danger" id="edit-nomprenom-warning"></div>
                             </div>
-                            <div class="col-md-4">
-                            <p><strong>Diplôme:</strong> <br /> <input type="text" name="diplome" id="prof-diplome" class="form-control"></p>
+                            <div class="col-md-3">
+                                <label for="diplome" class="form-label">Diplôme:</label>
+                                <input type="text" class="form-control" id="prof-diplome" placeholder="Diplôme"  name="diplome">
                             </div>
+                            <div class="col-md-3">
+                                <label for="lieunaissance" class="form-label">Lieu de naissance:</label>
+                                <input type="text" class="form-control" id="prof-lieunaissance" placeholder="Lieu de naissance..." name="lieunaissance">
                             </div>
-                            
                         </div>
-
-                        <div class="row mb-3">
-                            <div class="col-md-4">
-                        <div class="form-group">
-                                <label for="country_id" class="form-label required">Nationalité</label>
-
+                    </div>
+                    <div class="row mb-4">
+                        <div class="form-group col-md-3">
+                            <label for="country_id" class="form-label required">Nationalité</label>
                             <select class="form-control" id="prof-country_id" name="country_id">
                                 <option value="">Select Country</option>
                                 @foreach ($countries as $country)
                                     <option value="{{ $country->id }}">{{ $country->name }}</option>
                                 @endforeach
                             </select>
+                            <div class="text-danger" id="edit-country_id-warning"></div>
                         </div>
-                        </div>
-                        <div class="col-md-4">
-                        <div class="form-group">
-                                <label for="type_id" class="form-label required">type de contrat </label>
 
+                        <div class="form-group col-md-3">
+                            <label for="type_id" class="form-label required">Type de contrat </label>
                             <select class="form-control" id="prof-type_id" name="type_id">
                                 <option value="">Choisir la type de contrat</option>
                                 @foreach ($typeymntprofs as $type)
                                     <option value="{{ $type->id }}">{{ $type->type }}</option>
                                 @endforeach
                             </select>
+                            <div class="text-danger" id="edit-type_id-warning"></div>
                         </div>
-                        </div>
-                            <!-- <div class="col-md-4">
-                        <p><strong>Diplôme:</strong> <br /> <input type="text" name="diplome" id="prof-diplome" class="form-control"></p>
-                        </div> -->
-                            <div class="col-md-4">
-                                <label for="genre" class="form-label">Genre:</label>
-                                <div>
-                                    <input type="radio" id="male" name="genre" value="Male">
-                                    <label for="male">Male</label>
-                                    <input type="radio" id="female" name="genre" value="Female">
-                                    <label for="female">Female</label><br>
-                                </div>
+                        
+                        <div class="col-md-3">
+                            <label class="form-label required">Genre:</label>
+                            <div>
+                                <input type="radio" id="male" name="genre" value="Male">
+                                <label for="male">Male</label>
+                                <input type="radio" id="female" name="genre" value="Female">
+                                <label for="female">Female</label>
                             </div>
-                            
+                            <div class="text-danger" id="edit-genre-warning"></div>
                         </div>
-                        <div class="row mb-3">
-                        
-                            
-                            
-                            <div class="col-md-4">
-                        <p><strong>Lieu de naissance:</strong> <br /> <input type="text" name="lieunaissance" id="prof-lieunaissance" class="form-control"></p>
-                        
+                        <div class="col-md-3">
+                            <label for="datenaissance" class="form-label">Date de naissance:</label>
+                            <input type="date" class="form-control" id="prof-datenaissance" placeholder="Lieu de naissance" name="datenaissance">
                         </div>
-                            <div class="col-md-4">
-                                <p><strong>Addresse:</strong> <br /> <input type="text" name="adress" id="prof-adress" class="form-control"></p>
-                        
-                            </div>
-                            <div class="col-md-4">    
-                                <p><strong>Date de naissance:</strong> <br /> <input type="date" name="datenaissance" id="prof-datenaissance" class="form-control"></p>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <label for="email" class="form-label">Email:</label>
+                            <input type="email" class="form-control" id="prof-email" placeholder="email@example.com" name="email">
                         </div>
-                            </div>
-                        <div class="row mb-3">
-                        
-                            <div class="col-md-4">
-                        <p><strong>Email:</strong> <br /> <input type="email" name="email" id="prof-email" class="form-control"></p>
+                        <div class="col-md-3">
+                            <label for="phone" class="form-label required">Portable:</label>
+                            <input type="text" class="form-control" id="prof-phone" placeholder="Portable" name="phone">
+                            <div class="text-danger" id="edit-phone-warning"></div>
                         </div>
-                            <div class="col-md-4">
-                        <p><strong>Portable:</strong> <br /> <input type="text" name="phone" id="prof-phone" class="form-control"></p>
+                        <div class="col-md-3">
+                            <label for="wtsp" class="form-label">WhatsApp:</label>
+                            <input type="text" class="form-control" id="prof-wtsp" placeholder="WhatsApp" name="wtsp">
                         </div>
-                            <div class="col-md-4">
-                        <p><strong>WhatsApp:</strong> <br /> <input type="text" name="wtsp" id="prof-wtsp" class="form-control"></p>
+                        <div class="col-md-3">
+                            <label for="adress" class="form-label">Adresse:</label>
+                            <input type="text" class="form-control" id="prof-adress" placeholder="Adresse" name="adress">
                         </div>
-                        
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer" >
-                    <button type="button" class="btn btn-info" id="prof-update" >Modifier</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" id="prof-update">Modifier</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
             </div>
         </div>
-    </div> 
+    </div>
+</div>
+
 
 
     <script type="text/javascript">
@@ -369,8 +359,32 @@
                 }
             });
 
+            function validateForm(formId, warnings) {
+                let isValid = true;
+                for (let field in warnings) {
+                    const input = $(formId + ' #' + field);
+                    const warning = $(warnings[field]);
+                    if (input.val().trim() === '') {
+                        warning.text('Ce champ est requis.');
+                        isValid = false;
+                    } else {
+                        warning.text('');
+                    }
+                }
+                return isValid;
+            }
+
             $("#add-new-prof").click(function(e){
                 e.preventDefault();
+                if (!validateForm('#prof-add-form', {
+                    'new-prof-nomprenom': '#nomprenom-warning',
+                    'new-prof-country_id': '#country_id-warning',
+                    'new-prof-type_id': '#type_id-warning',
+                    'new-prof-genre': '#genre-warning',
+                    'new-prof-phone': '#phone-warning'
+                })) {
+                    return;
+                }
                 let form = $('#prof-add-form')[0];
                 let data = new FormData(form);
 
@@ -445,6 +459,14 @@
             });
 
             $('body').on('click', '#prof-update', function () {
+                if (!validateForm('#prof-edit-form', {
+                    'prof-nomprenom': '#edit-nomprenom-warning',
+                    'prof-country_id': '#edit-country_id-warning',
+                    'prof-type_id': '#edit-type_id-warning',
+                    'prof-phone': '#edit-phone-warning'
+                })) {
+                    return;
+                }
                 var id = $('#prof-id').val();
                 var formData = new FormData($('#prof-edit-form')[0]);
                 formData.append('_method', 'PUT');

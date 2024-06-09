@@ -134,8 +134,6 @@ Route::get('/contenus', [FormationsController::class, 'liste_contenus'])->name('
 
 
 
-
-
 Route::group(['middleware' => 'auth'], function () {
 Route::get('dashboard', Dashboard::class)->name('dashboard');
 Route::get('billing', Billing::class)->name('billing');

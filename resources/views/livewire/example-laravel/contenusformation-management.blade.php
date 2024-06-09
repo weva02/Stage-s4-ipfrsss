@@ -25,6 +25,9 @@
             outline: 0;
             box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
         }
+        .modal-body .form-label {
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -39,6 +42,8 @@
                 <div class="card my-4">
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 d-flex justify-content-between align-items-center">
                         <div>
+                            <a href="{{ route('formations-management') }}" class="btn bg-gradient-dark material-icons text-sm">arrow_back</a>
+                            
                             <button type="button" class="btn bg-gradient-dark" data-bs-toggle="modal" data-bs-target="#contenueAddModal">
                                 <i class="material-icons text-sm">add</i>&nbsp;&nbsp;Ajouter un contenu
                             </button>
@@ -47,7 +52,6 @@
                         <form action="{{ route('search3') }}" method="get" class="d-flex align-items-center ms-auto">
                             <div class="input-group input-group-sm" style="width: 250px;">
                                 <input type="text" name="search3" id="sear_bar" class="form-control" placeholder="Rechercher..." value="{{ isset($search3) ? $search3 : ''}}">
-                                <!-- <button type="submit" class="btn btn-primary">Rechercher</button> -->
                             </div>
                         </form>
                     </div>
@@ -60,7 +64,7 @@
                                 <thead>
                                     <tr>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">ID</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Formation</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Programme</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nom du Chapitre</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nom de l'unité</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nombre des Heures</th>
@@ -72,7 +76,7 @@
                                     @foreach($contenues as $contenue)
                                     <tr>
                                         <td>{{ $contenue->id }}</td>
-                                        <td><a href="javascript:void(0)" id="show-formation" data-id="{{ $contenue->id }}" >{{ $contenue->formation->nom ?? 'N/A' }}</a></td>
+                                        <td><a href="javascript:void(0)" id="show-formation" data-formation-id="{{ $contenue->formation->id }}">{{ $contenue->formation->nom ?? 'N/A' }}</a></td>
                                         <td>{{ $contenue->nomchap}}</td>
                                         <td>{{ $contenue->nomunite}}</td>
                                         <td>{{ $contenue->nombreheures }}</td>
@@ -97,7 +101,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content" style="width: 10cm; height:8cm;  ">
             <div class="modal-header">
-                <h5 class="modal-title" id="formationDetailModalLabel">Détails de la Formation</h5>
+                <h5 class="modal-title" id="formationDetailModalLabel">Détails de la Programme</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -124,30 +128,42 @@
                 <div class="modal-body">
                     <form id="contenue-add-form">
                         @csrf
-                        <div class="form-group">
-                            <label for="formation_id">Formation</label>
+                        <div class="row mb-2">
+                        <div class="form-group col-md-6">
+                            <label for="formation_id" class="form-label required">Programme</label>
                             <select class="form-control" id="new-contenue-formation_id" name="formation_id">
-                                <option value="">Sélectionner Formation</option>
+                                <option value="">Sélectionner Programme</option>
                                 @foreach ($formations as $formation)
                                     <option value="{{ $formation->id }}">{{ $formation->nom }}</option>
                                 @endforeach
                             </select>
+                            <div class="text-danger" id="formation_id-warning"></div>
+
                         </div>
-                        <div class="mb-3">
-                            <label for="nomchap" class="form-label">Nom du Chapitre:</label>
-                            <input type="text" class="form-control" id="new-contenue-nomchap" name="nomchap">
+                        <div class="col-md-6">
+                            <label for="nomchap" class="form-label required">Nom du Chapitre:</label>
+                            <input type="text" class="form-control" id="new-contenue-nomchap" placeholder="Nom du chapitre" name="nomchap">
+                            <div class="text-danger" id="nomchap-warning"></div>
+
                         </div>
-                        <div class="mb-3">
-                            <label for="nomunite" class="form-label">Nom de l'unité:</label>
-                            <input type="text" class="form-control" id="new-contenue-nomunite" name="nomunite">
                         </div>
-                        <div class="mb-3">
-                            <label for="nombreheures" class="form-label">Nombre Heures:</label>
-                            <input type="number" class="form-control" id="new-contenue-nombreheures" name="nombreheures">
+                        <div class="row mb-2">
+                        <div class="col-md-6">
+                            <label for="nomunite" class="form-label required">Nom de l'unité:</label>
+                            <input type="text" class="form-control" id="new-contenue-nomunite" placeholder="Nom de l'unité" name="nomunite">
+                            <div class="text-danger" id="nomunite-warning"></div>
+
                         </div>
-                        <div class="mb-3">
+                        <div class="col-md-6">
+                            <label for="nombreheures" class="form-label required">Nombre Heures:</label>
+                            <input type="number" class="form-control" id="new-contenue-nombreheures" placeholder="Nombre Heures" name="nombreheures">
+                            <div class="text-danger" id="nombreheures-warning"></div>
+
+                        </div>
+                        </div>
+                        <div class="col-md-6">
                             <label for="description" class="form-label">Description:</label>
-                            <input type="text" class="form-control" id="new-contenue-description" name="description">
+                            <input type="text" class="form-control" id="new-contenue-description" placeholder="Description" name="description">
                         </div>
                         
                     </form>
@@ -172,31 +188,52 @@
                     <form id="contenue-edit-form">
                         @csrf
                         <input type="hidden" id="contenue-id" name="id">
-                        <div class="form-group">
-                            <label for="formation_id">Formation</label>
-                            <select class="form-control" id="contenue-formation_id" name="formation_id">
-                                <option value="">Sélectionner Formation</option>
-                                @foreach ($formations as $formation)
-                                    <option value="{{ $formation->id }}">{{ $formation->nom }}</option>
-                                @endforeach
-                            </select>
+                        <div class="form-group row mb-2">
+                            <div class="col-md-6">
+
+                                <label for="formation_id" class="form-label required">Programme</label>
+                                <select class="form-control" id="contenue-formation_id" name="formation_id">
+                                    <option value="">Sélectionner Programme</option>
+                                    @foreach ($formations as $formation)
+                                        <option value="{{ $formation->id }}">{{ $formation->nom }}</option>
+                                    @endforeach
+                                </select>
+                                <div class="text-danger" id="edit-formation_id-warning"></div>
+
+                            </div>
+                        <!-- <br> -->
+                        
+                            <div class="col-md-6">
+                                <label for="nomchap" class="form-label required">Nom du Chapitre:</label>
+                                <input type="text" class="form-control" id="contenue-nomchap" placeholder="Nom du chapitre" name="nomchap">
+                                <div class="text-danger" id="edit-nomchap-warning"></div>
+
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="nomchap" class="form-label">Nom du Chapitre:</label>
-                            <input type="text" class="form-control" id="contenue-nomchap" name="nomchap">
+                        <div class="row mb-2">
+                            <div class="col-md-6">
+                                <label for="nomunite" class="form-label required">Nom de l'unité:</label>
+                                <input type="text" class="form-control" id="contenue-nomunite" placeholder="Nom de l'unité" name="nomunite">
+                                <div class="text-danger" id="edit-nomunite-warning"></div>
+
+                            </div>
+                            
+
+                        <!-- </div> -->
+                        <!-- <div class="row mb-2"> -->
+                            <div class="col-md-6">
+                                <label for="nombreheures" class="form-label required">Nombre Heures:</label>
+                                <input type="number" class="form-control" id="contenue-nombreheures" placeholder="Nombre Heures" name="nombreheures">
+                                <div class="text-danger" id="edit-nombreheures-warning"></div>
+                            </div>
+
                         </div>
-                        <div class="mb-3">
-                            <label for="nomunite" class="form-label">Nom de l'unité:</label>
-                            <input type="text" class="form-control" id="contenue-nomunite" name="nomunite">
-                        </div>
-                        <div class="mb-3">
-                            <label for="nombreheures" class="form-label">Nombre Heures:</label>
-                            <input type="number" class="form-control" id="contenue-nombreheures" name="nombreheures">
-                        </div>
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Description:</label>
-                            <input type="text" class="form-control" id="contenue-description" name="description">
-                        </div>
+                            <div class="col-md-6">
+                                <label for="description" class="form-label">Description:</label>
+                                <input type="text" class="form-control" id="contenue-description" placeholder="Description" name="description">
+                            </div>
+
+                        <!-- </div> -->
                         
                     </form>
                 </div>
@@ -216,38 +253,22 @@
                 }
             });
 
-            // $('body').on('click', '#show-formation', function () {
-            //     var id = $(this).data('id');
 
-            //     $.ajax({
-            //         url: '/contenus/' + id,
-            //         type: 'GET',
-            //         dataType: 'json',
-            //         success: function (response) {
-            //             var contenusList = $('#formation-contents-details');
-            //             contenusList.empty();
+            function validateForm(formId, warnings) {
+                let isValid = true;
+                for (let field in warnings) {
+                    const input = $(formId + ' #' + field);
+                    const warning = $(warnings[field]);
+                    if (input.val().trim() === '') {
+                        warning.text('Ce champ est requis.');
+                        isValid = false;
+                    } else {
+                        warning.text('');
+                    }
+                }
+                return isValid;
+            }
 
-            //             if (response.froramtions && response.froramtions.length > 0) {
-            //                 response.froramtions.forEach(function (formation) {
-            //                     froramtionsList.append('<li><strong>Code </strong> ' + formation.code + ', <strong> Nom</strong>: ' + formation.nom + '<strong> Durre</strong>:' + formation.duree + ' (' + formation.prix + ' MRU)</li>');
-            //                 });
-            //             } else {
-            //                 froramtionsList.append('<p>Aucun detaille trouvé pour cette formation.</p>');
-            //             }
-
-            //             // Show the modal
-            //             $('#formationDetailModal').modal('show');
-            //         },
-            //         error: function (xhr, status, error) {
-            //             var errorMessage = xhr.status + ': ' + xhr.statusText;
-            //             iziToast.error({
-            //                 title: 'Erreur',
-            //                 message: 'Une erreur s\'est produite: ' + errorMessage,
-            //                 position: 'topRight'
-            //             });
-            //         }
-            //     });
-            // });
 
             $('body').on('click', '#show-formation', function () {
             var id = $(this).data('id');
@@ -264,13 +285,7 @@
                         var formation = response.formation;
                         contenusList.append('<li><strong>Code: </strong>' + formation.code + ',</br> <strong>Nom:</strong> ' + formation.nom + ',</br> <strong>Durée:</strong> ' + formation.duree + ',</br> <strong>Prix:</strong> ' + formation.prix + ' MRU</li>');
                         
-                        // if (response.contenus && response.contenus.length > 0) {
-                        //     response.contenus.forEach(function (contenu) {
-                        //         // contenusList.append('<li><strong>Chapitre:</strong> ' + contenu.nomchap + ', <strong>Unité:</strong> ' + contenu.nomunite + ', <strong>Nombre d\'heures:</strong> ' + contenu.nombreheures + ', <strong>Description:</strong> ' + contenu.description + '</li>');
-                        //     });
-                        // } else {
-                        //     contenusList.append('<p>Aucun contenu trouvé pour cette formation.</p>');
-                        // }
+                        
                     } else {
                         contenusList.append('<p>Aucune formation trouvée.</p>');
                     }
@@ -282,7 +297,8 @@
                     iziToast.error({
                         title: 'Erreur',
                         message: 'Une erreur s\'est produite: ' + errorMessage,
-                        position: 'topRight'
+                        position: 'topRight',
+
                     });
                 }
             });
@@ -290,6 +306,15 @@
 
             $("#add-new-contenue").click(function(e){
                 e.preventDefault();
+                if (!validateForm('#contenue-add-form', {
+                    'new-contenue-formation_id': '#formation_id-warning',
+                    'new-contenue-nomchap': '#nomchap-warning',
+                    'new-contenue-nomunite': '#nomunite-warning',
+                    'new-contenue-nombreheures': '#nombreheures-warning'
+                })) {
+                    return;
+                }
+
                 let form = $('#contenue-add-form')[0];
                 let data = new FormData(form);
 
@@ -319,6 +344,7 @@
                             });
                             $('#contenueAddModal').modal('hide');
                             location.reload();
+                            addContenueToTable(response.contenue);
                         }
                     },
                     error: function(xhr, status, error) {
@@ -356,6 +382,14 @@
             });
 
             $('body').on('click', '#contenue-update', function () {
+                if (!validateForm('#contenue-edit-form', {
+                    'contenue-formation_id': '#edit-formation_id-warning',
+                    'contenue-nomchap': '#edit-nomchap-warning',
+                    'contenue-nomunite': '#edit-nomunite-warning',
+                    'contenue-nombreheures': '#edit-nombreheures-warning'
+                })) {
+                    return;
+                }
                 var id = $('#contenue-id').val();
                 var formData = new FormData($('#contenue-edit-form')[0]);
                 formData.append('_method', 'PUT');
@@ -369,15 +403,19 @@
                     contentType: false,
                     success: function(response) {
                         $('#contenueEditModal').modal('hide');
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1000);
                         if (response.success) {
                             iziToast.success({
                                 message: response.success,
                                 position: 'topRight'
                             });
+                            updateContenueInTable(response.contenue);
                         } else {
                             iziToast.error({
                                 message: response.error,
-                                position: 'topRight'
+                                position: 'topRight',
                             });
                         }
                         location.reload();
@@ -425,6 +463,32 @@
                     });
                 }
             });
+
+
+            function addContenueToTable(contenue) {
+                var newRow = `<tr id="contenue-${contenue.id}">
+                    <td>${contenue.id}</td>
+                    <td data-formation-id="${contenue.formation_id}">${contenue.formation ? contenue.formation.nom : 'N/A'}</td>
+                    <td>${contenue.nomchap}</td>
+                    <td>${contenue.nomunite}</td>
+                    <td>${contenue.nombreheures}</td>
+                    <td>${contenue.description}</td>
+                    <td>
+                        <a href="javascript:void(0)" id="edit-contenue" data-id="${contenue.id}" class="btn btn-info"><i class="material-icons opacity-10">border_color</i></a>
+                        <a href="javascript:void(0)" id="delete-contenue" data-id="${contenue.id}" class="btn btn-danger"><i class="material-icons opacity-10">delete</i></a>
+                    </td>
+                </tr>`;
+                $('table tbody').append(newRow);
+            }
+
+            function updateContenueInTable(contenue) {
+                var row = $('#contenue-' + contenue.id);
+                row.find('td:nth-child(2)').text(contenue.formation ? contenue.formation.nom : 'N/A').attr('data-formation-id', contenue.formation_id);
+                row.find('td:nth-child(3)').text(contenue.nomchap);
+                row.find('td:nth-child(4)').text(contenue.nomunite);
+                row.find('td:nth-child(6)').text(contenue.nombreheures);
+                row.find('td:nth-child(7)').text(contenue.description);
+            }
 
             var alertElement = document.querySelector('.fade-out');
             if (alertElement) {

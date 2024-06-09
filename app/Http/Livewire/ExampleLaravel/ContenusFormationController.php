@@ -13,7 +13,12 @@ class ContenusFormationController extends Component
 {
     public function liste_contenue()
     {
-        $contenues = ContenusFormation::with('formation')->paginate(4);
+        $contenues = ContenusFormation::with('formation')
+            ->join('formations', 'contenus_formations.formation_id', '=', 'formations.id')
+            ->orderBy('formations.nom')
+            ->select('contenus_formations.*')
+            ->paginate(4);
+
         $formations = Formations::all();
         return view('livewire.example-laravel.contenusformation-management', compact('contenues', 'formations'));
     }
@@ -75,32 +80,6 @@ class ContenusFormationController extends Component
         }
     }
 
-    // public function search3(Request $request)
-    // {
-    //     $search3 = $request->search3;
-    //     $contenues = ContenusFormation::with('formation')
-    //         ->where('nomchap', 'like', "%$search3%")
-    //         ->orWhere('nomunite', 'like', "%$search3%")
-    //         ->orWhere('description', 'like', "%$search3%")
-    //         ->orWhere('nombreheures', 'like', "%$search3%")
-    //         ->paginate(4);
-
-    //     $formations = Formations::all();
-    //     return view('livewire.example-laravel.contenus-recher', compact('contenues', 'formations', 'search3'));
-    // }
-    // public function search3(Request $request)
-    // {
-    //     $search3 = $request->search3;
-    //     $contenues = ContenusFormation::with('formation')
-    //         ->where('nomchap', 'like', "%$search3%")
-    //         ->orWhere('nomunite', 'like', "%$search3%")
-    //         ->orWhere('description', 'like', "%$search3%")
-    //         ->orWhere('nombreheures', 'like', "%$search3%")
-    //         ->paginate(4);
-
-
-    //     return view('livewire.example-laravel.contenus-recher', compact('contenues', 'search3'));
-    // }
     public function search3(Request $request)
     {
         $search3 = $request->search3;
@@ -117,17 +96,16 @@ class ContenusFormationController extends Component
         return view('livewire.example-laravel.recherche', compact('etudiants', 'countries', 'search'));
     }
 
-
     public function render()
     {
-        $contenues = ContenusFormation::with('formation')->paginate(4);
-        $formations = Formations::all();
-        return view('livewire.example-laravel.contenusformation-management', compact('contenues', 'formations'));
+        return $this->liste_contenue();
     }
+
     public function export()
     {
-        return Excel::download(new ContenusFormation(), 'ContenusFormation.xlsx');
+        return Excel::download(new ContenusFormationExport(), 'ContenusFormation.xlsx');
     }
+
     public function show($id)
     {
         $formation = Formations::with('contenusFormation')->find($id);
@@ -138,5 +116,4 @@ class ContenusFormationController extends Component
             return response()->json(['error' => 'Formation non trouvée'], 404);
         }
     }
-
 }
