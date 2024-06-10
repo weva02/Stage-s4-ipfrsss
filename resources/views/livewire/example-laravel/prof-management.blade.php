@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Laravel Ajax CRUD Example</title>
+    <title>Laravel AJAX Professeurs Management</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <style>
         .imgUpload {
             max-width: 90px;
@@ -17,42 +18,18 @@
             content: " *";
             color: red;
         }
-        .form-control {
-            border: 1px solid #ccc;
-            border-radius: 6px;
-        }
-        .form-control:focus {
-            border-color: #66afe9;
-            outline: 0;
-            box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
-            border-radius: solid 2px;
-        }
         .modal-content {
             max-width: 800px;
             margin: 0 auto;
         }
-
-        .modal-body .form-label {
-            font-weight: bold;
-        }
-
-        .required::after {
-            content: " *";
-            color: red;
-        }
-
         .form-control {
             border: 1px solid #ccc;
-            border-radius: 6px;
         }
-
         .form-control:focus {
             border-color: #66afe9;
             outline: 0;
             box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
         }
-        
-
     </style>
 </head>
 <body>
@@ -65,79 +42,31 @@
                 </div>
                 @endif
                 <div class="card my-4">
+                    
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 d-flex justify-content-between align-items-center">
                         <div>
                             <button type="button" class="btn bg-gradient-dark" data-bs-toggle="modal" data-bs-target="#profAddModal">
                                 <i class="material-icons text-sm">add</i>&nbsp;&nbsp;Ajouter un Professeur
                             </button>
-                            <a href="{{ route('export.profs') }}" class="btn btn-success">Exporter Étudiants</a>
+                            <a href="#" class="btn btn-success">Exporter Professeurs</a>
                         </div>
-                        <form action="" method="get" class="d-flex align-items-center ms-auto">
+                        <form action="/search4" method="get" class="d-flex align-items-center ms-auto">
                             <div class="input-group input-group-sm" style="width: 250px;">
-                                <input type="text" name="search" id="sear_bar" class="form-control" placeholder="Rechercher..." value="{{ isset($search) ? $search : ''}}">
-                                <button type="submit" class="btn btn-primary">Rechercher</button>
+                                <input type="text" name="search4" id="search_bar" class="form-control" placeholder="Rechercher..." value="{{ isset($search4) ? $search4 : ''}}">
                             </div>
+                            <div id="search_list"></div>
                         </form>
                     </div>
-
                     <div class="me-3 my-3 text-end "></div>
-
                     <div class="card-body px-0 pb-2">
-                        <div class="table-responsive p-0">
-                            <table class="table align-items-center mb-0">
-                                <thead>
-                                    <tr>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">ID</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Image</th>
-                                        <!-- <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">NNI</th> -->
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nom & Prénom</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">types de contrats </th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nationalité</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Diplôme</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Genre</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Lieu de naissance</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Addresse</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Date de naissance</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">EMAIL</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Portable</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">WhatsApp</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Actions</th>
-                                        <th class="text-secondary opacity-7"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($profs as $prof)
-                                    <tr>
-                                        <td>{{ $prof->id }}</td>
-                                        <td><img src="{{ asset('images/'.$prof->image)}}" alt="" width="60px"></td>
-                                        <td>{{ $prof->nomprenom }}</td>
-                                        <td data-type-id="{{ $prof->type_id }}">{{ $prof->type->type ?? 'N/A' }}</td>
-                                        <td data-country-id="{{ $prof->country_id }}">{{ $prof->country->name ?? 'N/A' }}</td>
-                                        <td>{{ $prof->diplome }}</td>
-                                        <td>{{ $prof->genre }}</td>
-                                        <td>{{ $prof->lieunaissance }}</td>
-                                        <td>{{ $prof->adress }}</td>
-                                        <td>{{ $prof->datenaissance }}</td>
-                                        <td>{{ $prof->email }}</td>
-                                        <td>{{ $prof->phone }}</td>
-                                        <td>{{ $prof->wtsp }}</td>
-
-                                        <td>
-                                            <a href="javascript:void(0)" id="edit-prof" data-id="{{ $prof->id }}" class="btn btn-info"><i class="material-icons opacity-10">border_color</i></a>
-                                            <a href="javascript:void(0)" id="delete-prof" data-id="{{ $prof->id }}" class="btn btn-danger"><i class="material-icons opacity-10">delete</i></a>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                            {{ $profs->links() }}
+                        <div class="table-responsive p-0" id="professors-table">
+                            @include('livewire.example-laravel.professeur-list', ['profs' => $profs])
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
     <!-- Modals -->
 
     <!-- Add Student Modal -->
@@ -358,6 +287,20 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
+
+            // Recherche AJAX
+    $('#search_bar').on('keyup', function(){
+        var query = $(this).val();
+        $.ajax({
+            url: "{{ route('search4') }}",
+            type: "GET",
+            data: {'search': query},
+            success: function(data){
+                $('#professors-table').html(data.html);
+            }
+        });
+    });
+
 
             function validateForm(formId, warnings) {
                 let isValid = true;

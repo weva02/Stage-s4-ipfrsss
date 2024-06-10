@@ -64,6 +64,7 @@ Route::get('/search', [ContenusFormationController::class, 'search'])->name('con
 Route::get('/export/contenues', [ContenusFormationController::class, 'export'])->name('export.contenues');
 Route::get('contenusformation-management', ContenusFormationController::class)->middleware('auth')->name('contenusformation-management');
 Route::get('/search3', [ContenusFormationController::class, 'search3'])->name('search3');
+Route::get('/search3', [ContenusFormationController::class, 'search3'])->name('search3');
 
 Route::post('/prof/store', [ProfesseurController::class, 'store'])->name('prof.store');
 Route::delete('/profs/{id}', [ProfesseurController::class, 'delete_prof'])->name('prof.delete');
@@ -91,6 +92,7 @@ Route::delete('/etudiants/{id}', [EtudiantController::class, 'delete_etudiant'])
 Route::get('/search', [EtudiantController::class, 'search'])->name('search');
 Route::get('/export/etudiants', [EtudiantController::class, 'export'])->name('export.etudiants');
 Route::get('etudiant-management', EtudiantController::class)->middleware('auth')->name('etudiant-management');
+Route::get('/search', [EtudiantController::class, 'search'])->name('search');
 
 //Professeur routes
 Route::get('/profs', [ProfesseurController::class, 'liste_prof'])->name('prof.list');
@@ -100,6 +102,8 @@ Route::delete('/profs/{id}', [ProfesseurController::class, 'delete_prof'])->name
 // Route::get('/search', [ProfesseurController::class, 'search'])->name('prof.search');
 Route::get('/export/profs', [ProfesseurController::class, 'export'])->name('export.profs');
 Route::get('prof-management', ProfesseurController::class)->middleware('auth')->name('prof-management');
+Route::get('/search4', [ProfesseurController::class, 'search4'])->name('search4');
+
 
 
 
@@ -122,6 +126,9 @@ Route::post('/formation/store', [FormationsController::class,'store'])->name('fo
 Route::get('/formations/{id}', [FormationsController::class, 'show'])->name('formations.show');
 Route::get('/formations', [FormationsController::class, 'liste_formation'])->name('formations.liste');
 Route::get('/search1', [FormationsController::class, 'search1'])->name('search1');
+// Route::get('/delete-formation/{id}',[FormationsController::class , 'delete_formation'])->middleware('auth')->name('formations.delete_etudiant');
+Route::delete('/formations/confirm-delete/{id}', [FormationsController::class, 'confirm_delete_formation']);
+Route::delete('/formations/{id}', [FormationsController::class, 'delete_formation']);
 
 
 Route::get('/contenus', [ContenusFormationController::class, 'liste_contenus'])->name('contennus-management');

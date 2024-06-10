@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Laravel Ajax CRUD Example</title>
+    <title>Laravel AJAX Contenus Formations Management</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <style>
         .imgUpload {
             max-width: 90px;
@@ -25,9 +26,6 @@
             outline: 0;
             box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
         }
-        .modal-body .form-label {
-            font-weight: bold;
-        }
     </style>
 </head>
 <body>
@@ -39,57 +37,31 @@
                     {{ session('status')}}
                 </div>
                 @endif
+                @if ($errors->any())
+                <div class="alert alert-danger">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </div>
+                @endif
                 <div class="card my-4">
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 d-flex justify-content-between align-items-center">
                         <div>
-                            <a href="{{ route('formations-management') }}" class="btn bg-gradient-dark material-icons text-sm">arrow_back</a>
-                            
                             <button type="button" class="btn bg-gradient-dark" data-bs-toggle="modal" data-bs-target="#contenueAddModal">
                                 <i class="material-icons text-sm">add</i>&nbsp;&nbsp;Ajouter un contenu
                             </button>
-                            <a href="{{ route('contenues.export') }}" class="btn btn-success">Exporter Contenus</a>
+                            <!-- <a href="{{ route('export.contenues') }}" class="btn btn-success">Exporter Contenus</a> -->
                         </div>
-                        <form action="{{ route('search3') }}" method="get" class="d-flex align-items-center ms-auto">
+                        <form class="d-flex align-items-center ms-auto">
                             <div class="input-group input-group-sm" style="width: 250px;">
-                                <input type="text" name="search3" id="sear_bar" class="form-control" placeholder="Rechercher..." value="{{ isset($search3) ? $search3 : ''}}">
+                                <input type="text" name="search3" id="search_bar" class="form-control" placeholder="Rechercher...">
                             </div>
                         </form>
                     </div>
-
                     <div class="me-3 my-3 text-end "></div>
-
                     <div class="card-body px-0 pb-2">
-                        <div class="table-responsive p-0">
-                            <table class="table align-items-center mb-0">
-                                <thead>
-                                    <tr>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">ID</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Programme</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nom du Chapitre</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nom de l'unité</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nombre des Heures</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Description</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Actions</th>
-                                    </tr>
-                                </thead> 
-                                <tbody>
-                                    @foreach($contenues as $contenue)
-                                    <tr>
-                                        <td>{{ $contenue->id }}</td>
-                                        <td><a href="javascript:void(0)" id="show-formation" data-formation-id="{{ $contenue->formation->id }}">{{ $contenue->formation->nom ?? 'N/A' }}</a></td>
-                                        <td>{{ $contenue->nomchap}}</td>
-                                        <td>{{ $contenue->nomunite}}</td>
-                                        <td>{{ $contenue->nombreheures }}</td>
-                                        <td>{{ $contenue->description }}</td>
-                                        <td class="text-center">
-                                            <a href="javascript:void(0)" id="edit-contenue" data-id="{{ $contenue->id }}" class="btn btn-info"><i class="material-icons opacity-10">border_color</i></a>
-                                            <a href="javascript:void(0)" id="delete-contenue" data-id="{{ $contenue->id }}" class="btn btn-danger"><i class="material-icons opacity-10">delete</i></a>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                            {{ $contenues->links() }}
+                        <div class="table-responsive p-0" id="contenus-table">
+                            @include('livewire.example-laravel.contenus-list', ['contenues' => $contenues])
                         </div>
                     </div>
                 </div>
@@ -97,6 +69,9 @@
         </div>
     </div>
 
+                    <div class="me-3 my-3 text-end "></div>
+
+  
     <div class="modal fade" id="formationDetailModal" tabindex="-1" aria-labelledby="formationDetailModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content" style="width: 10cm; height:8cm;  ">
@@ -252,6 +227,21 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
+
+            // Recherche AJAX
+            $('#search_bar').on('keyup', function(){
+                var query = $(this).val();
+                $.ajax({
+                    url: "{{ route('search3') }}",
+                    type: "GET",
+                    data: {'search3': query},
+                    success: function(data){
+                        $('#contenus-table').html(data.html);
+                    }
+                });
+            });
+        
+    
 
 
             function validateForm(formId, warnings) {

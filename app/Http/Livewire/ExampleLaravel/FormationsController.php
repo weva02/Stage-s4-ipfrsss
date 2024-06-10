@@ -62,12 +62,36 @@ class FormationsController extends Component
     public function delete_formation($id)
     {
         $formation = Formations::find($id);
-
+    
         if ($formation) {
-            $formation->delete();
-            return redirect()->back()->with('status', 'Formation supprimée avec succès');
+            $contenus = ContenusFormation::where('formation_id', $id)->get();
+            
+            if ($contenus->isNotEmpty()) {
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'Cette formation a des contenus associés. Voulez-vous vraiment la supprimer ainsi que tous ses contenus?',
+                    'has_contents' => true
+                ]);
+            } else {
+                $formation->delete();
+                return response()->json(['status' => 200, 'message' => 'Formation supprimée avec succès.']);
+            }
         } else {
-            return redirect()->back()->with('status', 'Formation non trouvée');
+            return response()->json(['status' => 404, 'message' => 'Formation non trouvée.']);
+        }
+    }
+
+    public function confirm_delete_formation(Request $request, $id)
+    {
+        $formation = Formations::find($id);
+    
+        if ($formation) {
+            ContenusFormation::where('formation_id', $id)->delete();
+            $formation->delete();
+            
+            return response()->json(['status' => 200, 'message' => 'Formation et ses contenus supprimés avec succès.']);
+        } else {
+            return response()->json(['status' => 404, 'message' => 'Formation non trouvée.']);
         }
     }
 
@@ -94,17 +118,19 @@ class FormationsController extends Component
 
     public function search1(Request $request)
     {
-        $search1 = $request->search1;
-        $formations = Formations::where(function($query) use ($search1) {
-            $query->where('id', 'like', "%$search1%")
-                ->orWhere('code', 'like', "%$search1%")
-                ->orWhere('nom', 'like', "%$search1%")
-                ->orWhere('duree', 'like', "%$search1%");
-        })->paginate(4);
-        
-        return view('livewire.example-laravel.recher-for', compact('formations', 'search1'));
-    }
+        if ($request->ajax()) {
+            $search1 = $request->search1;
+            $formations = Formations::where(function($query) use ($search1) {
+                $query->where('id', 'like', "%$search1%")
+                    ->orWhere('code', 'like', "%$search1%")
+                    ->orWhere('nom', 'like', "%$search1%")
+                    ->orWhere('duree', 'like', "%$search1%");
+            })->paginate(4);
     
+            $view = view('livewire.example-laravel.formations-list', compact('formations'))->render();
+            return response()->json(['html' => $view]);
+        }
+    }
 
 
 

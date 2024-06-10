@@ -107,23 +107,25 @@ class EtudiantController extends Component
 
     public function search(Request $request)
     {
-        $search = $request->search;
-        $etudiants = Etudiant::where(function($query) use ($search) {
-            $query->where('id', 'like', "%$search%")
-                ->orWhere('nni', 'like', "%$search%")
-                ->orWhere('nomprenom', 'like', "%$search%")
-                ->orWhere('diplome', 'like', "%$search%")
-                ->orWhere('genre', 'like', "%$search%")
-                ->orWhere('lieunaissance', 'like', "%$search%")
-                ->orWhere('adress', 'like', "%$search%")
-                ->orWhere('datenaissance', 'like', "%$search%")
-                ->orWhere('email', 'like', "%$search%")
-                ->orWhere('phone', 'like', "%$search%")
-                ->orWhere('wtsp', 'like', "%$search%");
-        })->paginate(4);
-
-        $countries = Country::all();
-        return view('livewire.example-laravel.recherche', compact('etudiants', 'countries', 'search'));
+        if ($request->ajax()) {
+            $search= $request->search;
+            $etudiants = Etudiant::where(function($query) use ($search) {
+                $query->where('id', 'like', "%$search%")
+                    ->orWhere('nni', 'like', "%$search%")
+                    ->orWhere('nomprenom', 'like', "%$search%")
+                    ->orWhere('diplome', 'like', "%$search%")
+                    ->orWhere('genre', 'like', "%$search%")
+                    ->orWhere('lieunaissance', 'like', "%$search%")
+                    ->orWhere('adress', 'like', "%$search%")
+                    ->orWhere('datenaissance', 'like', "%$search%")
+                    ->orWhere('email', 'like', "%$search%")
+                    ->orWhere('phone', 'like', "%$search%")
+                    ->orWhere('wtsp', 'like', "%$search%");
+            })->paginate(4);
+    
+            $view = view('livewire.example-laravel.etudiants-list', compact('etudiants'))->render();
+            return response()->json(['html' => $view]);
+        }
     }
 
     // public function search(Request $request)

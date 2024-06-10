@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Laravel Ajax CRUD Example</title>
+    <title>Laravel AJAX Etudiants Management</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
-    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <!-- Your existing styles and scripts -->
+
     <style>
         .imgUpload {
             max-width: 90px;
@@ -34,29 +32,11 @@
             max-width: 800px;
             margin: 0 auto;
         }
-
         .modal-body .form-label {
             font-weight: bold;
         }
-
-        .required::after {
-            content: " *";
-            color: red;
-        }
-
-        .form-control {
-            border: 1px solid #ccc;
-            border-radius: 6px;
-        }
-
-        .form-control:focus {
-            border-color: #66afe9;
-            outline: 0;
-            box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
-        }
     </style>
 </head>
-
 <body>
     <div class="container-fluid py-4">
         <div class="row">
@@ -74,70 +54,26 @@
                             </button>
                             <a href="{{ route('export.etudiants') }}" class="btn btn-success">Exporter Étudiants</a>
                         </div>
-                        
-                        <form action="{{ route('search') }}" method="get" class="d-flex align-items-center ms-auto">
+                        <form class="d-flex align-items-center ms-auto">
                             <div class="input-group input-group-sm" style="width: 250px;">
-                                <input type="text" name="search" id="sear_bar" class="form-control" placeholder="Rechercher..." value="{{ isset($search) ? $search : ''}}">
-                                <!-- <button type="submit" class="btn btn-primary">Rechercher</button> -->
+                                <input type="text" name="search" id="search_bar" class="form-control" placeholder="Rechercher...">
                             </div>
                         </form>
                     </div>
-
                     <div class="me-3 my-3 text-end "></div>
-
                     <div class="card-body px-0 pb-2">
-                        <div class="table-responsive p-0">
-                            <table id="etudiants-table" class="table align-items-center mb-0">
-                                <thead>
-                                    <tr>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">ID</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Image</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">NNI</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nom & Prénom</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nationalité</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Diplôme</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Genre</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Lieu de naissance</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Addresse</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Date de naissance</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">EMAIL</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Portable</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">WhatsApp</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Actions</th>
-                                        <th class="text-secondary opacity-7"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($etudiants as $etudiant)
-                                    <tr>
-                                        <td>{{ $etudiant->id }}</td>
-                                        <td><img src="{{ asset('images/'.$etudiant->image)}}" alt="" width="60px"></td>
-                                        <td>{{ $etudiant->nni }}</td>
-                                        <td>{{ $etudiant->nomprenom }}</td>
-                                        <td data-country-id="{{ $etudiant->country_id }}">{{ $etudiant->country->name ?? 'N/A' }}</td>
-                                        <td>{{ $etudiant->diplome }}</td>
-                                        <td>{{ $etudiant->genre }}</td>
-                                        <td>{{ $etudiant->lieunaissance }}</td>
-                                        <td>{{ $etudiant->adress }}</td>
-                                        <td>{{ $etudiant->datenaissance }}</td>
-                                        <td>{{ $etudiant->email }}</td>
-                                        <td>{{ $etudiant->phone }}</td>
-                                        <td>{{ $etudiant->wtsp }}</td>
-                                        <td>
-                                            <a href="javascript:void(0)" id="edit-etudiant" data-id="{{ $etudiant->id }}" class="btn btn-info"><i class="material-icons opacity-10">border_color</i></a>
-                                            <a href="javascript:void(0)" id="delete-etudiant" data-id="{{ $etudiant->id }}" class="btn btn-danger"><i class="material-icons opacity-10">delete</i></a>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                            {{ $etudiants->links() }}
+                        <div class="table-responsive p-0" id="etudiants-table">
+                            @include('livewire.example-laravel.etudiants-list', ['etudiants' => $etudiants])
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+                    <div class="me-3 my-3 text-end "></div>
+
+        
 
     <!-- Modals -->
 
@@ -373,6 +309,19 @@ $(document).ready(function () {
         }
         return isValid;
     }
+
+    // Recherche AJAX
+    $('#search_bar').on('keyup', function(){
+                var query = $(this).val();
+                $.ajax({
+                    url: "{{ route('search') }}",
+                    type: "GET",
+                    data: {'search': query},
+                    success: function(data){
+                        $('#etudiants-table').html(data.html);
+                    }
+                });
+            });
 
     $("#add-new-etudiant").click(function(e){
         e.preventDefault();

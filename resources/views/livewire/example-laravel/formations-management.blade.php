@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Laravel AJAX Programmes Management</title>
+    <title>Laravel AJAX Formations Management</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js"></script>
@@ -38,26 +38,29 @@
                 </div>
                 @endif
                 <div class="card my-4">
-                    
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 d-flex justify-content-between align-items-center">
                         <div>
                             <button type="button" class="btn bg-gradient-dark" data-bs-toggle="modal" data-bs-target="#formationAddModal">
-                                <i class="material-icons text-sm">add</i>&nbsp;&nbsp;Ajouter une Programme
+                                <i class="material-icons text-sm">add</i>&nbsp;&nbsp;Ajouter une Formation
                             </button>
-                            <a href="{{ route('formations.export') }}" class="btn btn-success">Exporter Programmes</a>
-                            <a href="{{ route('contenusformation-management') }}" class="btn bg-gradient-dark">Contenus Programme</a>
+                            <a href="{{ route('formations.export') }}" class="btn btn-success">Exporter Formations</a>
+                            <a href="{{ route('contenusformation-management') }}" class="btn bg-gradient-dark">ContenusFormation</a>
 
                         </div>
                         <form action="/search1" method="get" class="d-flex align-items-center ms-auto">
                             <div class="input-group input-group-sm" style="width: 250px;">
                                 <input type="text" name="search1" id="search_bar" class="form-control" placeholder="Rechercher..." value="{{ isset($search1) ? $search1 : ''}}">
+                                
                          
                             </div>
+                          
+                            <div id="search_list"></div>
                         </form>
                     </div>
+
                     <div class="me-3 my-3 text-end "></div>
                     <div class="card-body px-0 pb-2">
-                        <div class="table-responsive p-0">
+                        <div class="table-responsive p-0" id="formations-table">
                             <table class="table align-items-center mb-0">
                                 <thead>
                                     <tr>
@@ -74,7 +77,6 @@
                                     <tr>
                                         <td>{{ $formation->id }}</td>
                                         <td>{{ $formation->code }}</td>
-                                        
                                         <td><a href="javascript:void(0)" id="show-formation" data-id="{{ $formation->id }}" >{{ $formation->nom }}</a></td>
 
                                         <td>{{ $formation->duree }}</td>
@@ -233,6 +235,20 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+
+        // Recherche AJAX
+        $('#search_bar').on('keyup', function(){
+            var query = $(this).val();
+            $.ajax({
+                url: "{{ route('search1') }}",
+                type: "GET",
+                data: {'search1': query},
+                success: function(data){
+                    $('#formations-table').html(data.html);
+                }
+            });
+        });
+    
 
         function validateForm(formId, warnings) {
         let isValid = true;
@@ -395,35 +411,66 @@
         // Supprimer une formation
         $('body').on('click', '#delete-formation', function (e) {
             e.preventDefault();
-            var confirmation = confirm("Êtes-vous sûr de vouloir supprimer cette formation ?");
-            if (confirmation) {
-                var id = $(this).data('id');
-                $.ajax({
-                    url: '/formations/' + id,
-                    type: 'DELETE',
-                    dataType: 'json',
-                    success: function (response) {
-                        if (response.success) {
-                            iziToast.success({
-                                message: response.success,
-                                position: 'topRight'
-                            });
-                            location.reload();
-                        } else {
-                            iziToast.error({
-                                message: response.error,
-                                position: 'topRight'
+            var id = $(this).data('id');
+
+            $.ajax({
+                url: '/formations/' + id,
+                type: 'DELETE',
+                dataType: 'json',
+                success: function (response) {
+                    if (response.status === 400 && response.has_contents) {
+                        if (confirm(response.message)) {
+                            // Si l'utilisateur confirme, envoyer une requête pour supprimer la formation et ses contenus
+                            $.ajax({
+                                url: '/formations/confirm-delete/' + id,
+                                type: 'DELETE',
+                                dataType: 'json',
+                                success: function (response) {
+                                    if (response.status === 200) {
+                                        iziToast.success({
+                                            message: response.message,
+                                            position: 'topRight'
+                                        });
+                                        location.reload();
+                                    } else {
+                                        iziToast.error({
+                                            message: response.message,
+                                            position: 'topRight'
+                                        });
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    var errorMessage = xhr.status + ': ' + xhr.statusText;
+                                    iziToast.error({
+                                        title: 'Erreur',
+                                        message: 'Une erreur s\'est produite: ' + errorMessage,
+                                        position: 'topRight'
+                                    });
+                                }
                             });
                         }
-                    },
-                    error: function (xhr, status, error) {
+                    } else if (response.status === 200) {
+                        iziToast.success({
+                            message: response.message,
+                            position: 'topRight'
+                        });
+                        location.reload();
+                    } else {
                         iziToast.error({
-                            message: 'An error occurred: ' + error,
+                            message: response.message,
                             position: 'topRight'
                         });
                     }
-                });
-            }
+                },
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText;
+                    iziToast.error({
+                        title: 'Erreur',
+                        message: 'Une erreur s\'est produite: ' + errorMessage,
+                        position: 'topRight'
+                    });
+                }
+            });
         });
 
         var alertElement = document.querySelector('.fade-out');

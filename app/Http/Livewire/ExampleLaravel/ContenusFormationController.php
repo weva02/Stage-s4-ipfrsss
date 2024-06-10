@@ -82,18 +82,18 @@ class ContenusFormationController extends Component
 
     public function search3(Request $request)
     {
-        $search3 = $request->search3;
-        $contenues = ContenusFormation::where(function($query) use ($search3) {
-            $query->where('id', 'like', "%$search3%")
-                    ->where('nomchap', 'like', "%$search3%")
-                    ->orWhere('nomunite', 'like', "%$search3%")
-                    ->orWhere('description', 'like', "%$search3%")
-                    ->orWhere('nombreheures', 'like', "%$search3%")
-                    ->paginate(4);
-        })->paginate(4);
+        if ($request->ajax()) {
+            $search3 = $request->search3;
+            $contenues = ContenusFormation::with('formation')
+                ->where('nomchap', 'like', "%$search3%")
+                ->orWhere('nomunite', 'like', "%$search3%")
+                ->orWhere('description', 'like', "%$search3%")
+                ->orWhere('nombreheures', 'like', "%$search3%")
+                ->paginate(4);
 
-        $formations = Formations::all();
-        return view('livewire.example-laravel.recherche', compact('etudiants', 'countries', 'search'));
+            $view = view('livewire.example-laravel.contenus-list', compact('contenues'))->render();
+            return response()->json(['html' => $view]);
+        }
     }
 
     public function render()

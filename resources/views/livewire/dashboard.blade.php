@@ -11,7 +11,7 @@
                               <i class="material-icons opacity-10">access_time</i>
                           </div>
                           <div class="text-end pt-1">
-                              <p class="text-sm mb-0 text-capitalize"><strong>Formations en court</strong></p>
+                              <p class="text-sm mb-0 text-capitalize"><strong>Formations<br> en cours</strong></p>
                               <h4 class="mb-0">$53k</h4>
                           </div>
                       </div>

@@ -108,25 +108,26 @@ public function update(Request $request, $id)
         return response()->json(['success' => 'Professeur supprimé avec succès']);
     }
 
-    public function search(Request $request)
+    public function search4(Request $request)
     {
-        $search = $request->search;
-        $profs = Professeur::where(function($query) use ($search) {
-            $query->where('id', 'like', "%$search%")
-                ->orWhere('nomprenom', 'like', "%$search%")
-                ->orWhere('diplome', 'like', "%$search%")
-                ->orWhere('genre', 'like', "%$search%")
-                ->orWhere('lieunaissance', 'like', "%$search%")
-                ->orWhere('adress', 'like', "%$search%")
-                ->orWhere('datenaissance', 'like', "%$search%")
-                ->orWhere('email', 'like', "%$search%")
-                ->orWhere('phone', 'like', "%$search%")
-                ->orWhere('wtsp', 'like', "%$search%");
-        })->paginate(4);
+        if ($request->ajax()) {
+            $search = $request->search;
+            $profs = Professeur::where(function($query) use ($search) {
+                $query->where('id', 'like', "%$search%")
+                    ->orWhere('nomprenom', 'like', "%$search%")
+                    ->orWhere('diplome', 'like', "%$search%")
+                    ->orWhere('genre', 'like', "%$search%")
+                    ->orWhere('lieunaissance', 'like', "%$search%")
+                    ->orWhere('adress', 'like', "%$search%")
+                    ->orWhere('datenaissance', 'like', "%$search%")
+                    ->orWhere('email', 'like', "%$search%")
+                    ->orWhere('phone', 'like', "%$search%")
+                    ->orWhere('wtsp', 'like', "%$search%");
+            })->paginate(4);
 
-        $countries = Country::all();
-        $typeymntprofs = Typeymntprofs::all();
-        return view('livewire.example-laravel.prof-management', compact('profs', 'countries', 'search', 'typeymntprofs'));
+            $view = view('livewire.example-laravel.professeur-list', compact('profs'))->render();
+            return response()->json(['html' => $view]);
+        }
     }
 
     public function export()
