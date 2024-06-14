@@ -34,7 +34,7 @@
 <body>
     <div class="container-fluid py-4">
         <div id="formationContentContainer" style="display:none;">
-            <!-- <button onclick="$('#formationContentContainer').hide();" class="btn btn-secondary">Fermer</button> -->
+            <button onclick="$('#formationContentContainer').hide();" class="btn btn-secondary">Fermer</button>
             <div id="formationContents"></div>
         </div>
         <div class="row">
@@ -61,42 +61,11 @@
                     </div>
                     <div class="me-3 my-3 text-end"></div>
                     <div class="card-body px-0 pb-2">
-                        <div class="table-responsive p-0">
-                            <table class="table align-items-center mb-0">
-                                <thead>
-                                    <tr>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">ID</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Code</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nom</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Durée</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Prix</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($formations as $formation)
-                                    <tr>
-                                        <td>{{ $formation->id }}</td>
-                                        <td>{{ $formation->code }}</td>
-                                        <td>{{ $formation->nom }}</td>
-                                        <td>{{ $formation->duree }}</td>
-                                        <td>{{ $formation->prix }}</td>
-                                        <td>
-                                            <button class="btn btn-primary" onclick="showContents({{ $formation->id }})" data-toggle="tooltip" title="Contenus de ce Pregramme"><i class="material-icons opacity-10">chat</i></button>
-                                            <a href="javascript:void(0)" id="edit-formation" data-id="{{ $formation->id }}" class="btn btn-info"><i class="material-icons opacity-10">border_color</i></a>
-                                            <a href="javascript:void(0)" id="delete-formation" data-id="{{ $formation->id }}" class="btn btn-danger"><i class="material-icons opacity-10">delete</i></a>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                            {{ $formations->links() }}
+                        <div class="table-responsive p-0" id="formations-table">
+                            @include('livewire.example-laravel.formations-list', ['formations' => $formations])
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Modal Ajouter Formation -->
     <div class="modal fade" id="formationAddModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -310,6 +279,17 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+        $('#search_bar').on('keyup', function(){
+                var query = $(this).val();
+                $.ajax({
+                    url: "{{ route('search1') }}",
+                    type: "GET",
+                    data: {'search1': query},
+                    success: function(data){
+                        $('#formations-table').html(data.html);
+                    }
+                });
+            });
 
         window.hideContents = function() {
                 $('#formationContentContainer').hide();
