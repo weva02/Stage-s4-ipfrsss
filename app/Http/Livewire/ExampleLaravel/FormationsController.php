@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Livewire\ExampleLaravel;
+
 use Illuminate\Http\Request;
 use Livewire\Component;
 use App\Models\Formations;
@@ -53,19 +54,19 @@ class FormationsController extends Component
 
             $formation->update($request->all());
 
-            return response()->json(['success' => 'Formation modifiée avec succès!']);
+            return response()->json(['status' => 200, 'message' => 'Formation modifiée avec succès!']);
         } else {
-            return response()->json(['error' => 'Formation non trouvée'], 404);
+            return response()->json(['status' => 404, 'message' => 'Formation non trouvée.']);
         }
     }
 
     public function delete_formation($id)
     {
         $formation = Formations::find($id);
-    
+
         if ($formation) {
             $contenus = ContenusFormation::where('formation_id', $id)->get();
-            
+
             if ($contenus->isNotEmpty()) {
                 return response()->json([
                     'status' => 400,
@@ -84,11 +85,11 @@ class FormationsController extends Component
     public function confirm_delete_formation(Request $request, $id)
     {
         $formation = Formations::find($id);
-    
+
         if ($formation) {
             ContenusFormation::where('formation_id', $id)->delete();
             $formation->delete();
-            
+
             return response()->json(['status' => 200, 'message' => 'Formation et ses contenus supprimés avec succès.']);
         } else {
             return response()->json(['status' => 404, 'message' => 'Formation non trouvée.']);
@@ -103,8 +104,8 @@ class FormationsController extends Component
     public function render()
     {
         return $this->liste_formation();
-
     }
+
     public function show($id)
     {
         $formation = Formations::with('contenusFormation')->find($id);
@@ -126,12 +127,30 @@ class FormationsController extends Component
                     ->orWhere('nom', 'like', "%$search1%")
                     ->orWhere('duree', 'like', "%$search1%");
             })->paginate(4);
-    
+
             $view = view('livewire.example-laravel.formations-list', compact('formations'))->render();
             return response()->json(['html' => $view]);
         }
     }
 
+    public function getFormationContents($id)
+    {
+        $formation = Formations::with('contenusFormation')->find($id);
 
+        if ($formation) {
+            return response()->json(['contenus' => $formation->contenusFormation]);
+        } else {
+            return response()->json(['error' => 'Formation non trouvée'], 404);
+        }
+    }
 
+    public function showContents($id)
+    {
+        $formation = Formations::with('contenusFormation')->find($id);
+        if (!$formation) {
+            return response()->json(['error' => 'Formation non trouvée'], 404);
+        }
+
+        return response()->json(['contenus' => $formation->contenusFormation]);
+    }
 }

@@ -1,7 +1,10 @@
+
+
+
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Laravel AJAX Contenus Formations Management</title>
+    <title>Laravel AJAX Contenus Programmes Management</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js"></script>
@@ -47,10 +50,12 @@
                 <div class="card my-4">
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 d-flex justify-content-between align-items-center">
                         <div>
+                            <a href="{{ route('formations-management') }}" class="btn bg-gradient-dark material-icons text-sm">arrow_back</a>
+                            
                             <button type="button" class="btn bg-gradient-dark" data-bs-toggle="modal" data-bs-target="#contenueAddModal">
                                 <i class="material-icons text-sm">add</i>&nbsp;&nbsp;Ajouter un contenu
                             </button>
-                            <!-- <a href="{{ route('export.contenues') }}" class="btn btn-success">Exporter Contenus</a> -->
+                            <a href="{{ route('contenues.export') }}" class="btn btn-success">Exporter Contenus</a>
                         </div>
                         <form class="d-flex align-items-center ms-auto">
                             <div class="input-group input-group-sm" style="width: 250px;">
@@ -455,30 +460,30 @@
             });
 
 
-            function addContenueToTable(contenue) {
-                var newRow = `<tr id="contenue-${contenue.id}">
-                    <td>${contenue.id}</td>
-                    <td data-formation-id="${contenue.formation_id}">${contenue.formation ? contenue.formation.nom : 'N/A'}</td>
-                    <td>${contenue.nomchap}</td>
-                    <td>${contenue.nomunite}</td>
-                    <td>${contenue.nombreheures}</td>
-                    <td>${contenue.description}</td>
-                    <td>
-                        <a href="javascript:void(0)" id="edit-contenue" data-id="${contenue.id}" class="btn btn-info"><i class="material-icons opacity-10">border_color</i></a>
-                        <a href="javascript:void(0)" id="delete-contenue" data-id="${contenue.id}" class="btn btn-danger"><i class="material-icons opacity-10">delete</i></a>
-                    </td>
-                </tr>`;
-                $('table tbody').append(newRow);
-            }
+            // function addContenueToTable(contenue) {
+            //     var newRow = `<tr id="contenue-${contenue.id}">
+            //         <td>${contenue.id}</td>
+            //         <td data-formation-id="${contenue.formation_id}">${contenue.formation ? contenue.formation.nom : 'N/A'}</td>
+            //         <td>${contenue.nomchap}</td>
+            //         <td>${contenue.nomunite}</td>
+            //         <td>${contenue.nombreheures}</td>
+            //         <td>${contenue.description}</td>
+            //         <td>
+            //             <a href="javascript:void(0)" id="edit-contenue" data-id="${contenue.id}" class="btn btn-info"><i class="material-icons opacity-10">border_color</i></a>
+            //             <a href="javascript:void(0)" id="delete-contenue" data-id="${contenue.id}" class="btn btn-danger"><i class="material-icons opacity-10">delete</i></a>
+            //         </td>
+            //     </tr>`;
+            //     $('table tbody').append(newRow);
+            // }
 
-            function updateContenueInTable(contenue) {
-                var row = $('#contenue-' + contenue.id);
-                row.find('td:nth-child(2)').text(contenue.formation ? contenue.formation.nom : 'N/A').attr('data-formation-id', contenue.formation_id);
-                row.find('td:nth-child(3)').text(contenue.nomchap);
-                row.find('td:nth-child(4)').text(contenue.nomunite);
-                row.find('td:nth-child(6)').text(contenue.nombreheures);
-                row.find('td:nth-child(7)').text(contenue.description);
-            }
+            // function updateContenueInTable(contenue) {
+            //     var row = $('#contenue-' + contenue.id);
+            //     row.find('td:nth-child(2)').text(contenue.formation ? contenue.formation.nom : 'N/A').attr('data-formation-id', contenue.formation_id);
+            //     row.find('td:nth-child(3)').text(contenue.nomchap);
+            //     row.find('td:nth-child(4)').text(contenue.nomunite);
+            //     row.find('td:nth-child(6)').text(contenue.nombreheures);
+            //     row.find('td:nth-child(7)').text(contenue.description);
+            // }
 
             var alertElement = document.querySelector('.fade-out');
             if (alertElement) {

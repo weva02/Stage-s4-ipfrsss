@@ -91,7 +91,7 @@ class ContenusFormationController extends Component
                 ->orWhere('nombreheures', 'like', "%$search3%")
                 ->paginate(4);
 
-            $view = view('livewire.example-laravel.contenus-list', compact('contenues'))->render();
+            $view = view('livewire.example-laravel.contenusformation-management', compact('contenues'))->render();
             return response()->json(['html' => $view]);
         }
     }
@@ -117,3 +117,4 @@ class ContenusFormationController extends Component
         }
     }
 }
+

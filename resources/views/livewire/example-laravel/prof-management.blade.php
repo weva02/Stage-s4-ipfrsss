@@ -42,13 +42,12 @@
                 </div>
                 @endif
                 <div class="card my-4">
-                    
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 d-flex justify-content-between align-items-center">
                         <div>
                             <button type="button" class="btn bg-gradient-dark" data-bs-toggle="modal" data-bs-target="#profAddModal">
-                                <i class="material-icons text-sm">add</i>&nbsp;&nbsp;Ajouter un Professeur
+                                <i class="material-icons text-sm">add</i>&nbsp;&nbsp;Ajouter 
                             </button>
-                            <a href="#" class="btn btn-success">Exporter Professeurs</a>
+                            <a href="#" class="btn btn-success">Exporter</a>
                         </div>
                         <form action="/search4" method="get" class="d-flex align-items-center ms-auto">
                             <div class="input-group input-group-sm" style="width: 250px;">
@@ -57,7 +56,7 @@
                             <div id="search_list"></div>
                         </form>
                     </div>
-                    <div class="me-3 my-3 text-end "></div>
+                    <div class="me-3 my-3 text-end"></div>
                     <div class="card-body px-0 pb-2">
                         <div class="table-responsive p-0" id="professors-table">
                             @include('livewire.example-laravel.professeur-list', ['profs' => $profs])
@@ -67,24 +66,25 @@
             </div>
         </div>
     </div>
+
     <!-- Modals -->
 
     <!-- Add Student Modal -->
-    <div class="modal fade" id="profAddModal"  tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" >
+        <!-- Add Prof Modal -->
+        <div class="modal fade" id="profAddModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
             <div class="modal-content" style="width: 40cm;">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Ajouter un nouvel Professeur</h5>
-                    <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body" >
-                    <form id="prof-add-form"  enctype="multipart/form-data" >
+                <div class="modal-body">
+                    <form id="prof-add-form" enctype="multipart/form-data">
                         @csrf
                         <div class="row mb-4">
                             <div class="col-md-3">
-                                <!-- <img src="" id="imagePreview" class="imgUpload" alt=""> -->
                                 <label for="image" class="form-label">Image:</label>
-                                <input  type="file" class="form-control" id="new-prof-image" name="image">
+                                <input type="file" class="form-control" id="new-prof-image" name="image">
                             </div>
                             <div class="col-md-3">
                                 <label for="nomprenom" class="form-label required">Nom & Prénom:</label>
@@ -100,46 +100,36 @@
                                 <input type="text" class="form-control" id="new-prof-lieunaissance" placeholder="Lieu de naissance" name="lieunaissance">
                             </div>
                         </div>
-
-                        
                         <div class="row mb-4">
-
                             <div class="form-group col-md-3">
                                 <label for="country_id" class="form-label required">Nationalité</label>
                                 <select class="form-control" id="new-prof-country_id" name="country_id">
-                                    <option value="">Choisir la mationalité</option>
+                                    <option value="">Choisir la nationalité</option>
                                     @foreach ($countries as $country)
                                         <option value="{{ $country->id }}">{{ $country->name }}</option>
                                     @endforeach
                                 </select>
                                 <div class="text-danger" id="country_id-warning"></div>
-
                             </div>
                             <div class="form-group col-md-3">
-                                <label for="type_id" class="form-label required">type de contrat </label>
+                                <label for="type_id" class="form-label required">Type de contrat</label>
                                 <select class="form-control" id="new-prof-type_id" name="type_id">
-                                    <option value="">Choisir la type de contrat</option>
+                                    <option value="">Choisir le type de contrat</option>
                                     @foreach ($typeymntprofs as $type)
                                         <option value="{{ $type->id }}">{{ $type->type }}</option>
                                     @endforeach
                                 </select>
                                 <div class="text-danger" id="type_id-warning"></div>
-
                             </div>
-                            <!-- <div class="col-md-4">
-                                <label for="diplome" class="form-label">Diplôme:</label>
-                                <input type="text" class="form-control" id="new-prof-diplome" placeholder="Diplôme" name="diplome">
-                            </div> -->
                             <div class="col-md-3">
                                 <label class="form-label required">Genre:</label>
                                 <div>
-                                    <input type="radio" id="male" name="genre" value="Male" >
+                                    <input type="radio" id="male" name="genre" value="Male">
                                     <label for="male">Male</label>
                                     <input type="radio" id="female" name="genre" value="Female">
                                     <label for="female">Female</label>
                                 </div>
                                 <div class="text-danger" id="genre-warning"></div>
-
                             </div>
                             <div class="col-md-3">
                                 <label for="datenaissance" class="form-label">Date de naissance:</label>
@@ -153,13 +143,12 @@
                             </div>
                             <div class="col-md-3">
                                 <label for="phone" class="form-label required">Portable:</label>
-                                <input type="number" class="form-control" id="new-prof-phone" placeholder="Portable" name="phone">
+                                <input type="text" class="form-control" id="new-prof-phone" placeholder="Portable" name="phone">
                                 <div class="text-danger" id="phone-warning"></div>
-
                             </div>
                             <div class="col-md-3">
                                 <label for="wtsp" class="form-label">WhatsApp:</label>
-                                <input type="number" class="form-control" id="new-prof-wtsp" placeholder="WhatsApp" name="wtsp">
+                                <input type="text" class="form-control" id="new-prof-wtsp" placeholder="WhatsApp" name="wtsp">
                             </div>
                             <div class="col-md-3">
                                 <label for="adress" class="form-label">Adresse:</label>
@@ -176,25 +165,23 @@
         </div>
     </div>
 
-
-    <!-- Edit Student Modal -->
+    <!-- Edit Prof Modal -->
     <div class="modal fade" id="profEditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content" style="width: 40cm;">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modifier Professeur</h5>
-            </div>
-            <div class="modal-body">
-                <form id="prof-edit-form" enctype="multipart/form-data">
-                    <input type="hidden" id="prof-id" name="id">
-                    <div class="d-flex align-items-center mb-3">
+        <div class="modal-dialog">
+            <div class="modal-content" style="width: 40cm;">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modifier Professeur</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="prof-edit-form" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" id="prof-id" name="id">
                         <div class="row mb-4">
                             <div class="col-md-3">
                                 <label for="image" class="form-label">Image:</label>
                                 <img src="" id="imagePreview" class="imgUpload" alt="">
-                                <div>
-                                    <input type="file" class="form-control" id="image" name="image">
-                                </div>
+                                <input type="file" class="form-control" id="image" name="image">
                             </div>
                             <div class="col-md-3">
                                 <label for="nomprenom" class="form-label required">Nom & Prénom:</label>
@@ -207,77 +194,73 @@
                             </div>
                             <div class="col-md-3">
                                 <label for="lieunaissance" class="form-label">Lieu de naissance:</label>
-                                <input type="text" class="form-control" id="prof-lieunaissance" placeholder="Lieu de naissance..." name="lieunaissance">
+                                <input type="text" class="form-control" id="prof-lieunaissance" placeholder="Lieu de naissance" name="lieunaissance">
                             </div>
                         </div>
-                    </div>
-                    <div class="row mb-4">
-                        <div class="form-group col-md-3">
-                            <label for="country_id" class="form-label required">Nationalité</label>
-                            <select class="form-control" id="prof-country_id" name="country_id">
-                                <option value="">Select Country</option>
-                                @foreach ($countries as $country)
-                                    <option value="{{ $country->id }}">{{ $country->name }}</option>
-                                @endforeach
-                            </select>
-                            <div class="text-danger" id="edit-country_id-warning"></div>
-                        </div>
-
-                        <div class="form-group col-md-3">
-                            <label for="type_id" class="form-label required">Type de contrat </label>
-                            <select class="form-control" id="prof-type_id" name="type_id">
-                                <option value="">Choisir la type de contrat</option>
-                                @foreach ($typeymntprofs as $type)
-                                    <option value="{{ $type->id }}">{{ $type->type }}</option>
-                                @endforeach
-                            </select>
-                            <div class="text-danger" id="edit-type_id-warning"></div>
-                        </div>
-                        
-                        <div class="col-md-3">
-                            <label class="form-label required">Genre:</label>
-                            <div>
-                                <input type="radio" id="male" name="genre" value="Male">
-                                <label for="male">Male</label>
-                                <input type="radio" id="female" name="genre" value="Female">
-                                <label for="female">Female</label>
+                        <div class="row mb-4">
+                            <div class="form-group col-md-3">
+                                <label for="country_id" class="form-label required">Nationalité</label>
+                                <select class="form-control" id="prof-country_id" name="country_id">
+                                    <option value="">Choisir la nationalité</option>
+                                    @foreach ($countries as $country)
+                                        <option value="{{ $country->id }}">{{ $country->name }}</option>
+                                    @endforeach
+                                </select>
+                                <div class="text-danger" id="edit-country_id-warning"></div>
                             </div>
-                            <div class="text-danger" id="edit-genre-warning"></div>
+                            <div class="form-group col-md-3">
+                                <label for="type_id" class="form-label required">Type de contrat</label>
+                                <select class="form-control" id="prof-type_id" name="type_id">
+                                    <option value="">Choisir le type de contrat</option>
+                                    @foreach ($typeymntprofs as $type)
+                                        <option value="{{ $type->id }}">{{ $type->type }}</option>
+                                    @endforeach
+                                </select>
+                                <div class="text-danger" id="edit-type_id-warning"></div>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label required">Genre:</label>
+                                <div>
+                                    <input type="radio" id="male" name="genre" value="Male">
+                                    <label for="male">Male</label>
+                                    <input type="radio" id="female" name="genre" value="Female">
+                                    <label for="female">Female</label>
+                                </div>
+                                <div class="text-danger" id="edit-genre-warning"></div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="datenaissance" class="form-label">Date de naissance:</label>
+                                <input type="date" class="form-control" id="prof-datenaissance" placeholder="Date de naissance" name="datenaissance">
+                            </div>
                         </div>
-                        <div class="col-md-3">
-                            <label for="datenaissance" class="form-label">Date de naissance:</label>
-                            <input type="date" class="form-control" id="prof-datenaissance" placeholder="Lieu de naissance" name="datenaissance">
+                        <div class="row mb-4">
+                            <div class="col-md-3">
+                                <label for="email" class="form-label">Email:</label>
+                                <input type="email" class="form-control" id="prof-email" placeholder="email@example.com" name="email">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="phone" class="form-label required">Portable:</label>
+                                <input type="text" class="form-control" id="prof-phone" placeholder="Portable" name="phone">
+                                <div class="text-danger" id="edit-phone-warning"></div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="wtsp" class="form-label">WhatsApp:</label>
+                                <input type="text" class="form-control" id="prof-wtsp" placeholder="WhatsApp" name="wtsp">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="adress" class="form-label">Adresse:</label>
+                                <input type="text" class="form-control" id="prof-adress" placeholder="Adresse" name="adress">
+                            </div>
                         </div>
-                    </div>
-                    <div class="row mb-4">
-                        <div class="col-md-3">
-                            <label for="email" class="form-label">Email:</label>
-                            <input type="email" class="form-control" id="prof-email" placeholder="email@example.com" name="email">
-                        </div>
-                        <div class="col-md-3">
-                            <label for="phone" class="form-label required">Portable:</label>
-                            <input type="text" class="form-control" id="prof-phone" placeholder="Portable" name="phone">
-                            <div class="text-danger" id="edit-phone-warning"></div>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="wtsp" class="form-label">WhatsApp:</label>
-                            <input type="text" class="form-control" id="prof-wtsp" placeholder="WhatsApp" name="wtsp">
-                        </div>
-                        <div class="col-md-3">
-                            <label for="adress" class="form-label">Adresse:</label>
-                            <input type="text" class="form-control" id="prof-adress" placeholder="Adresse" name="adress">
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-info" id="prof-update">Modifier</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" id="prof-update">Modifier</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
 
 
     <script type="text/javascript">
@@ -289,18 +272,17 @@
             });
 
             // Recherche AJAX
-    $('#search_bar').on('keyup', function(){
-        var query = $(this).val();
-        $.ajax({
-            url: "{{ route('search4') }}",
-            type: "GET",
-            data: {'search': query},
-            success: function(data){
-                $('#professors-table').html(data.html);
-            }
-        });
-    });
-
+            $('#search_bar').on('keyup', function(){
+                var query = $(this).val();
+                $.ajax({
+                    url: "{{ route('search4') }}",
+                    type: "GET",
+                    data: {'search': query},
+                    success: function(data){
+                        $('#professors-table').html(data.html);
+                    }
+                });
+            });
 
             function validateForm(formId, warnings) {
                 let isValid = true;
@@ -458,8 +440,6 @@
                 });
             });
 
-
-
             function addStudentToTable(prof) {
                 var newRow = `<tr id="student-${prof.id}">
                     <td>${prof.id}</td>
@@ -499,8 +479,7 @@
                 row.find('td:nth-child(13)').text(prof.wtsp);
             }
 
-
-            // Delete student
+            // Delete prof
             $('body').on('click', '#delete-prof', function (e) {
                 e.preventDefault();
                 var id = $(this).data('id');
@@ -526,18 +505,18 @@
                 }
             });
 
-        function removeStudentFromTable(id) {
-            $(`#student-${id}`).remove();
-        }
+            function removeStudentFromTable(id) {
+                $(`#student-${id}`).remove();
+            }
 
-        var alertElement = document.querySelector('.fade-out');
-        if (alertElement) {
-            setTimeout(function() {
-                alertElement.style.display = 'none';
-            }, 2000);
-        }
-
+            var alertElement = document.querySelector('.fade-out');
+            if (alertElement) {
+                setTimeout(function() {
+                    alertElement.style.display = 'none';
+                }, 2000);
+            }
         });
     </script>
+
 </body>
 </html>

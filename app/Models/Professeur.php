@@ -22,4 +22,9 @@ class Professeur extends Model
     {
         return $this->belongsTo(Typeymntprofs::class, 'type_id');
     }
+
+    public function sessions()
+    {
+        return $this->belongsToMany(Sessions::class, 'prof_session', 'prof_id', 'session_id');
+    }
 }

@@ -16,9 +16,9 @@ class TyppymentProfSeeder extends Seeder
         Typeymntprofs::truncate();
 
         $typeymntprofs = [
-            ['type' => 'pourcentage'],
-            ['type' => 'mensuelle'],
-            ['type' => 'heures'],
+            ['type' => ' Par Pourcentage'],
+            ['type' => 'Mensuellement'],
+            ['type' => 'Par Heure'],
         ];
 
         // foreach ($typeymntprof as $typeymntprof_id) {

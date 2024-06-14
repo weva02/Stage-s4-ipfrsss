@@ -5,6 +5,7 @@ namespace App\Http\Livewire\ExampleLaravel;
 use Illuminate\Http\Request;
 use App\Models\Etudiant;
 use App\Models\Country;
+use App\Models\Sessions;
 use Livewire\Component;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\EtudiantExport;
@@ -13,9 +14,9 @@ class EtudiantController extends Component
 {
     public function liste_etudiant()
     {
-        $etudiants = Etudiant::paginate(4);
+        $etudiants = Etudiant::with('sessions')->paginate(4);
         $countries = Country::all();
-        return view('livewire.example-laravel.etudiant-management', compact('etudiants', 'countries'));
+        return view('livewire.example-laravel.etudiant-management', compact('etudiants', 'countries', ));
     }
 
     public function store(Request $request)
@@ -33,6 +34,7 @@ class EtudiantController extends Component
             'phone' => 'required|integer',
             'wtsp' => 'nullable|integer',
             'country_id' => 'required|exists:countries,id',
+
         ]);
 
         try {
@@ -55,6 +57,7 @@ class EtudiantController extends Component
                 'phone' => $request->phone,
                 'wtsp' => $request->wtsp,
                 'country_id' => $request->country_id,
+
             ]);
 
             return response()->json(['success' => 'Étudiant créé avec succès']);
@@ -78,6 +81,7 @@ class EtudiantController extends Component
             'phone' => 'required|integer',
             'wtsp' => 'nullable|integer',
             'country_id' => 'required|exists:countries,id',
+
         ]);
 
         try {
@@ -105,6 +109,32 @@ class EtudiantController extends Component
         return response()->json(['success' => 'Étudiant supprimé avec succès']);
     }
 
+    public function searchByPhone(Request $request)
+    {
+        $phone = $request->phone;
+        $student = Etudiant::where('phone', $phone)->first();
+
+        if ($student) {
+            return response()->json(['student' => $student]);
+        } else {
+            return response()->json(['error' => 'Étudiant non trouvé'], 404);
+        }
+    }
+
+    public function addStudentToSession(Request $request, $sessionId)
+    {
+        $studentId = $request->student_id;
+        $session = Sessions::find($sessionId);
+
+        if ($session) {
+            $session->etudiants()->attach($studentId);
+            return response()->json(['success' => 'Étudiant ajouté à la session avec succès']);
+        } else {
+            return response()->json(['error' => 'Session non trouvée'], 404);
+        }
+    }
+
+
     public function search(Request $request)
     {
         if ($request->ajax()) {
@@ -127,15 +157,6 @@ class EtudiantController extends Component
             return response()->json(['html' => $view]);
         }
     }
-
-    // public function search(Request $request)
-    // {
-    //     $search = $request->input('search');
-    //     $etudiants = Etudiant::where('nomprenom', 'like', "%$search%")->paginate(10);
-    //     $countries = Country::all(); // Assurez-vous d'importer le modèle Country
-
-    //     return view('livewire.example-laravel.etudiant-management', compact('etudiants', 'countries', 'search'));
-    // }
 
 
     public function export()

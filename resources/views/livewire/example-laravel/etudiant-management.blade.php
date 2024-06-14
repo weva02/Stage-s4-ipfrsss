@@ -156,6 +156,8 @@
                             <label for="adress" class="form-label">Adresse:</label>
                             <input type="text" class="form-control" id="new-etudiant-adress" placeholder="Adresse" name="adress">
                         </div>
+                        <div>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -391,16 +393,17 @@ $(document).ready(function () {
         $('#etudiant-id').val($(this).data('id'));
         $('#etudiant-nni').val(tr.find("td:nth-child(3)").text());
         $('#etudiant-nomprenom').val(tr.find("td:nth-child(4)").text());
-        $('#etudiant-country_id').val(tr.find("td:nth-child(5)").data('country-id'));
-        $('#etudiant-diplome').val(tr.find("td:nth-child(6)").text());
-        var genre = tr.find("td:nth-child(7)").text();
+        // $('#etudiant-formation_id').val(tr.find("td:nth-child(5)").data('formation-id'));
+        $('#etudiant-country_id').val(tr.find("td:nth-child(6)").data('country-id'));
+        $('#etudiant-diplome').val(tr.find("td:nth-child(7)").text());
+        var genre = tr.find("td:nth-child(8)").text();
         $('input[name="genre"][value="' + genre + '"]').prop('checked', true);
-        $('#etudiant-lieunaissance').val(tr.find("td:nth-child(8)").text());
-        $('#etudiant-adress').val(tr.find("td:nth-child(9)").text());
-        $('#etudiant-datenaissance').val(tr.find("td:nth-child(10)").text());
-        $('#etudiant-email').val(tr.find("td:nth-child(11)").text());
-        $('#etudiant-phone').val(tr.find("td:nth-child(12)").text());
-        $('#etudiant-wtsp').val(tr.find("td:nth-child(13)").text());
+        $('#etudiant-lieunaissance').val(tr.find("td:nth-child(9)").text());
+        $('#etudiant-adress').val(tr.find("td:nth-child(10)").text());
+        $('#etudiant-datenaissance').val(tr.find("td:nth-child(11)").text());
+        $('#etudiant-email').val(tr.find("td:nth-child(12)").text());
+        $('#etudiant-phone').val(tr.find("td:nth-child(13)").text());
+        $('#etudiant-wtsp').val(tr.find("td:nth-child(14)").text());
         $('#imagePreview').attr('src', tr.find("td:nth-child(2) img").attr('src'));
 
         $('#etudiantEditModal').modal('show');
@@ -516,15 +519,16 @@ $(document).ready(function () {
         row.find('td:nth-child(2) img').attr('src', '{{ asset("images") }}/' + etudiant.image);
         row.find('td:nth-child(3)').text(etudiant.nni);
         row.find('td:nth-child(4)').text(etudiant.nomprenom);
-        row.find('td:nth-child(5)').text(etudiant.country ? etudiant.country.name : 'N/A').attr('data-country-id', etudiant.country_id);
-        row.find('td:nth-child(6)').text(etudiant.diplome);
-        row.find('td:nth-child(7)').text(etudiant.genre);
-        row.find('td:nth-child(8)').text(etudiant.lieunaissance);
-        row.find('td:nth-child(9)').text(etudiant.adress);
-        row.find('td:nth-child(10)').text(etudiant.datenaissance);
-        row.find('td:nth-child(11)').text(etudiant.email);
-        row.find('td:nth-child(12)').text(etudiant.phone);
-        row.find('td:nth-child(13)').text(etudiant.wtsp);
+        // row.find('td:nth-child(5)').text(etudiant.formation ? etudiant.formation.nom : 'N/A').attr('data-formation-id', etudiant.formation_id);
+        row.find('td:nth-child(6)').text(etudiant.country ? etudiant.country.name : 'N/A').attr('data-country-id', etudiant.country_id);
+        row.find('td:nth-child(7)').text(etudiant.diplome);
+        row.find('td:nth-child(8)').text(etudiant.genre);
+        row.find('td:nth-child(9)').text(etudiant.lieunaissance);
+        row.find('td:nth-child(10)').text(etudiant.adress);
+        row.find('td:nth-child(11)').text(etudiant.datenaissance);
+        row.find('td:nth-child(12)').text(etudiant.email);
+        row.find('td:nth-child(13)').text(etudiant.phone);
+        row.find('td:nth-child(14)').text(etudiant.wtsp);
     }
 
     function removeStudentFromTable(id) {

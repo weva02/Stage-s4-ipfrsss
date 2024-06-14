@@ -30,7 +30,7 @@
         <ul class="navbar-nav nav  nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
             
             <li class="nav-item mt-3">
-                <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Pages</h6>
+                <!-- <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Pages</h6> -->
             </li>
             <li class="nav-item">
                 <a class="nav-link text-white {{ Route::currentRouteName() == 'dashboard' ? ' active bg-gradient-primary' : '' }} "
@@ -66,6 +66,15 @@
                         <i class="material-icons opacity-10">format_list_bulleted</i>
                     </div>
                     <span class="nav-link-text ms-1"><b>programmes</b> </span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white {{ Route::currentRouteName() == 'sessions-management' ? ' active bg-gradient-primary' : '' }}  "
+                    href="{{ route('sessions-management') }}">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">format_list_bulleted</i>
+                    </div>
+                    <span class="nav-link-text ms-1"><b>Formations</b> </span>
                 </a>
             </li>
             <!-- <li class="nav-item">

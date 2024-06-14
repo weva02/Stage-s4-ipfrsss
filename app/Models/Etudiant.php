@@ -21,11 +21,17 @@ class Etudiant extends Model
         'email',
         'phone',
         'wtsp',
-        'country_id'
+        'country_id',
     ];
 
     public function country()
     {
         return $this->belongsTo(Country::class);
     }
+
+    public function sessions()
+    {
+        return $this->belongsToMany(Sessions::class, 'etud_session', 'etudiant_id', 'session_id');
+    }
+
 }
