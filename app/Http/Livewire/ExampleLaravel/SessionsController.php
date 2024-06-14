@@ -7,6 +7,7 @@ use App\Models\Formations;
 use App\Models\Sessions;
 use App\Models\Etudiant;
 use App\Exports\FormationsExport;
+use App\Exports\SessionsExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class SessionsController extends Component
@@ -117,13 +118,13 @@ class SessionsController extends Component
         }
     }
 
-    public function search(Request $request)
+    public function search6(Request $request)
     {
         if ($request->ajax()) {
-            $search = $request->search3;
-            $sessions = Sessions::where('date_debut', 'like', "%$search%")
-                ->orWhere('date_fin', 'like', "%$search%")
-                ->orWhere('nom', 'like', "%$search%")
+            $search6 = $request->search6;
+            $sessions = Sessions::where('date_debut', 'like', "%$search6%")
+                ->orWhere('date_fin', 'like', "%$search6%")
+                ->orWhere('nom', 'like', "%$search6%")
                 ->paginate(4);
 
             $view = view('livewire.example-laravel.sessions-list', compact('sessions'))->render();
@@ -216,8 +217,10 @@ class SessionsController extends Component
         return $this->list_session();
     }
 
-    public function export()
-    {
-        return Excel::download(new FormationsExport(), 'formations.xlsx');
-    }
+    public function exportSessions()
+{
+    return Excel::download(new SessionsExport(), 'sessions.xlsx');
+}
+    
+    
 }

@@ -152,6 +152,8 @@ Route::get('formations/{id}', [FormationsController::class, 'show']);
 Route::put('formations/{id}', [FormationsController::class, 'update']);
 Route::delete('formations/{id}', [FormationsController::class, 'delete_formation']);
 Route::delete('formations/confirm-delete/{id}', [FormationsController::class, 'confirm_delete_formation']);
+Route::get('/search1', [FormationsController::class, 'search1'])->name('search1');
+Route::get('/search6', [SessionsController::class, 'search6'])->name('search6');
 Route::get('formations/{id}/contents', [FormationsController::class, 'getFormationContents']);
 
 Route::get('contenus', [ContenusFormationController::class, 'liste_contenue'])->name('contenus-management');
@@ -159,8 +161,8 @@ Route::post('contenus/store', [ContenusFormationController::class, 'store'])->na
 Route::get('contenus/{id}', [ContenusFormationController::class, 'show']);
 Route::post('contenus/{id}', [ContenusFormationController::class, 'update']);
 Route::delete('contenus/{id}', [ContenusFormationController::class, 'delete_contenue']);
-
-
+Route::get('/export/sessions', [ExportController::class, 'exportSessions'])->name('export.sessions');
+Route::get('/export/sessions', [ExportController::class, 'exportSessions'])->name('export.sessions');
 
 
 Route::get('/contenus', [ContenusFormationController::class, 'liste_contenus'])->name('contennus-management');
