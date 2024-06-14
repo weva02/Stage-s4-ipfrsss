@@ -5,7 +5,7 @@
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Image</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">NNI</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nom & Prénom</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Programme</th>
+                                        <!-- <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Programme</th> -->
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nationalité</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Diplôme</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Genre</th>
@@ -26,7 +26,6 @@
                                         <td><img src="{{ asset('images/'.$etudiant->image)}}" alt="" width="60px"></td>
                                         <td>{{ $etudiant->nni }}</td>
                                         <td>{{ $etudiant->nomprenom }}</td>
-                                        <td data-formation-id="{{ $etudiant->formation_id }}">{{ $etudiant->formation->nom ?? 'N/A' }}</td>
                                         <td data-country-id="{{ $etudiant->country_id }}">{{ $etudiant->country->name ?? 'N/A' }}</td>
                                         <td>{{ $etudiant->diplome }}</td>
                                         <td>{{ $etudiant->genre }}</td>

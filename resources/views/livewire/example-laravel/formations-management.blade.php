@@ -34,7 +34,7 @@
 <body>
     <div class="container-fluid py-4">
         <div id="formationContentContainer" style="display:none;">
-            <button onclick="$('#formationContentContainer').hide();" class="btn btn-secondary">Fermer</button>
+            <!-- <button onclick="$('#formationContentContainer').hide();" class="btn btn-secondary">Fermer</button> -->
             <div id="formationContents"></div>
         </div>
         <div class="row">
@@ -82,7 +82,7 @@
                                         <td>{{ $formation->duree }}</td>
                                         <td>{{ $formation->prix }}</td>
                                         <td>
-                                            <button class="btn btn-primary" onclick="showContents({{ $formation->id }})"><i class="material-icons opacity-10">chat</i></button>
+                                            <button class="btn btn-primary" onclick="showContents({{ $formation->id }})" data-toggle="tooltip" title="Contenus de ce Pregramme"><i class="material-icons opacity-10">chat</i></button>
                                             <a href="javascript:void(0)" id="edit-formation" data-id="{{ $formation->id }}" class="btn btn-info"><i class="material-icons opacity-10">border_color</i></a>
                                             <a href="javascript:void(0)" id="delete-formation" data-id="{{ $formation->id }}" class="btn btn-danger"><i class="material-icons opacity-10">delete</i></a>
                                         </td>
@@ -310,6 +310,15 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+
+        window.hideContents = function() {
+                $('#formationContentContainer').hide();
+                $('html, body').animate({ scrollTop: 0 }, 'slow');
+            };
+
+        $(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            });
 
         // Ajouter une formation
         $("#add-new-formation").click(function (e) {
@@ -583,41 +592,77 @@
         // Afficher les contenus de la formation
         // Afficher les contenus de la formation
         window.showContents = function(formationId) {
-            $.ajax({
-                url: '/formations/' + formationId + '/contents', // Utilisation de guillemets simples pour l'URL
-                type: 'GET',
-                success: function(response) {
-                    if (response.error) {
-                        alert(response.error);
-                        return;
-                    }
-                    var html = '<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#contenuAddModal" onclick="setFormationId(' + formationId + ')">Ajouter un contenu</button>';
-                    html += '<table class="table align-items-center mb-0">';
-                    html += '<thead><tr><th>ID</th><th>Chapitre</th><th>Unité</th><th>Description</th><th>Nombre Heures</th><th>Actions</th></tr></thead>';
-                    html += '<tbody>';
-                    response.contenus.forEach(function(content) {
-                        html += `<tr>
-                            <td>${content.id}</td>
-                            <td>${content.nomchap}</td>
-                            <td>${content.nomunite}</td>
-                            <td>${content.description}</td>
-                            <td>${content.nombreheures}</td>
-                            <td>
-                                <button class="btn btn-info" onclick="editContent(${content.id})"><i class="material-icons opacity-10">border_color</i></button>
-                                <button class="btn btn-danger" onclick="deleteContent(${content.id})"><i class="material-icons opacity-10">delete</i></button>
-                            </td>
-                        </tr>`;
-                    });
-                    html += '</tbody></table>';
-                    $('#formationContents').html(html);
-                    $('#formationContentContainer').show();
-                    $('html, body').animate({ scrollTop: $('#formationContentContainer').offset().top }, 'slow');
-                },
-                error: function() {
-                    alert('Erreur lors du chargement des contenus.');
-                }
-            });
-        };
+    $.ajax({
+        url: '/formations/' + formationId + '/contents', // Utilisation de guillemets simples pour l'URL
+        type: 'GET',
+        success: function(response) {
+            if (response.error) {
+                alert(response.error);
+                return;
+            }
+
+            let html = `
+            <div class="container-fluid py-4">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card my-4">
+                            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#contenuAddModal" onclick="setFormationId(${formationId})" data-toggle="tooltip" title="ajouter un contenu"><i class="material-icons opacity-10">add</i></button>
+                                    <button class="btn btn-secondary" onclick="hideContents()">Fermer</button>
+                                </div>
+                            </div>
+                            <div class="card-body px-0 pb-2">
+                                <div class="table-responsive p-0" id="sessions-table">
+                                    <table class="table align-items-center mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Chapitre</th>
+                                                <th>Unité</th>
+                                                <th>Description</th>
+                                                <th>Nombre Heures</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>`;
+
+            if (response.contenus.length > 0) {
+                response.contenus.forEach(function(content) {
+                    html += `<tr>
+                        <td>${content.id}</td>
+                        <td>${content.nomchap}</td>
+                        <td>${content.nomunite}</td>
+                        <td>${content.description}</td>
+                        <td>${content.nombreheures}</td>
+                        <td>
+                            <button class="btn btn-danger" onclick="deleteContent(${content.id})"><i class="material-icons opacity-10">delete</i></button>
+                        </td>
+                    </tr>`;
+                });
+            } else {
+                html += '<tr><td colspan="6" class="text-center">Aucun Contenus trouvé pour cet Programme.</td></tr>';
+            }
+
+            html += `</tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>`;
+
+            $('#formationContents').html(html);
+            $('#formationContentContainer').show();
+            $('html, body').animate({ scrollTop: $('#formationContentContainer').offset().top }, 'slow');
+        },
+        error: function() {
+            alert('Erreur lors du chargement des contenus.');
+        }
+    });
+};
+
 
 
         window.setFormationId = function(formationId) {
