@@ -71,7 +71,9 @@
 
     <!-- Add Student Modal -->
         <!-- Add Prof Modal -->
-        <div class="modal fade" id="profAddModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        
+    <!-- Add Prof Modal -->
+    <div class="modal fade" id="profAddModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content" style="width: 40cm;">
                 <div class="modal-header">
@@ -284,20 +286,21 @@
                 });
             });
 
-            function validateForm(formId, warnings) {
+            function validateForm(formSelector, warningSelectors) {
                 let isValid = true;
-                for (let field in warnings) {
-                    const input = $(formId + ' #' + field);
-                    const warning = $(warnings[field]);
-                    if (input.val().trim() === '') {
-                        warning.text('Ce champ est requis.');
+                $(formSelector).find('input, select').each(function() {
+                    let input = $(this);
+                    let warningSelector = warningSelectors[input.attr('id')];
+                    if (warningSelector && input.prop('required') && !input.val()) {
+                        $(warningSelector).text('Ce champ est requis.');
                         isValid = false;
                     } else {
-                        warning.text('');
+                        $(warningSelector).text('');
                     }
-                }
+                });
                 return isValid;
             }
+
 
             $("#add-new-prof").click(function(e){
                 e.preventDefault();
@@ -314,53 +317,54 @@
                 let data = new FormData(form);
 
                 $.ajax({
-                    url: "{{ route('prof.store') }}",
-                    type: "POST",
-                    data: data,
-                    dataType: "JSON",
-                    processData: false,
-                    contentType: false,
-                    success: function(response) {
-                        if (response.errors) {
-                            var errorMsg = '';
-                            $.each(response.errors, function(field, errors) {
-                                $.each(errors, function(index, error) {
-                                    errorMsg += error + '<br>';
-                                });
-                            });
-                            iziToast.error({
-                                message: errorMsg,
-                                position: 'topRight'
-                            });
-                        } else {
-                            iziToast.success({
-                                message: response.success,
-                                position: 'topRight'
-                            });
-                            $('#profAddModal').modal('hide');
-                            setTimeout(function () {
-                                location.reload();
-                            }, 1000);
-                            addStudentToTable(response.prof);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        var errorMsg = '';
-                        if (xhr.responseJSON && xhr.responseJSON.errors) {
-                            $.each(xhr.responseJSON.errors, function(field, errors) {
-                                $.each(errors, function(index, error) {
-                                    errorMsg += error + '<br>';
-                                });
-                            });
-                        } else {
-                            errorMsg = 'An error occurred: ' + error;
-                        }
-                        iziToast.error({
-                            message: errorMsg,
-                            position: 'topRight'
-                        });
-                    }
+    url: "{{ route('prof.store') }}",
+    type: "POST",
+    data: data,
+    dataType: "JSON",
+    processData: false,
+    contentType: false,
+    success: function(response) {
+        if (response.errors) {
+            let errorMsg = '';
+            $.each(response.errors, function(field, errors) {
+                $.each(errors, function(index, error) {
+                    errorMsg += error + '<br>';
                 });
+            });
+            iziToast.error({
+                message: errorMsg,
+                position: 'topRight'
+            });
+        } else {
+            iziToast.success({
+                message: response.success,
+                position: 'topRight'
+            });
+            $('#profAddModal').modal('hide');
+            setTimeout(function () {
+                location.reload();
+            }, 1000);
+            addStudentToTable(response.prof);
+        }
+    },
+    error: function(xhr, status, error) {
+        let errorMsg = '';
+        if (xhr.responseJSON && xhr.responseJSON.errors) {
+            $.each(xhr.responseJSON.errors, function(field, errors) {
+                $.each(errors, function(index, error) {
+                    errorMsg += error + '<br>';
+                });
+            });
+        } else {
+            errorMsg = 'An error occurred: ' + error;
+        }
+        iziToast.error({
+            message: errorMsg,
+            position: 'topRight'
+        });
+    }
+});
+
             });
 
             $('body').on('click', '#edit-prof', function () {

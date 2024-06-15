@@ -246,6 +246,10 @@
                 }
             });
 
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+
             // Recherche AJAX
             $('#search_bar').on('keyup', function(){
                 var query = $(this).val();
@@ -285,14 +289,21 @@
                         }
 
                         let html = `
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#etudiantAddModal" onclick="setSessionId(${sessionId})">Ajouter un étudiant</button>
-                            <button class="btn btn-secondary" onclick="hideStudentContents()">Fermer</button>
+                        <div class="container-fluid py-4">
+                        <div class="row">
+                            <div class="col-12">
                             <div class="card my-4">
-
+                            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 d-flex justify-content-between align-items-center">
+                            <div>
+                            <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#etudiantAddModal" onclick="setSessionId(${sessionId})" data-toggle="tooltip" title="ajouter un etudiant">Ajouter un étudiant</button>
+                            <button class="btn btn-secondary" onclick="hideStudentContents()">Fermer</button>
+                            </div>
+                            </div>
+                            <div class="card-body px-0 pb-2">
+                            <div class="table-responsive p-0" id="sessions-table">
                             <table class="table align-items-center mb-0">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
                                         <th>Nom & Prénom</th>
                                         <th>Genre</th>
                                         <th>Date naissance</th>
@@ -303,12 +314,15 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                </div>
+                                </div>
+                                </div>
+                                </div>
                                 </div>`;
 
                         if (response.etudiant.length > 0) {
                             response.etudiant.forEach(function(content) {
                                 html += `<tr>
-                                    <td>${content.id}</td>
                                     <td>${content.nomprenom}</td>
                                     <td>${content.genre}</td>
                                     <td>${content.datenaissance}</td>
@@ -316,8 +330,7 @@
                                     <td>${content.phone}</td>
                                     <td>${content.wtsp}</td>
                                     <td>
-                                        <button class="btn btn-info" onclick="editContent(${content.id})"><i class="material-icons opacity-10">border_color</i></button>
-                                        <button class="btn btn-danger" onclick="deleteContent(${content.id})"><i class="material-icons opacity-10">delete</i></button>
+                                        <button class="btn btn-danger" onclick="deleteContent(${content.id})"><i class="material-icons opacity-10">delete_forever</i></button>
                                     </td>
                                 </tr>`;
                             });
@@ -415,16 +428,22 @@
             }
 
             let html = `
-                <div class="d-flex justify-content-between mb-2">
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#profAddModal" onclick="setProfSessionId(${sessionId})">Ajouter un Professeur</button>
+            <div class="container-fluid py-4">
+                <div class="row">
+                <div class="col-12">
+                <div class="card my-4">
+                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 d-flex justify-content-between align-items-center">
+                <div>
+                    <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#profAddModal" onclick="setProfSessionId(${sessionId})" data-toggle="tooltip" title="ajouter un professeur"><i class="material-icons opacity-10">add</i></button>
                     <button class="btn btn-secondary" onclick="hideProfContents()">Fermer</button>
                 </div>
-                <table class="table align-items-center mb-0">
+                </div>
+                <div class="card-body px-0 pb-2">
+                <div class="table-responsive p-0" id="sessions-table">
 
                 <table class="table align-items-center mb-0">
                     <thead>
                         <tr>
-                            <th>ID</th>
                             <th>Nom & Prénom</th>
                             <th>Genre</th>
                             <th>Date naissance</th>
@@ -435,12 +454,15 @@
                         </tr>
                     </thead>
                     <tbody>
+                    </div>
+                    </div>
+                    </div>
+                    </div>
                     </div>`;
 
             if (response.prof.length > 0) {
                 response.prof.forEach(function(content) {
                     html += `<tr>
-                        <td>${content.id}</td>
                         <td>${content.nomprenom}</td>
                         <td>${content.genre}</td>
                         <td>${content.datenaissance}</td>
@@ -448,8 +470,7 @@
                         <td>${content.phone}</td>
                         <td>${content.wtsp}</td>
                         <td>
-                            <button class="btn btn-info" onclick="editProfContent(${content.id})"><i class="material-icons opacity-10">border_color</i></button>
-                            <button class="btn btn-danger" onclick="deleteProfContent(${content.id})"><i class="material-icons opacity-10">delete</i></button>
+                            <button class="btn btn-danger" onclick="deleteProfContent(${content.id})"><i class="material-icons opacity-10">delete_forever</i></button>
                         </td>
                     </tr>`;
                 });

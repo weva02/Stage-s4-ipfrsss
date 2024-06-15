@@ -63,14 +63,15 @@ class ProfesseurController extends Component
             'country_id' => 'required|exists:countries,id',
             'type_id' => 'required|exists:typeymntprofs,id',
         ]);
+        
 
         try {
             $imageName = $request->hasFile('image') ? time() . '.' . $request->image->extension() : null;
-
+        
             if ($imageName) {
                 $request->image->move(public_path('images'), $imageName);
             }
-
+        
             $prof = Professeur::create([
                 'image' => $imageName,
                 'nomprenom' => $request->nomprenom,
@@ -85,11 +86,13 @@ class ProfesseurController extends Component
                 'country_id' => $request->country_id,
                 'type_id' => $request->type_id,
             ]);
-
+        
             return response()->json(['success' => 'Professeur créé avec succès', 'prof' => $prof->load('country', 'type')]);
         } catch (\Throwable $th) {
+            Log::error('Error creating prof: ', ['error' => $th->getMessage()]);
             return response()->json(['error' => $th->getMessage()], 500);
         }
+        
     }
 
     public function update(Request $request, $id)

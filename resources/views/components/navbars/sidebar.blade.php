@@ -33,7 +33,7 @@
                 <!-- <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Pages</h6> -->
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white {{ Route::currentRouteName() == 'dashboard' ? ' active bg-gradient-primary' : '' }} "
+                <a class="nav-link text-white {{ Route::currentRouteName() == 'dashboard' ? ' active bg-gradient-info' : '' }} "
                     href="{{ route('dashboard') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">dashboard</i>
@@ -42,7 +42,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white {{ Route::currentRouteName() == 'etudiant-management' ? ' active bg-gradient-primary' : '' }}  "
+                <a class="nav-link text-white {{ Route::currentRouteName() == 'etudiant-management' ? ' active bg-gradient-info' : '' }}  "
                     href="{{ route('etudiant-management') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">format_list_bulleted</i>
@@ -51,7 +51,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white {{ Route::currentRouteName() == 'prof-management' ? ' active bg-gradient-primary' : '' }}  "
+                <a class="nav-link text-white {{ Route::currentRouteName() == 'prof-management' ? ' active bg-gradient-info' : '' }}  "
                     href="{{ route('prof-management') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">format_list_bulleted</i>
@@ -60,7 +60,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white {{ Route::currentRouteName() == 'formations-management' ? ' active bg-gradient-primary' : '' }}  "
+                <a class="nav-link text-white {{ Route::currentRouteName() == 'formations-management' ? ' active bg-gradient-info' : '' }}  "
                     href="{{ route('formations-management') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">format_list_bulleted</i>
@@ -69,7 +69,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white {{ Route::currentRouteName() == 'sessions-management' ? ' active bg-gradient-primary' : '' }}  "
+                <a class="nav-link text-white {{ Route::currentRouteName() == 'sessions-management' ? ' active bg-gradient-info' : '' }}  "
                     href="{{ route('sessions-management') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">format_list_bulleted</i>
@@ -78,7 +78,7 @@
                 </a>
             </li>
             <!-- <li class="nav-item">
-    <a class="nav-link text-white {{ Route::currentRouteName() == 'contenusformation-management' ? ' active bg-gradient-primary' : '' }}  "
+    <a class="nav-link text-white {{ Route::currentRouteName() == 'contenusformation-management' ? ' active bg-gradient-info' : '' }}  "
         href="{{ route('contenusformation-management') }}">
         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
             <i class="material-icons opacity-10">format_list_bulleted</i>

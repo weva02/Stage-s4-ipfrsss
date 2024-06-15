@@ -50,9 +50,9 @@
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 d-flex justify-content-between align-items-center">
                         <div>
                             <button type="button" class="btn bg-gradient-dark" data-bs-toggle="modal" data-bs-target="#etudiantAddModal">
-                                <i class="material-icons text-sm">add</i>&nbsp;&nbsp;Ajouter un Etudiant
+                                <i class="material-icons text-sm">add</i>&nbsp;&nbsp;Ajouter 
                             </button>
-                            <a href="{{ route('export.etudiants') }}" class="btn btn-success">Exporter Étudiants</a>
+                            <a href="{{ route('export.etudiants') }}" class="btn btn-success">Exporter </a>
                         </div>
                         <form class="d-flex align-items-center ms-auto">
                             <div class="input-group input-group-sm" style="width: 250px;">
