@@ -1,7 +1,6 @@
 <table class="table align-items-center mb-0">
     <thead>
         <tr>
-            <!-- <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">ID</th> -->
             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Code</th>
             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nom</th>
             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Durée</th>
@@ -12,12 +11,12 @@
     <tbody>
         @foreach($formations as $formation)
             <tr>
-                <!-- <td>{{ $formation->id }}</td> -->
                 <td>{{ $formation->code }}</td>
                 <td><a href="javascript:void(0)" id="show-formation" data-id="{{ $formation->id }}" >{{ $formation->nom }}</a></td>
                 <td>{{ $formation->duree }}</td>
                 <td>{{ $formation->prix }}</td>
                 <td>
+                <button class="btn btn-primary" onclick="showContents({{ $formation->id }})"><i class="material-icons opacity-10">chat</i></button>
                     <a href="javascript:void(0)" id="edit-formation" data-id="{{ $formation->id }}" class="btn btn-info"><i class="material-icons opacity-10">border_color</i></a>
                     <a href="javascript:void(0)" id="delete-formation" data-id="{{ $formation->id }}" class="btn btn-danger"><i class="material-icons opacity-10">delete</i></a>
                 </td>

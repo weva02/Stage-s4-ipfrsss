@@ -722,6 +722,19 @@ window.hideProfContents = function() {
                     });
                 }
             });
+            
+
+        $('#search_bar').on('keyup', function(){
+            var query = $(this).val();
+            $.ajax({
+                url: "{{ route('search6') }}",
+                type: "GET",
+                data: {'search6': query},
+                success: function(data){
+                    $('#sessions-table').html(data.html);
+                }
+            });
+        });
 
             var alertElement = document.querySelector('.fade-out');
             if (alertElement) {

@@ -98,7 +98,7 @@ class FormationsController extends Component
 
     public function export()
     {
-        return Excel::download(new FormationsExport, 'formations.xlsx');
+        return Excel::download(new FormationsExport, 'programmes.xlsx');
     }
 
     public function render()
