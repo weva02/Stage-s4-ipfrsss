@@ -6,26 +6,20 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('prof_session', function (Blueprint $table) {
-            $table->id();
-            $table->bigInteger('prof_id')->unsigned();
+        Schema::create('etud_session', function (Blueprint $table) {
+            $table->bigInteger('etudiant_id')->unsigned();
             $table->bigInteger('session_id')->unsigned();
-            $table->foreign('prof_id')->references('id')->on('professeurs');
+            $table->foreign('etudiant_id')->references('id')->on('etudiants');
             $table->foreign('session_id')->references('id')->on('sessions');
+            $table->date('date')->nullable();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('prof_session');
+        Schema::dropIfExists('etud_session');
     }
 };
