@@ -1,20 +1,3 @@
-<style>
-    .form-control {
-        border: 1px solid #17a2b8; /* Couleur de bordure par défaut */
-    }
-
-    .form-control:focus {
-        border-color: #17a2b8; /* Couleur de bordure lors du focus */
-        box-shadow: 0 0 0 0.2rem rgba(23, 162, 184, 0.25); /* Ombre lors du focus */
-    }
-
-    .form-control {
-        border-color: #17a2b8; /* Couleur de bordure lorsque l'input est rempli */
-    }
-</style>
-
-
-
 
             <div class="container my-auto mt-5">
                 <div class="row signin-margin">
@@ -57,17 +40,18 @@
                                         </button>
                                     </div>
                                     @endif
-                                    <div class=" input-group-outline mt-3 @if(strlen($email ?? '') > 0) is-filled @endif" >
+                                    <div class="input-group input-group-outline mt-3 @if(strlen($email ?? '') > 0) is-filled @endif">
                                         <label class="form-label">Email</label>
-                                        <input wire:model='email' type="email"  class="form-control" placeholder="you@example.com">
+                                        <input wire:model='email' type="email" class="form-control">
                                     </div>
                                     @error('email')
                                     <p class='text-danger inputerror'>{{ $message }} </p>
                                     @enderror
 
-                                    <div class=" input-group-outline  mt-3 @if(strlen($password ?? '') > 0) is-filled @endif">
+                                    <div class="input-group input-group-outline mt-3 @if(strlen($password ?? '') > 0) is-filled @endif">
                                         <label class="form-label">Password</label>
-                                        <input wire:model="password" type="password" class="form-control" placeholder="password">
+                                        <input wire:model="password" type="password" class="form-control"
+                                             >
                                     </div>
                                     @error('password')
                                     <p class='text-danger inputerror'>{{ $message }} </p>
@@ -97,6 +81,3 @@
                     </div>
                 </div>
             </div>
-
-
-            
