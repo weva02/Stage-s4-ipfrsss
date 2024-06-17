@@ -8,10 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('etud_session', function (Blueprint $table) {
-            $table->bigInteger('etudiant_id')->unsigned();
+        Schema::create('prof_session', function (Blueprint $table) {
+            $table->bigInteger('prof_id')->unsigned();
             $table->bigInteger('session_id')->unsigned();
-            $table->foreign('etudiant_id')->references('id')->on('etudiants');
+            $table->foreign('prof_id')->references('id')->on('professeurs');
             $table->foreign('session_id')->references('id')->on('sessions');
             $table->date('date')->nullable();
             $table->timestamps();
@@ -20,6 +20,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('etud_session');
+        Schema::dropIfExists('prof_session');
     }
 };

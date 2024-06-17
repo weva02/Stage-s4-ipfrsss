@@ -23,15 +23,21 @@ class Etudiant extends Model
         'wtsp',
         'country_id',
     ];
-
+    
     public function country()
     {
         return $this->belongsTo(Country::class);
     }
-
     public function sessions()
     {
-        return $this->belongsToMany(Sessions::class, 'etud_session', 'etudiant_id', 'session_id');
+        return $this->belongsToMany(Sessions::class, 'etud_session', 'etudiant_id', 'session_id')->withTimestamps();
     }
+
+    public function paiements()
+    {
+        return $this->hasMany(Paiement::class);
+    }
+
+  
 
 }

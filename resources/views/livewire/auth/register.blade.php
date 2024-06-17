@@ -1,28 +1,13 @@
-<style>
-    .form-control {
-        border: 1px solid #17a2b8; /* Couleur de bordure par défaut */
-    }
-
-    .form-control:focus {
-        border-color: #17a2b8; /* Couleur de bordure lors du focus */
-        box-shadow: 0 0 0 0.2rem rgba(23, 162, 184, 0.25); /* Ombre lors du focus */
-    }
-
-    .form-control {
-        border-color: #17a2b8; /* Couleur de bordure lorsque l'input est rempli */
-    }
-</style>
 
 
-
-        <main class="main-content  mt-0">
+<main class="main-content  mt-0">
             <section>
                 <div class="page-header min-vh-100">
                     <div class="container">
                         <div class="row">
                             <div
                                 class="col-6 d-lg-flex d-none h-100 my-auto pe-0 position-absolute top-0 start-0 text-center justify-content-center flex-column">
-                                <div class="position-relative bg-gradient-info h-100 m-3 px-7 border-radius-lg d-flex flex-column justify-content-center"
+                                <div class="position-relative bg-gradient-primary h-100 m-3 px-7 border-radius-lg d-flex flex-column justify-content-center"
                                     style="background-image: url('../assets/img/illustrations/illustration-signup.jpg'); background-size: cover;">
                                 </div>
                             </div>
@@ -36,7 +21,7 @@
                                     <div class="card-body">
                                         <form wire:submit.prevent ="store">
 
-                                            <div class=" input-group-outline @if(strlen($name?? '') > 0) is-filled @endif">
+                                            <div class="input-group input-group-outline @if(strlen($name?? '') > 0) is-filled @endif">
                                                 <label class="form-label">Name</label>
                                                 <input wire:model="name" type="text" class="form-control" 
                                                 >
@@ -45,7 +30,7 @@
                                             <p class='text-danger inputerror'>{{ $message }} </p>
                                             @enderror
 
-                                            <div class=" input-group-outline mt-3 @if(strlen($email ?? '') > 0) is-filled @endif">
+                                            <div class="input-group input-group-outline mt-3 @if(strlen($email ?? '') > 0) is-filled @endif">
                                                 <label class="form-label">Email</label>
                                                 <input wire:model="email" type="email"  class="form-control"
                                                      >
@@ -54,7 +39,7 @@
                                             <p class='text-danger inputerror'>{{ $message }} </p>
                                             @enderror
 
-                                            <div class=" input-group-outline mt-3 @if(strlen($password ?? '') > 0) is-filled @endif">
+                                            <div class="input-group input-group-outline mt-3 @if(strlen($password ?? '') > 0) is-filled @endif">
                                                 <label class="form-label">Password</label>
                                                 <input wire:model="password" type="password" class="form-control" >
                                             </div>
@@ -71,7 +56,7 @@
                                             </div>
                                             <div class="text-center">
                                                 <button type="submit"
-                                                    class="btn btn-lg bg-gradient-info btn-lg w-100 mt-4 mb-0">Sign
+                                                    class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0">Sign
                                                     Up</button>
                                             </div>
                                         </form>
@@ -80,7 +65,7 @@
                                         <p class="mb-2 text-sm mx-auto">
                                             Already have an account?
                                             <a href="{{ route('login') }}"
-                                                class="text-info text-gradient font-weight-bold">Sign in</a>
+                                                class="text-primary text-gradient font-weight-bold">Sign in</a>
                                         </p>
                                     </div>
                                 </div>

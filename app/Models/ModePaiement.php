@@ -9,4 +9,7 @@ class ModePaiement extends Model
     use HasFactory;
 
     protected $fillable = ['nom'];
+
+    // If your table name does not follow the Laravel convention
+    protected $table = 'modes_paiement';
 }

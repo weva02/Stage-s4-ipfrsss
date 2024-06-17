@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Etudiant;
 use App\Models\Country;
 use App\Models\Sessions;
+use App\Models\Paiement;
+use App\Models\ModePaiement;
+
 use Livewire\Component;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\EtudiantExport;
@@ -120,6 +123,11 @@ class EtudiantController extends Component
             return response()->json(['error' => 'Étudiant non trouvé'], 404);
         }
     }
+    public function showAddStudentModal($sessionId)
+    {
+        $modes_paiement = ModePaiement::all();
+        return view('add_student_modal', compact('modes_paiement', 'sessionId'));
+    }
 
     public function addStudentToSession(Request $request, $sessionId)
     {
@@ -128,12 +136,21 @@ class EtudiantController extends Component
 
         if ($session) {
             $session->etudiants()->attach($studentId);
-            return response()->json(['success' => 'Étudiant ajouté à la session avec succès']);
+
+            $paiement = new Paiement();
+            $paiement->etudiant_id = $studentId;
+            $paiement->session_id = $sessionId;
+            $paiement->prix_reel = $session->formation->prix; // Get the price from the related formation
+            $paiement->montant_paye = $request->montant_paye;
+            $paiement->mode_paiement_id = $request->mode_paiement;
+            $paiement->date_paiement = $request->date_paiement;
+            $paiement->save();
+
+            return response()->json(['success' => 'Étudiant et paiement ajoutés avec succès']);
         } else {
             return response()->json(['error' => 'Session non trouvée'], 404);
         }
     }
-
 
     public function search(Request $request)
     {

@@ -93,6 +93,23 @@ Route::get('sessions/{id}/contents', [SessionsController::class, 'getSessionCont
 Route::get('/search6', [SessionsController::class, 'search6'])->name('search6');
 
 
+// Your routes
+
+Route::get('/formation/{id}/details', [SessionsController::class, 'getFormationDetails']);
+Route::post('/etudiants/{etudiantId}/sessions/{sessionId}/add', [SessionsController::class, 'addStudentToSession']);
+Route::post('/etudiants/{etudiantId}/sessions/{sessionId}/paiement', [SessionsController::class, 'addPayment']);
+Route::get('/students/search', [SessionsController::class, 'searchStudentByPhone']);
+
+
+
+Route::get('/students/search', [EtudiantController::class, 'searchByPhone']);
+Route::get('/students/add/{sessionId}', [EtudiantController::class, 'showAddStudentModal']);
+Route::post('/students/add/{sessionId}', [EtudiantController::class, 'addStudentToSession']);
+// Route::get('/students/search', [EtudiantController::class, 'searchByPhone']);
+// Route::post('/students/add', [EtudiantController::class, 'addStudentToSession']);
+Route::post('/session/{sessionId}/student/{studentId}/add-payment', [SessionsController::class, 'addPaiement']);
+Route::get('/sessions/{id}/contents', [SessionsController::class, 'getSessionContents']);
+
 
 Route::get('/contenues', [ContenusFormationController::class, 'liste_contenue'])->name('contenue.list');
 Route::post('/contenues', [ContenusFormationController::class, 'store'])->name('contenue.store');

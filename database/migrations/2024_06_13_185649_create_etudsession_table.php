@@ -1,5 +1,6 @@
 <?php
 
+// migrations/create_etud_session_table.php
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,6 +14,7 @@ return new class extends Migration
             $table->bigInteger('session_id')->unsigned();
             $table->foreign('etudiant_id')->references('id')->on('etudiants');
             $table->foreign('session_id')->references('id')->on('sessions');
+            $table->date('date')->nullable();
             $table->timestamps();
         });
     }
