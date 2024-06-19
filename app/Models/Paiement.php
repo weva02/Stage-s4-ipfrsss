@@ -5,13 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-
-
-    class Paiement extends Model
+class Paiement extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['etudiant_id', 'session_id', 'mode_paiement_id', 'montant_paye', 'date_paiement'];
+    protected $fillable = ['etudiant_id', 'session_id', 'mode_paiement_id', 'prix_reel', 'montant_paye', 'date_paiement'];
 
     public function etudiant()
     {
@@ -27,5 +25,4 @@ use Illuminate\Database\Eloquent\Model;
     {
         return $this->belongsTo(ModePaiement::class);
     }
-    
 }

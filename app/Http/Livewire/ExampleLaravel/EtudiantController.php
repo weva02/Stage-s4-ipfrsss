@@ -19,8 +19,63 @@ class EtudiantController extends Component
     {
         $etudiants = Etudiant::with('sessions')->paginate(4);
         $countries = Country::all();
-        return view('livewire.example-laravel.etudiant-management', compact('etudiants', 'countries', ));
+        return view('livewire.example-laravel.etudiant-management', compact('etudiants', 'countries'));
     }
+
+    public function searchByPhone(Request $request)
+    {
+        $phone = $request->phone;
+        $student = Etudiant::where('phone', $phone)->first();
+
+        if ($student) {
+            return response()->json(['student' => $student]);
+        } else {
+            return response()->json(['error' => 'Étudiant non trouvé'], 404);
+        }
+    }
+
+    public function addStudentToSession(Request $request, $sessionId)
+    {
+        $request->validate([
+            'student_id' => 'required|exists:etudiants,id',
+            'montant_paye' => 'required|numeric',
+            'mode_paiement' => 'required|exists:modes_paiement,id',
+            'date_paiement' => 'required|date',
+        ]);
+
+        try {
+            $session = Sessions::findOrFail($sessionId);
+            $studentId = $request->student_id;
+
+            $session->etudiants()->attach($studentId, [
+                'date_paiement' => $request->date_paiement,
+                'montant_paye' => $request->montant_paye,
+                'mode_paiement_id' => $request->mode_paiement,
+            ]);
+
+            $paiement = new Paiement([
+                'etudiant_id' => $studentId,
+                'session_id' => $sessionId,
+                'prix_reel' => $session->formation->prix,
+                'montant_paye' => $request->montant_paye,
+                'mode_paiement_id' => $request->mode_paiement,
+                'date_paiement' => $request->date_paiement,
+            ]);
+            $paiement->save();
+
+            return response()->json(['success' => 'Étudiant et paiement ajoutés avec succès']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function showAddStudentModal($sessionId)
+    {
+        $modes_paiement = ModePaiement::all();
+        return view('add_student_modal', compact('modes_paiement', 'sessionId'));
+    }
+
+   
 
     public function store(Request $request)
     {
@@ -37,7 +92,6 @@ class EtudiantController extends Component
             'phone' => 'required|integer',
             'wtsp' => 'nullable|integer',
             'country_id' => 'required|exists:countries,id',
-
         ]);
 
         try {
@@ -60,7 +114,6 @@ class EtudiantController extends Component
                 'phone' => $request->phone,
                 'wtsp' => $request->wtsp,
                 'country_id' => $request->country_id,
-
             ]);
 
             return response()->json(['success' => 'Étudiant créé avec succès']);
@@ -84,7 +137,6 @@ class EtudiantController extends Component
             'phone' => 'required|integer',
             'wtsp' => 'nullable|integer',
             'country_id' => 'required|exists:countries,id',
-
         ]);
 
         try {
@@ -112,51 +164,11 @@ class EtudiantController extends Component
         return response()->json(['success' => 'Étudiant supprimé avec succès']);
     }
 
-    public function searchByPhone(Request $request)
-    {
-        $phone = $request->phone;
-        $student = Etudiant::where('phone', $phone)->first();
-
-        if ($student) {
-            return response()->json(['student' => $student]);
-        } else {
-            return response()->json(['error' => 'Étudiant non trouvé'], 404);
-        }
-    }
-    public function showAddStudentModal($sessionId)
-    {
-        $modes_paiement = ModePaiement::all();
-        return view('add_student_modal', compact('modes_paiement', 'sessionId'));
-    }
-
-    public function addStudentToSession(Request $request, $sessionId)
-    {
-        $studentId = $request->student_id;
-        $session = Sessions::find($sessionId);
-
-        if ($session) {
-            $session->etudiants()->attach($studentId);
-
-            $paiement = new Paiement();
-            $paiement->etudiant_id = $studentId;
-            $paiement->session_id = $sessionId;
-            $paiement->prix_reel = $session->formation->prix; // Get the price from the related formation
-            $paiement->montant_paye = $request->montant_paye;
-            $paiement->mode_paiement_id = $request->mode_paiement;
-            $paiement->date_paiement = $request->date_paiement;
-            $paiement->save();
-
-            return response()->json(['success' => 'Étudiant et paiement ajoutés avec succès']);
-        } else {
-            return response()->json(['error' => 'Session non trouvée'], 404);
-        }
-    }
-
     public function search(Request $request)
     {
         if ($request->ajax()) {
-            $search= $request->search;
-            $etudiants = Etudiant::where(function($query) use ($search) {
+            $search = $request->search;
+            $etudiants = Etudiant::where(function ($query) use ($search) {
                 $query->where('id', 'like', "%$search%")
                     ->orWhere('nni', 'like', "%$search%")
                     ->orWhere('nomprenom', 'like', "%$search%")
@@ -169,12 +181,11 @@ class EtudiantController extends Component
                     ->orWhere('phone', 'like', "%$search%")
                     ->orWhere('wtsp', 'like', "%$search%");
             })->paginate(4);
-    
+
             $view = view('livewire.example-laravel.etudiants-list', compact('etudiants'))->render();
             return response()->json(['html' => $view]);
         }
     }
-
 
     public function export()
     {

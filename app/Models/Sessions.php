@@ -11,7 +11,6 @@ class Sessions extends Model
 
     protected $fillable = ['formation_id', 'nom', 'date_debut', 'date_fin'];
 
-    
     public function formation()
     {
         return $this->belongsTo(Formations::class);
@@ -19,11 +18,13 @@ class Sessions extends Model
 
     public function etudiants()
     {
-        return $this->belongsToMany(Etudiant::class, 'etud_session' , 'etudiant_id', 'session_id')->withTimestamps();
+        return $this->belongsToMany(Etudiant::class, 'etud_session', 'session_id', 'etudiant_id')
+                    ->withPivot('date_paiement', 'montant_paye', 'mode_paiement_id', 'reste_a_payer')
+                    ->withTimestamps();
     }
 
-    public function professeurs()
+    public function paiements()
     {
-        return $this->belongsToMany(Professeur::class, 'prof_session', 'session_id', 'prof_id');
+        return $this->hasMany(Paiement::class);
     }
 }

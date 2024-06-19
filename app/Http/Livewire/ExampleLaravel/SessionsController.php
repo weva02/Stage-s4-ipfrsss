@@ -1,22 +1,21 @@
 <?php
 
 namespace App\Http\Livewire\ExampleLaravel;
+
 use Illuminate\Http\Request;
 use Livewire\Component;
 use App\Models\Formations;
 use App\Models\Sessions;
 use App\Models\Etudiant;
 use App\Models\Paiement;
-
 use App\Exports\FormationsExport;
 use App\Exports\SessionsExport;
 use App\Models\ModePaiement;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Log;
 
 class SessionsController extends Component
 {
-
-
     public function list_session()
     {
         $sessions = Sessions::with('etudiants', 'formation')->paginate(4);
@@ -25,59 +24,101 @@ class SessionsController extends Component
         return view('livewire.example-laravel.sessions-management', compact('sessions', 'formations', 'modes_paiement'));
     }
 
+    public function addStudentToSession(Request $request, $sessionId)
+    {
+        $request->validate([
+            'student_id' => 'required|exists:etudiants,id',
+            'montant_paye' => 'required|numeric',
+            'mode_paiement' => 'required|exists:modes_paiement,id',
+            'date_paiement' => 'required|date',
+        ]);
 
-    public function getFormationDetails($id) {
-        $formation = Formations::find($id);
-        return response()->json(['formation' => $formation]);
-    }
-    
-    public function addStudentToSession(Request $request, $etudiantId, $sessionId) {
-        $etudiant = Etudiant::find($etudiantId);
-        $session = Sessions::find($sessionId);
-    
-        if ($etudiant && $session) {
-            $formation = $session->formation;
-            $etudiant->sessions()->attach($sessionId, [
-                'prix_reel' => $formation->prix,
+        try {
+            $session = Sessions::findOrFail($sessionId);
+            $studentId = $request->student_id;
+
+            $session->etudiants()->attach($studentId, [
+                'date_paiement' => $request->date_paiement,
                 'montant_paye' => $request->montant_paye,
-                'reste_a_payer' => $formation->prix - $request->montant_paye,
-                'mode_paiement' => $request->mode_paiement,
-                'date_paiement' => $request->date_paiement
+                'mode_paiement_id' => $request->mode_paiement,
             ]);
-            return response()->json(['success' => true]);
+
+            $paiement = new Paiement([
+                'etudiant_id' => $studentId,
+                'session_id' => $sessionId,
+                'prix_reel' => $session->formation->prix,
+                'montant_paye' => $request->montant_paye,
+                'mode_paiement_id' => $request->mode_paiement,
+                'date_paiement' => $request->date_paiement,
+            ]);
+            $paiement->save();
+
+            return response()->json(['success' => 'Étudiant et paiement ajoutés avec succès']);
+        } catch (\Exception $e) {
+            // Log the exception for debugging
+            Log::error('Error adding student to session: ' . $e->getMessage());
+            return response()->json(['error' => 'Erreur lors de l\'ajout de l\'étudiant et du paiement'], 500);
         }
-    
-        return response()->json(['success' => false, 'error' => 'Etudiant ou session introuvable.']);
-    }
-    
-    public function addPayment(Request $request, $etudiantId, $sessionId) {
-        $etudiant = Etudiant::find($etudiantId);
-        $session = Sessions::find($sessionId);
-    
-        if ($etudiant && $session) {
-            $existingRelation = $etudiant->sessions()->where('session_id', $sessionId)->first();
-            if ($existingRelation) {
-                $newMontantPaye = $existingRelation->pivot->montant_paye + $request->montant_paye;
-                $etudiant->sessions()->updateExistingPivot($sessionId, [
-                    'montant_paye' => $newMontantPaye,
-                    'reste_a_payer' => $existingRelation->pivot->prix_reel - $newMontantPaye,
-                    'mode_paiement' => $request->mode_paiement,
-                    'date_paiement' => $request->date_paiement
-                ]);
-                return response()->json(['success' => true]);
-            }
-        }
-    
-        return response()->json(['success' => false, 'error' => 'Etudiant ou session introuvable.']);
-    }
-    
-    public function searchStudentByPhone(Request $request) {
-        $phone = $request->phone;
-        $student = Etudiant::where('phone', $phone)->first();
-        return response()->json(['student' => $student]);
     }
 
-    
+    public function addPayment(Request $request, $etudiantId, $sessionId)
+    {
+        try {
+            $validatedData = $request->validate([
+                'montant_paye' => 'required|numeric',
+                'mode_paiement' => 'required|exists:modes_paiement,id',
+                'date_paiement' => 'required|date',
+            ]);
+
+            $etudiant = Etudiant::find($etudiantId);
+            $session = Sessions::find($sessionId);
+
+            if ($etudiant && $session) {
+                $existingRelation = $etudiant->sessions()->where('session_id', $sessionId)->first();
+                if ($existingRelation) {
+                    $newMontantPaye = $existingRelation->pivot->montant_paye + $validatedData['montant_paye'];
+                    $newResteAPayer = $existingRelation->pivot->prix_reel - $newMontantPaye;
+
+                    $etudiant->sessions()->updateExistingPivot($sessionId, [
+                        'montant_paye' => $newMontantPaye,
+                        'reste_a_payer' => $newResteAPayer,
+                        'mode_paiement_id' => $validatedData['mode_paiement'],
+                        'date_paiement' => $validatedData['date_paiement']
+                    ]);
+
+                    return response()->json(['success' => true]);
+                }
+            }
+
+            return response()->json(['error' => 'Étudiant ou session introuvable.'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getSessionContents($sessionId)
+    {
+        $session = Sessions::with(['etudiants.paiements'])->find($sessionId);
+
+        if (!$session) {
+            return response()->json(['error' => 'Session not found'], 404);
+        }
+
+        $etudiants = $session->etudiants->map(function($etudiant) {
+            $etudiant->telephone = $etudiant->telephone;
+            $etudiant->email = $etudiant->email;
+            $etudiant->paiements = $etudiant->paiements->map(function($paiement) {
+                $paiement->prix_reel = $paiement->prix_reel ?? 0;
+                $paiement->montant_paye = $paiement->montant_paye ?? 0;
+                $paiement->date_paiement = $paiement->date_paiement ?? '';
+                return $paiement;
+            });
+            return $etudiant;
+        });
+
+        return response()->json(['etudiants' => $etudiants]);
+    }
+
     public function getProfSessionContents($id)
     {
         $session = Sessions::with('professeurs')->find($id);
@@ -88,16 +129,31 @@ class SessionsController extends Component
         }
     }
 
+    public function getFormationDetails($id)
+    {
+        $formation = Formations::find($id);
+        return response()->json(['formation' => $formation]);
+    }
+
+
+    public function searchStudentByPhone(Request $request)
+    {
+        $phone = $request->phone;
+        $student = Etudiant::where('phone', $phone)->first();
+        return response()->json(['student' => $student]);
+    }
+
+
     public function addProfToSession(Request $request, $sessionId)
     {
         $request->validate([
             'prof_id' => 'required|exists:professeurs,id',
         ]);
-
+    
         try {
             $session = Sessions::findOrFail($sessionId);
             $session->professeurs()->attach($request->prof_id);
-            return response()->json(['success' => 'Professeur ajouté à la Formation avec succès']);
+            return response()->json(['success' => 'Professeur ajouté à la formation avec succès']);
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 500);
         }
@@ -164,16 +220,13 @@ class SessionsController extends Component
         }
     }
 
-
     public function render()
     {
         return $this->list_session();
     }
 
     public function exportSessions()
-{
-    return Excel::download(new SessionsExport(), 'sessions.xlsx');
-}
-    
-    
+    {
+        return Excel::download(new SessionsExport(), 'sessions.xlsx');
+    }
 }
