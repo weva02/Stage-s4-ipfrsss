@@ -5,21 +5,20 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up(): void
+    public function up()
     {
         Schema::create('paiements', function (Blueprint $table) {
             $table->id();
             $table->foreignId('etudiant_id')->constrained('etudiants')->onDelete('cascade');
             $table->foreignId('session_id')->constrained('sessions')->onDelete('cascade');
-            $table->foreignId('mode_paiement_id')->constrained('modes_paiement')->onDelete('cascade');
-            $table->decimal('prix_reel', 8, 2);
-            $table->decimal('montant_paye', 8, 2);
-            $table->date('date_paiement');
+            $table->foreignId('mode_paiement_id')->constrained('modes_paiement');
+            $table->integer('prix_reel');
+            $table->integer('montant_paye');
             $table->timestamps();
         });
     }
 
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('paiements');
     }

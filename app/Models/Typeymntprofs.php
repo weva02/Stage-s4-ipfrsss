@@ -12,8 +12,5 @@ class Typeymntprofs extends Model
         'type',
     ];
 
-    // public function professeurs()
-    // {
-    //     return $this->hasMany(Professeur::class, 'typeymntprof_id');
-    // }
+
 }

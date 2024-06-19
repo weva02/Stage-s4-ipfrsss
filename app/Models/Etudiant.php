@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+
 class Etudiant extends Model
 {
     use HasFactory;
@@ -21,9 +22,7 @@ class Etudiant extends Model
 
     public function sessions()
     {
-        return $this->belongsToMany(Sessions::class, 'etud_session', 'etudiant_id', 'session_id')
-                    ->withPivot('date_paiement', 'montant_paye', 'mode_paiement_id', 'reste_a_payer')
-                    ->withTimestamps();
+        return $this->belongsToMany(Sessions::class, 'etud_session', 'etudiant_id', 'session_id')->withTimestamps();
     }
 
     public function paiements()
@@ -31,3 +30,4 @@ class Etudiant extends Model
         return $this->hasMany(Paiement::class);
     }
 }
+

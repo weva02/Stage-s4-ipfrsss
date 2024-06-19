@@ -21,8 +21,8 @@ class Paiement extends Model
         return $this->belongsTo(Sessions::class);
     }
 
-    public function modePaiement()
+    public function mode()
     {
-        return $this->belongsTo(ModePaiement::class);
+        return $this->belongsTo(ModePaiement::class , 'mode_paiement_id');
     }
 }

@@ -12,6 +12,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ProfesseurExport;
 use Illuminate\Support\Facades\Log;
 
+
 class ProfesseurController extends Component
 {
     public function liste_prof()
@@ -21,6 +22,7 @@ class ProfesseurController extends Component
         $typeymntprofs = Typeymntprofs::all();
         return view('livewire.example-laravel.prof-management', compact('profs', 'countries', 'typeymntprofs'));
     }
+
 
     public function searchByPhoneProf(Request $request)
     {
@@ -36,20 +38,16 @@ class ProfesseurController extends Component
 
     public function addProfToSession(Request $request, $sessionId)
     {
-        $request->validate([
-            'prof_id' => 'required|exists:professeurs,id',
-        ]);
+        $profId = $request->prof_id;
+        $session = Sessions::find($sessionId);
 
-        try {
-            $session = Sessions::findOrFail($sessionId);
-            $session->professeurs()->attach($request->prof_id);
-
-            return response()->json(['success' => 'Professeur ajouté à la formation avec succès']);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+        if ($session) {
+            $session->etudiants()->attach($profId);
+            return response()->json(['success' => 'Professeur ajouté à la Formation avec succès']);
+        } else {
+            return response()->json(['error' => 'Formation non trouvée'], 404);
         }
     }
-
 
     public function store(Request $request)
     {
