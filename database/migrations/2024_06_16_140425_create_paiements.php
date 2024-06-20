@@ -14,8 +14,10 @@ return new class extends Migration
             $table->foreignId('mode_paiement_id')->constrained('modes_paiement');
             $table->integer('prix_reel');
             $table->integer('montant_paye');
+            $table->date('date_paiement')->nullable();
             $table->timestamps();
         });
+
     }
 
     public function down()

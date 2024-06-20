@@ -26,71 +26,79 @@ class SessionsController extends Component
 
     public function addStudentToSession(Request $request, $sessionId)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'student_id' => 'required|exists:etudiants,id',
             'montant_paye' => 'required|numeric',
             'mode_paiement' => 'required|exists:modes_paiement,id',
             'date_paiement' => 'required|date',
+            'prix_reel' => 'required|numeric'
         ]);
 
         try {
             $session = Sessions::findOrFail($sessionId);
-            $studentId = $request->student_id;
+            $studentId = $validatedData['student_id'];
 
+            // Attach the student to the session with the date_paiement only
             $session->etudiants()->attach($studentId, [
-                'date_paiement' => $request->date_paiement,
-                'montant_paye' => $request->montant_paye,
-                'mode_paiement_id' => $request->mode_paiement,
+                'date_paiement' => $validatedData['date_paiement']
             ]);
 
+            // Create a new Paiement record
             $paiement = new Paiement([
                 'etudiant_id' => $studentId,
                 'session_id' => $sessionId,
-                'prix_reel' => $session->formation->prix,
-                'montant_paye' => $request->montant_paye,
-                'mode_paiement_id' => $request->mode_paiement,
-                'date_paiement' => $request->date_paiement,
+                'prix_reel' => $validatedData['prix_reel'],
+                'montant_paye' => $validatedData['montant_paye'],
+                'mode_paiement_id' => $validatedData['mode_paiement'],
+                'date_paiement' => $validatedData['date_paiement'],
             ]);
             $paiement->save();
 
             return response()->json(['success' => 'Étudiant et paiement ajoutés avec succès']);
         } catch (\Exception $e) {
-            // Log the exception for debugging
             Log::error('Error adding student to session: ' . $e->getMessage());
-            return response()->json(['error' => 'Erreur lors de l\'ajout de l\'étudiant et du paiement'], 500);
+            return response()->json(['error' => 'Erreur lors de l\'ajout de l\'étudiant et du paiement: ' . $e->getMessage()], 500);
         }
     }
-
+    
     public function addPayment(Request $request, $etudiantId, $sessionId)
     {
+        $request->validate([
+            'montant_paye' => 'required|numeric',
+            'mode_paiement' => 'required|exists:modes_paiement,id',
+            'date_paiement' => 'required|date',
+        ]);
+    
         try {
-            $validatedData = $request->validate([
-                'montant_paye' => 'required|numeric',
-                'mode_paiement' => 'required|exists:modes_paiement,id',
-                'date_paiement' => 'required|date',
-            ]);
-
-            $etudiant = Etudiant::find($etudiantId);
-            $session = Sessions::find($sessionId);
-
-            if ($etudiant && $session) {
-                $existingRelation = $etudiant->sessions()->where('session_id', $sessionId)->first();
-                if ($existingRelation) {
-                    $newMontantPaye = $existingRelation->pivot->montant_paye + $validatedData['montant_paye'];
-                    $newResteAPayer = $existingRelation->pivot->prix_reel - $newMontantPaye;
-
-                    $etudiant->sessions()->updateExistingPivot($sessionId, [
-                        'montant_paye' => $newMontantPaye,
-                        'reste_a_payer' => $newResteAPayer,
-                        'mode_paiement_id' => $validatedData['mode_paiement'],
-                        'date_paiement' => $validatedData['date_paiement']
-                    ]);
-
-                    return response()->json(['success' => true]);
-                }
+            $etudiant = Etudiant::findOrFail($etudiantId);
+            $session = Sessions::findOrFail($sessionId);
+    
+            $existingRelation = $etudiant->sessions()->where('session_id', $sessionId)->first();
+            if ($existingRelation) {
+                $newMontantPaye = $existingRelation->pivot->montant_paye + $request->montant_paye;
+                $newResteAPayer = $existingRelation->pivot->prix_reel - $newMontantPaye;
+    
+                $etudiant->sessions()->updateExistingPivot($sessionId, [
+                    'montant_paye' => $newMontantPaye,
+                    'reste_a_payer' => $newResteAPayer,
+                    'mode_paiement_id' => $request->mode_paiement,
+                    'date_paiement' => $request->date_paiement
+                ]);
+    
+                $paiement = new Paiement([
+                    'etudiant_id' => $etudiantId,
+                    'session_id' => $sessionId,
+                    'prix_reel' => $existingRelation->pivot->prix_reel,
+                    'montant_paye' => $request->montant_paye,
+                    'mode_paiement_id' => $request->mode_paiement,
+                    'date_paiement' => $request->date_paiement,
+                ]);
+                $paiement->save();
+    
+                return response()->json(['success' => 'Paiement ajouté avec succès']);
             }
-
-            return response()->json(['error' => 'Étudiant ou session introuvable.'], 404);
+    
+            return response()->json(['error' => 'Relation Étudiant-Session introuvable.'], 404);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
@@ -98,25 +106,32 @@ class SessionsController extends Component
 
     public function getSessionContents($sessionId)
     {
-        $session = Sessions::with(['etudiants.paiements'])->find($sessionId);
-
+        $session = Sessions::with(['etudiants' => function($query) {
+            $query->withPivot('date_paiement'); // Include date_paiement from pivot table
+        }, 'etudiants.paiements.mode', 'formation'])->find($sessionId);
+    
         if (!$session) {
             return response()->json(['error' => 'Session not found'], 404);
         }
-
+    
         $etudiants = $session->etudiants->map(function($etudiant) {
             $etudiant->telephone = $etudiant->telephone;
             $etudiant->email = $etudiant->email;
+            $etudiant->date_paiement = $etudiant->pivot->date_paiement; // Include date_paiement from pivot table
             $etudiant->paiements = $etudiant->paiements->map(function($paiement) {
                 $paiement->prix_reel = $paiement->prix_reel ?? 0;
                 $paiement->montant_paye = $paiement->montant_paye ?? 0;
                 $paiement->date_paiement = $paiement->date_paiement ?? '';
+                $paiement->mode_paiement = $paiement->mode; // Ensure mode details are included
                 return $paiement;
             });
             return $etudiant;
         });
-
-        return response()->json(['etudiants' => $etudiants]);
+    
+        return response()->json([
+            'etudiants' => $etudiants,
+            'formation_price' => $session->formation->prix, // Include formation price
+        ]);
     }
 
     public function getProfSessionContents($id)
@@ -135,14 +150,12 @@ class SessionsController extends Component
         return response()->json(['formation' => $formation]);
     }
 
-
     public function searchStudentByPhone(Request $request)
     {
         $phone = $request->phone;
         $student = Etudiant::where('phone', $phone)->first();
         return response()->json(['student' => $student]);
     }
-
 
     public function addProfToSession(Request $request, $sessionId)
     {

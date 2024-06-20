@@ -18,6 +18,8 @@ use App\Http\Livewire\ExampleLaravel\ProfesseurController;
 use App\Http\Livewire\ExampleLaravel\FormationsController;
 use App\Http\Livewire\ExampleLaravel\ContenusFormationController;
 use App\Http\Livewire\ExampleLaravel\SessionsController;
+use App\Http\Livewire\ExampleLaravel\PaiementController;
+
 
 
 
@@ -65,15 +67,86 @@ Route::get('user-management', UserManagement::class)->middleware('auth')->name('
 
 
 
+// Route::get('/sessions', [SessionsController::class, 'list_session'])->name('session.list');
+// Route::post('/sessions', [SessionsController::class, 'store'])->name('session.store');
+// Route::put('/sessions/{id}', [SessionsController::class, 'update'])->name('session.update');
+// Route::delete('/sessions/{id}', [SessionsController::class, 'delete_session'])->name('session.delete');
+// Route::get('/export/sessions', [SessionsController::class, 'export'])->name('export.sessions');
+// Route::get('sessions-management', SessionsController::class)->middleware('auth')->name('sessions-management');
+
+// Route::post('/etudiants/{etudiantId}/sessions/{sessionId}/add', [SessionsController::class, 'addStudentToSession'])->name('etudiant.session.add');
+
+Route::get('/sessions', [SessionsController::class, 'list_session'])->name('session.list');
+Route::post('/sessions', [SessionsController::class, 'store'])->name('session.store');
+Route::put('/sessions/{id}', [SessionsController::class, 'update'])->name('session.update');
+Route::delete('/sessions/{id}', [SessionsController::class, 'destroy'])->name('session.delete');
+Route::get('/export/sessions', SessionsController::class, 'exportSessions')->name('export.sessions');
+Route::get('sessions-management', SessionsController::class)->middleware('auth')->name('sessions-management');
+Route::get('/sessions/{sessionId}/contents', [SessionsController::class, 'getSessionContents'])->name('session.contents');
+Route::get('/formation/{id}/details', [SessionsController::class, 'getFormationDetails'])->name('formation.details');
+Route::post('/etudiants/{etudiantId}/sessions/{sessionId}/add', [SessionsController::class, 'addStudentToSession'])->name('etudiant.session.add');
+Route::post('/etudiants/{etudiantId}/sessions/{sessionId}/paiement', [SessionsController::class, 'addPayment'])->name('etudiant.session.paiement');
+
+Route::post('students/search', [EtudiantController::class, 'searchByPhone'])->name('student.search');
+Route::get('/students/add/{sessionId}', [EtudiantController::class, 'showAddStudentModal'])->name('student.add.modal');
+Route::post('/students/add/{sessionId}', [EtudiantController::class, 'addStudentToSession'])->name('student.add.session');
+
+Route::get('/sessions/{id}/profs', [SessionsController::class, 'getProfSessionContents'])->name('session.profs');
+Route::post('/sessions/{sessionId}/profs', [SessionsController::class, 'addProfToSession'])->name('session.add.prof');
+Route::get('/profs/search', [ProfesseurController::class, 'searchByPhoneProf'])->name('prof.search');
+
+Route::post('/paiements', [PaiementController::class, 'addPaiement'])->name('paiement.add');
+Route::get('/paiements/etudiant/{etudiantId}', [PaiementController::class, 'getPaymentsByStudent'])->name('paiement.student');
+Route::get('/paiements/session/{sessionId}', [PaiementController::class, 'getPaymentsBySession'])->name('paiement.session');
+Route::delete('/paiements/{id}', [PaiementController::class, 'deletePayment'])->name('paiement.delete');
+Route::put('/paiements/{id}', [PaiementController::class, 'updatePayment'])->name('paiement.update');
+Route::get('/paiements', [PaiementController::class, 'listPayments'])->name('paiement.list');
+Route::post('/paiements/search', [PaiementController::class, 'searchPayments'])->name('paiement.search');
 
 
-Route::get('students/search', [EtudiantController::class, 'searchByPhone']);
-Route::post('sessions/{session}/students', [SessionsController::class, 'addStudentToSession']);
 
 
-Route::get('/sessions/{id}/profs', [SessionsController::class, 'getProfSessionContents']);
-Route::post('/sessions/{sessionId}/profs', [SessionsController::class, 'addProfToSession']);
-Route::get('/profs/search', [ProfesseurController::class, 'searchByPhoneProf']);
+
+
+// Route::get('/sessions', [SessionsController::class, 'list_session'])->name('session.list');
+// Route::post('/sessions', [SessionsController::class, 'store'])->name('session.store');
+// Route::put('/sessions/{id}', [SessionsController::class, 'update'])->name('session.update');
+// Route::delete('/sessions/{id}', [SessionsController::class, 'delete_session'])->name('session.delete');
+// Route::get('/export/sessions', [SessionsController::class, 'export'])->name('export.sessions');
+// Route::get('sessions-management', [SessionsController::class, 'list_session'])->middleware('auth')->name('sessions-management');
+// Route::get('/sessions/{sessionId}/contents', [SessionsController::class, 'getSessionContents'])->name('session.contents');
+
+// Route::get('/formation/{id}/details', [SessionsController::class, 'getFormationDetails'])->name('formation.details');
+// Route::post('/etudiants/{etudiantId}/sessions/{sessionId}/add', [SessionsController::class, 'addStudentToSession'])->name('etudiant.session.add');
+// Route::post('/etudiants/{etudiantId}/sessions/{sessionId}/paiement', [SessionsController::class, 'addPayment'])->name('etudiant.session.paiement');
+
+// Route::post('students/search', [EtudiantController::class, 'searchByPhone'])->name('student.search');
+// Route::get('/students/add/{sessionId}', [EtudiantController::class, 'showAddStudentModal'])->name('student.add.modal');
+// Route::post('/students/add/{sessionId}', [EtudiantController::class, 'addStudentToSession'])->name('student.add.session');
+
+// Route::get('/sessions/{id}/profs', [SessionsController::class, 'getProfSessionContents'])->name('session.profs');
+// Route::post('/sessions/{sessionId}/profs', [SessionsController::class, 'addProfToSession'])->name('session.add.prof');
+// Route::get('/profs/search', [ProfesseurController::class, 'searchByPhoneProf'])->name('prof.search');
+
+// Route::post('/paiements', [PaiementController::class, 'addPaiement'])->name('paiement.add');
+// Route::get('/paiements/etudiant/{etudiantId}', [PaiementController::class, 'getPaymentsByStudent'])->name('paiement.student');
+// Route::get('/paiements/session/{sessionId}', [PaiementController::class, 'getPaymentsBySession'])->name('paiement.session');
+// Route::delete('/paiements/{id}', [PaiementController::class, 'deletePayment'])->name('paiement.delete');
+// Route::put('/paiements/{id}', [PaiementController::class, 'updatePayment'])->name('paiement.update');
+// Route::get('/paiements', [PaiementController::class, 'listPayments'])->name('paiement.list');
+// Route::post('/paiements/search', [PaiementController::class, 'searchPayments'])->name('paiement.search');
+
+
+
+
+
+// Route::get('students/search', [EtudiantController::class, 'searchByPhone']);
+// Route::post('sessions/{session}/students', [SessionsController::class, 'addStudentToSession']);
+
+
+// Route::get('/sessions/{id}/profs', [SessionsController::class, 'getProfSessionContents']);
+// Route::post('/sessions/{sessionId}/profs', [SessionsController::class, 'addProfToSession']);
+// Route::get('/profs/search', [ProfesseurController::class, 'searchByPhoneProf']);
 
 // Route::controller(SearchetudController::class)->group(function(){
 //     Route::get('demo-search', 'index');
@@ -81,21 +154,21 @@ Route::get('/profs/search', [ProfesseurController::class, 'searchByPhoneProf']);
 // });
 
 
-Route::get('/sessions', [SessionsController::class, 'list_session'])->name('session.list');
-Route::post('/sessions', [SessionsController::class, 'store'])->name('session.store');
-Route::put('/sessions/{id}', [SessionsController::class, 'update'])->name('session.update');
-Route::delete('/sessions/{id}', [SessionsController::class, 'delete_session'])->name('session.delete');
-Route::get('/export/sessions', [SessionsController::class, 'export'])->name('export.sessions');
-Route::get('sessions-management', SessionsController::class)->middleware('auth')->name('sessions-management');
+// Route::get('/sessions', [SessionsController::class, 'list_session'])->name('session.list');
+// Route::post('/sessions', [SessionsController::class, 'store'])->name('session.store');
+// Route::put('/sessions/{id}', [SessionsController::class, 'update'])->name('session.update');
+// Route::delete('/sessions/{id}', [SessionsController::class, 'delete_session'])->name('session.delete');
+// Route::get('/export/sessions', [SessionsController::class, 'export'])->name('export.sessions');
+// Route::get('sessions-management', SessionsController::class)->middleware('auth')->name('sessions-management');
 
-Route::get('/sessions', [SessionsController::class, 'list_session'])->name('session.list');
-Route::get('/formation/{id}/details', [SessionsController::class, 'getFormationDetails']);
-Route::post('/etudiants/{etudiantId}/sessions/{sessionId}/add', [SessionsController::class, 'addEtudiantToSession']);
-Route::post('/etudiants/{etudiantId}/sessions/{sessionId}/paiement', [SessionsController::class, 'addPayment']);
-Route::post('/students/search', [EtudiantController::class, 'searchByPhone']);
-Route::get('/students/add/{sessionId}', [EtudiantController::class, 'showAddStudentModal']);
-Route::post('/students/add/{sessionId}', [EtudiantController::class, 'addStudentToSession']);
-Route::get('/sessions/{sessionId}/contents', [SessionsController::class, 'getSessionContents']);
+// Route::get('/sessions', [SessionsController::class, 'list_session'])->name('session.list');
+// Route::get('/formation/{id}/details', [SessionsController::class, 'getFormationDetails']);
+// Route::post('/etudiants/{etudiantId}/sessions/{sessionId}/add', [SessionsController::class, 'addEtudiantToSession']);
+// Route::post('/etudiants/{etudiantId}/sessions/{sessionId}/paiement', [SessionsController::class, 'addPayment']);
+// Route::post('/students/search', [EtudiantController::class, 'searchByPhone']);
+// Route::get('/students/add/{sessionId}', [EtudiantController::class, 'showAddStudentModal']);
+// Route::post('/students/add/{sessionId}', [EtudiantController::class, 'addStudentToSession']);
+// Route::get('/sessions/{sessionId}/contents', [SessionsController::class, 'getSessionContents']);
 
 
 // Route::get('/sessions', [SessionsController::class, 'list_session'])->name('session.list');
