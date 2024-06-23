@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Http\Livewire\ExampleLaravel;
 
 use Illuminate\Http\Request;
@@ -8,10 +9,11 @@ use App\Models\Country;
 use App\Models\Sessions;
 use App\Models\Paiement;
 use App\Models\ModePaiement;
-
 use Livewire\Component;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\EtudiantExport;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class EtudiantController extends Component
 {
@@ -25,10 +27,10 @@ class EtudiantController extends Component
     public function searchByPhone(Request $request)
     {
         $phone = $request->phone;
-        $student = Etudiant::where('phone', $phone)->first();
+        $etudiant = Etudiant::where('phone', $phone)->first();
 
-        if ($student) {
-            return response()->json(['student' => $student]);
+        if ($etudiant) {
+            return response()->json(['etudiant' => $etudiant]);
         } else {
             return response()->json(['error' => 'Étudiant non trouvé'], 404);
         }
@@ -37,26 +39,27 @@ class EtudiantController extends Component
     public function addStudentToSession(Request $request, $sessionId)
     {
         $request->validate([
-            'student_id' => 'required|exists:etudiants,id',
+            'etudiant_id' => 'required|exists:etudiants,id',
             'montant_paye' => 'required|numeric',
             'mode_paiement' => 'required|exists:modes_paiement,id',
             'date_paiement' => 'required|date',
+            'prix_reel' => 'required|numeric'
         ]);
 
         try {
             $session = Sessions::findOrFail($sessionId);
-            $studentId = $request->student_id;
+            $etudiantId = $request->etudiant_id;
 
-            $session->etudiants()->attach($studentId, [
+            // Attach the student to the session with the payment date
+            $session->etudiants()->attach($etudiantId, [
                 'date_paiement' => $request->date_paiement,
-                'montant_paye' => $request->montant_paye,
-                'mode_paiement_id' => $request->mode_paiement,
             ]);
 
+            // Create a new Paiement record
             $paiement = new Paiement([
-                'etudiant_id' => $studentId,
+                'etudiant_id' => $etudiantId,
                 'session_id' => $sessionId,
-                'prix_reel' => $session->formation->prix,
+                'prix_reel' => $request->prix_reel,
                 'montant_paye' => $request->montant_paye,
                 'mode_paiement_id' => $request->mode_paiement,
                 'date_paiement' => $request->date_paiement,
@@ -64,8 +67,11 @@ class EtudiantController extends Component
             $paiement->save();
 
             return response()->json(['success' => 'Étudiant et paiement ajoutés avec succès']);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Session not found.'], 404);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            Log::error('Error adding student to session: ' . $e->getMessage());
+            return response()->json(['error' => 'Erreur lors de l\'ajout de l\'étudiant et du paiement: ' . $e->getMessage()], 500);
         }
     }
 
@@ -74,8 +80,6 @@ class EtudiantController extends Component
         $modes_paiement = ModePaiement::all();
         return view('add_student_modal', compact('modes_paiement', 'sessionId'));
     }
-
-   
 
     public function store(Request $request)
     {

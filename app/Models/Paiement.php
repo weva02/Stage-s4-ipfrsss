@@ -23,6 +23,6 @@ class Paiement extends Model
 
     public function mode()
     {
-        return $this->belongsTo(ModePaiement::class , 'mode_paiement_id');
+        return $this->belongsTo(ModePaiement::class, 'mode_paiement_id');
     }
 }

@@ -13,6 +13,8 @@ return new class extends Migration
             $table->foreignId('session_id')->constrained('sessions');
             $table->date('date_paiement')->nullable();
             $table->timestamps();
+
+            $table->primary(['etudiant_id', 'session_id']);
         });
     }
 
