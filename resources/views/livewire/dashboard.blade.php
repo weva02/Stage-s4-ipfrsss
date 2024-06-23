@@ -1,85 +1,137 @@
 <div>
-      <!-- Navbar -->
-      <!-- End Navbar -->
-      <div class="container-fluid py-4">
-          <div class="row">
-              <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                  <div class="card">
-                      <div class="card-header p-3 pt-2">
-                          <div
-                              class="icon icon-lg icon-shape bg-gradient-dark shadow-dark text-center border-radius-xl mt-n4 position-absolute">
-                              <i class="material-icons opacity-10">access_time</i>
-                          </div>
-                          <div class="text-end pt-1">
-                              <p class="text-sm mb-0 text-capitalize"><strong>Formations<br> en cours</strong></p>
-                              <h4 class="mb-0">$53k</h4>
-                          </div>
-                      </div>
-                      <hr class="dark horizontal my-0">
-                      <div class="card-footer p-3">
-                          <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+55% </span>than
-                              lask week</p>
-                      </div>
-                  </div>
-              </div>
-              <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                  <div class="card">
-                      <div class="card-header p-3 pt-2">
-                          <div
-                              class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
-                              <i class="material-icons opacity-10">done_all</i>
-                          </div>
-                          <div class="text-end pt-1">
-                              <p class="text-sm mb-0 text-capitalize"><strong>Formations Termine</strong></p>
-                              <h4 class="mb-0">2,300</h4>
-                          </div>
-                      </div>
-                      <hr class="dark horizontal my-0">
-                      <div class="card-footer p-3">
-                          <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+3% </span>than
-                              lask month</p>
-                      </div>
-                  </div>
-              </div>
-              <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                  <div class="card">
-                      <div class="card-header p-3 pt-2">
-                          <div
-                              class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
-                              <i class="material-icons opacity-10">person</i>
-                          </div>
-                          <div class="text-end pt-1">
-                              <p class="text-sm mb-0 text-capitalize">New Clients</p>
-                              <h4 class="mb-0">3,462</h4>
-                          </div>
-                      </div>
-                      <hr class="dark horizontal my-0">
-                      <div class="card-footer p-3">
-                          <p class="mb-0"><span class="text-danger text-sm font-weight-bolder">-2%</span> than
-                              yesterday</p>
-                      </div>
-                  </div>
-              </div>
-              <div class="col-xl-3 col-sm-6">
-                  <div class="card">
-                      <div class="card-header p-3 pt-2">
-                          <div
-                              class="icon icon-lg icon-shape bg-gradient-info shadow-info text-center border-radius-xl mt-n4 position-absolute">
-                              <i class="material-icons opacity-10">weekend</i>
-                          </div>
-                          <div class="text-end pt-1">
-                              <p class="text-sm mb-0 text-capitalize">Sales</p>
-                              <h4 class="mb-0">$103,430</h4>
-                          </div>
-                      </div>
-                      <hr class="dark horizontal my-0">
-                      <div class="card-footer p-3">
-                          <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+5% </span>than
-                              yesterday</p>
-                      </div>
-                  </div>
-              </div>
-          </div>
+    <!-- Navbar -->
+    <!-- End Navbar -->
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                <div class="card">
+                    <div class="card-header p-3 pt-2">
+                        <div class="icon icon-lg icon-shape bg-gradient-dark shadow-dark text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">access_time</i>
+                        </div>
+                        <div class="text-end pt-1">
+                            <p class="text-sm mb-0 text-capitalize"><strong>Formations<br> en cours</strong></p>
+                            <h4 class="mb-0">{{ $sessionsEnCours }}</h4>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-0">
+                    <div class="card-footer p-3"></div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                <div class="card">
+                    <div class="card-header p-3 pt-2">
+                        <div class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">done_all</i>
+                        </div>
+                        <div class="text-end pt-1 mt-4">
+                            <p class="text-sm mb-0 text-capitalize"><strong>Formations<br> terminées</strong></p>
+                            <h4 class="mb-0">{{ $sessionsTerminees }}</h4>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-0">
+                    <div class="card-footer p-3"></div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                <div class="card">
+                    <div class="card-header p-3 pt-2">
+                        <div class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">person</i>
+                        </div>
+                        <div class="text-end pt-1 mt-4">
+                            <p class="text-sm mb-0 text-capitalize">Etudiants</p>
+                            <h4 class="mb-0">{{ $nombreEtudiants }}</h4>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-0">
+                    <div class="card-footer p-3"></div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                <div class="card">
+                    <div class="card-header p-3 pt-2">
+                        <div class="icon icon-lg icon-shape bg-gradient-info shadow-info text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">people</i>
+                        </div>
+                        <div class="text-end pt-1 mt-4">
+                            <p class="text-sm mb-0 text-capitalize">Professeurs</p>
+                            <h4 class="mb-0">{{ $nombreProfesseurs }}</h4>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-0">
+                    <div class="card-footer p-3"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <!-- Section pour le nombre d'étudiants en cours -->
+            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                <div class="card h-100">
+                    <div class="card-header p-3 pt-2">
+                        <div class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">school</i>
+                        </div>
+                        <div class="text-end pt-1 mt-4">
+                            <p class="text-sm mb-0 text-capitalize"><strong>Étudiants en cours</strong></p>
+                            <h4 class="mb-0">{{ $etudiantsEnCours }}</h4>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-0">
+                    <div class="card-footer p-3"></div>
+                </div>
+            </div>
+            <!-- Section pour le montant total des formations en cours, montant payé, et reste à payer -->
+            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                <div class="card">
+                    <div class="card-header p-3 pt-2">
+                        <div class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">attach_money</i>
+                        </div>
+                        <div class="text-end pt-1 mt-4">
+                            <p class="text-sm mb-0 text-capitalize"><strong>Montant Total des Formations en Cours</strong></p>
+                            <h4 class="mb-0">{{ number_format($montantTotalFormationsEnCours, 2, ',', ' ') }} MRU</h4>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-0">
+                    <div class="card-footer p-3"></div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                <div class="card">
+                    <div class="card-header p-3 pt-2">
+                        <div class="icon icon-lg icon-shape bg-gradient-info shadow-info text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">credit_card</i>
+                        </div>
+                        <div class="text-end pt-1 mt-4">
+                            <p class="text-sm mb-0 text-capitalize"><strong>Montant Payé</strong></p>
+                            <h4 class="mb-0">{{ number_format($montantPaye, 2, ',', ' ') }} MRU</h4>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-0">
+                    <div class="card-footer p-3"></div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                <div class="card">
+                    <div class="card-header p-3 pt-2">
+                        <div class="icon icon-lg icon-shape bg-gradient-danger shadow-danger text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">account_balance_wallet</i>
+                        </div>
+                        <div class="text-end pt-1 mt-4">
+                            <p class="text-sm mb-0 text-capitalize"><strong>Reste à Payer</strong></p>
+                            <h4 class="mb-0">{{ number_format($resteAPayer, 2, ',', ' ') }} MRU</h4>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-0">
+                    <div class="card-footer p-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
           <!-- <div class="row mt-4">
               <div class="col-lg-4 col-md-6 mt-4 mb-4">
                   <div class="card z-index-2 ">
