@@ -24,7 +24,7 @@
                         <div class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
                             <i class="material-icons opacity-10">done_all</i>
                         </div>
-                        <div class="text-end pt-1 mt-4">
+                        <div class="text-end pt-1">
                             <p class="text-sm mb-0 text-capitalize"><strong>Formations<br> terminées</strong></p>
                             <h4 class="mb-0">{{ $sessionsTerminees }}</h4>
                         </div>
@@ -40,7 +40,7 @@
                             <i class="material-icons opacity-10">person</i>
                         </div>
                         <div class="text-end pt-1 mt-4">
-                            <p class="text-sm mb-0 text-capitalize">Etudiants</p>
+                            <p class="text-sm mb-0 text-capitalize"><strong>Etudiants</strong></p>
                             <h4 class="mb-0">{{ $nombreEtudiants }}</h4>
                         </div>
                     </div>
@@ -55,7 +55,7 @@
                             <i class="material-icons opacity-10">people</i>
                         </div>
                         <div class="text-end pt-1 mt-4">
-                            <p class="text-sm mb-0 text-capitalize">Professeurs</p>
+                            <p class="text-sm mb-0 text-capitalize"><strong>Professeurs</strong></p>
                             <h4 class="mb-0">{{ $nombreProfesseurs }}</h4>
                         </div>
                     </div>

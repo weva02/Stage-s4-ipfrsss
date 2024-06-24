@@ -66,6 +66,10 @@ Route::get('user-profile', UserProfile::class)->middleware('auth')->name('user-p
 Route::get('user-management', UserManagement::class)->middleware('auth')->name('user-management');
 
 
+Route::get('/sessions/{id}/profs', [SessionsController::class, 'getProfSessionContents']);
+Route::post('/sessions/{sessionId}/profs', [SessionsController::class, 'addProfToSession']);
+Route::get('/profs/search', [ProfesseurController::class, 'searchByPhoneProf']);
+
 
 // Formations routes
 Route::get('/formations', [FormationsController::class, 'liste_formation']);
@@ -102,7 +106,9 @@ Route::prefix('sessions')->group(function () {
     Route::get('{sessionId}/contents', [SessionsController::class, 'getSessionContents']);
     Route::get('{sessionId}/etudiants/{etudiantId}/details', [SessionsController::class, 'getStudentDetails']);
     Route::post('{sessionId}/check-student', [SessionsController::class, 'checkStudentInSession']);
-    Route::post('{sessionId}/professeurs/add', [SessionsController::class, 'addProfToSession']);
+    // Route::post('{sessionId}/professeurs/add', [SessionsController::class, 'addProfToSession']);
+Route::post('/sessions/{sessionId}/profs', [SessionsController::class, 'addProfToSession']);
+
     Route::get('{sessionId}/professeurs', [SessionsController::class, 'getProfSessionContents']);
     Route::post('etudiant/search', [SessionsController::class, 'searchStudentByPhone'])->name('etudiant.search');
 });
