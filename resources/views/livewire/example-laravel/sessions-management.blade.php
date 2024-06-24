@@ -9,6 +9,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -53,7 +54,7 @@
                 <div id="student-search-results"></div>
                 <div id="payment-form" style="display:none;">
                     <div class="form-group">
-                        <label for="formation-price" class="form-label">Prix de la Formation:</label>
+                        <label for="formation-price" class="form-label">Prix de la Programme:</label>
                         <input type="text" class="form-control" id="formation-price" readonly>
                     </div>
                     <div class="form-group">
@@ -112,10 +113,13 @@
                             @endforeach
                         </select>
                     </div>
-                <div class="form-group">
-                    <label for="date-paiement" class="form-label">Date de Paiement:</label>
-                    <input type="date" class="form-control" id="date-paiement">
-                </div>
+                    <div class="form-group">
+    <label for="date-paiement" class="form-label">Date de Paiement:</label>
+    <input type="date" class="form-control" id="date-paiement" name="date_paiement">
+</div>
+
+
+
                 <button type="button" class="btn btn-primary" onclick="addPaiement()">Ajouter Paiement</button>
             </div>
             <div class="modal-footer">
@@ -124,6 +128,9 @@
         </div>
     </div>
 </div>
+
+
+
 
 
 
@@ -299,7 +306,538 @@
     </div>
 </div>
 
+
 <script type="text/javascript">
+$(document).ready(function () {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $('#search_bar').on('keyup', function(){
+        var query = $(this).val();
+        $.ajax({
+            url: "{{ route('search6') }}",
+            type: "GET",
+            data: {'search6': query},
+            success: function(data){
+                $('#sessions-table').html(data.html);
+            }
+        });
+    });
+
+    $("#add-new-session").click(function(e){
+        e.preventDefault();
+        let form = $('#session-add-form')[0];
+        let data = new FormData(form);
+
+        $.ajax({
+            url: "{{ route('session.store') }}",
+            type: "POST",
+            data: data,
+            dataType: "JSON",
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                if (response.errors) {
+                    var errorMsg = '';
+                    $.each(response.errors, function(field, errors) {
+                        $.each(errors, function(index, error) {
+                            errorMsg += error + '<br>';
+                        });
+                    });
+                    iziToast.error({
+                        message: errorMsg,
+                        position: 'topRight'
+                    });
+                } else {
+                    iziToast.success({
+                        message: response.success,
+                        position: 'topRight'
+                    });
+                    $('#sessionAddModal').modal('hide');
+                    location.reload();
+                }
+            },
+            error: function(xhr, status, error) {
+                if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    var errorMsg = '';
+                    $.each(xhr.responseJSON.errors, function(field, errors) {
+                        $.each(errors, function(index, error) {
+                            errorMsg += error + '<br>';
+                        });
+                    });
+                    iziToast.error({
+                        message: errorMsg,
+                        position: 'topRight'
+                    });
+                } else {
+                    iziToast.error({
+                        message: 'An error occurred: ' + error,
+                        position: 'topRight'
+                    });
+                }
+            }
+        });
+    });
+
+    $('body').on('click', '#edit-session', function () {
+        var tr = $(this).closest('tr');
+        $('#session-id').val(tr.find("td:nth-child(1)").text());
+        $('#session-formation_id').val(tr.find("td:nth-child(2)").data('formation-id'));
+        $('#session-nom').val(tr.find("td:nth-child(3)").text());
+        $('#session-date_debut').val(tr.find("td:nth-child(4)").text());
+        $('#session-date_fin').val(tr.find("td:nth-child(5)").text());
+
+        $('#sessionEditModal').modal('show');
+    });
+
+    $('body').on('click', '#session-update', function () {
+        var id = $('#session-id').val();
+        var formData = new FormData($('#session-edit-form')[0]);
+        formData.append('_method', 'PUT');
+
+        $.ajax({
+            url: "{{ route('session.update', '') }}/" + id,
+            type: 'POST',
+            dataType: 'json',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                $('#sessionEditModal').modal('hide');
+                setTimeout(function () {
+                    location.reload();
+                }, 1000);
+                if (response.success) {
+                    iziToast.success({
+                        message: response.success,
+                        position: 'topRight'
+                    });
+                } else {
+                    iziToast.error({
+                        message: response.error,
+                        position: 'topRight',
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                var errorMsg = '';
+                if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    $.each(xhr.responseJSON.errors, function(field, errors) {
+                        $.each(errors, function(index, error) {
+                            errorMsg += error + '<br>';
+                        });
+                    });
+                } else {
+                    errorMsg = 'An error occurred: ' + error;
+                }
+                iziToast.error({
+                    message: errorMsg,
+                    position: 'topRight'
+                });
+            }
+        });
+    });
+
+    // $('body').on('click', '#delete-session', function (e) {
+    //     e.preventDefault();
+    //     var id = $(this).data('id');
+    //     var confirmation = confirm("Êtes-vous sûr de vouloir supprimer cette session ?");
+
+    //     if (confirmation) {
+    //         $.ajax({
+    //             url: "{{ route('session.delete', '') }}/" + id,
+    //             type: 'DELETE',
+    //             success: function(response) {
+    //                 if(response.status === 400) {
+    //                     iziToast.error({
+    //                         message: response.message,
+    //                         position: 'topRight'
+    //                     });
+    //                 } else {
+    //                     iziToast.success({
+    //                         message: response.success,
+    //                         position: 'topRight'
+    //                     });
+    //                     location.reload();
+    //                 }
+    //             },
+    //             error: function(xhr, status, error) {
+    //                 iziToast.error({
+    //                     message: 'An error occurred: ' + error,
+    //                     position: 'topRight'
+    //                 });
+    //             }
+    //         });
+    //     }
+    // });
+
+    $('body').on('click', '#delete-session', function (e) {
+        e.preventDefault();
+        var id = $(this).data('id');
+
+        $.ajax({
+            url: "{{ route('session.delete', '') }}/" + id,
+            type: 'DELETE',
+            success: function(response) {
+                if (response.status === 400) {
+                    iziToast.error({
+                        message: response.message,
+                        position: 'topRight'
+                    });
+                } else {
+                    iziToast.success({
+                        message: response.success,
+                        position: 'topRight'
+                    });
+                    location.reload();
+                }
+            },
+            error: function(xhr, status, error) {
+                iziToast.error({
+                    message: 'An error occurred: ' + error,
+                    position: 'topRight'
+                });
+            }
+        });
+    });
+
+    window.setSessionId = function(sessionId) {
+        $('#new-student-session_id').val(sessionId);
+    }
+
+    window.searchStudentByPhone = function() {
+        const phone = $('#student-phone-search').val();
+        const sessionId = $('#new-student-session_id').val();
+
+        if (phone) {
+            $.ajax({
+                url: '{{ route("etudiant.search") }}',
+                type: 'POST',
+                data: { phone: phone },
+                success: function(response) {
+                    if (response.etudiant) {
+                        const etudiant = response.etudiant;
+                        $.ajax({
+                            url: `/sessions/${sessionId}/check-student`,
+                            type: 'POST',
+                            data: { etudiant_id: etudiant.id },
+                            success: function(checkResponse) {
+                                if (checkResponse.isInSession) {
+                                    $('#student-search-results').html('<div class="alert alert-danger">L\'étudiant est déjà inscrit dans cette session.</div>');
+                                } else {
+                                    $('#student-search-results').html(
+                                        `<div class="alert alert-success">Etudiant trouvé: ${etudiant.nomprenom}</div>
+                                        <input type="hidden" id="etudiant-id" value="${etudiant.id}">`
+                                    );
+                                    loadFormationDetails();
+                                    $('#payment-form').show();
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                alert('Erreur lors de la vérification de l\'étudiant dans la session: ' + error);
+                            }
+                        });
+                    } else {
+                        $('#student-search-results').html('<div class="alert alert-danger">Etudiant non trouvé.</div>');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('Erreur lors de la recherche de l\'étudiant: ' + error);
+                }
+            });
+        } else {
+            alert('Veuillez entrer un numéro de téléphone.');
+        }
+    }
+
+    window.loadFormationDetails = function() {
+        const sessionId = $('#new-student-session_id').val();
+        $.ajax({
+            url: `{{ route("sessions.details", ":sessionId") }}`.replace(':sessionId', sessionId),
+            type: 'GET',
+            success: function(response) {
+                if (response.formation) {
+                    $('#formation-price').val(response.formation.prix);
+                } else {
+                    $('#formation-price').val('');
+                }
+            },
+            error: function(xhr, status, error) {
+                alert('Erreur lors du chargement des détails de la formation: ' + error);
+            }
+        });
+    }
+
+    window.addEtudiantAndPaiement = function() {
+        const etudiantId = $('#etudiant-id').val();
+        const sessionId = $('#new-student-session_id').val();
+        const datePaiement = $('#date-paiement').val();
+        const montantPaye = $('#montant-paye').val();
+        const modePaiement = $('#mode-paiement').val();
+        const prixReel = $('#prix-reel').val();
+
+        if (!etudiantId || !sessionId) {
+            alert('Etudiant ID or Session ID is missing.');
+            return;
+        }
+
+        $.ajax({
+            url: `/sessions/${sessionId}/etudiants/${etudiantId}/add`,
+            type: 'POST',
+            data: {
+                etudiant_id: etudiantId,
+                date_paiement: datePaiement,
+                montant_paye: montantPaye,
+                mode_paiement: modePaiement,
+                prix_reel: prixReel
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                if (response.success) {
+                    $('#etudiantAddModal').modal('hide');
+                    showContents(sessionId);
+                } else {
+                    alert(response.error);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+                console.error('Status:', status);
+                console.error('Response:', xhr.responseText);
+                alert('Erreur lors de l\'ajout de l\'étudiant: ' + xhr.responseText);
+            }
+        });
+    }
+
+    window.openAddPaymentModal = function(etudiantId, sessionId) {
+        $.ajax({
+            url: `/sessions/${sessionId}/etudiants/${etudiantId}/details`,
+            type: 'GET',
+            success: function(response) {
+                if (response.success) {
+                    const resteAPayer = response.reste_a_payer;
+                    if (resteAPayer <= 0) {
+                        iziToast.warning({
+                            message: 'L\'étudiant a déjà payé la totalité de la formation.',
+                            position: 'topRight'
+                        });
+                    } else {
+                        $('#etudiant-id').val(etudiantId);
+                        $('#session-id').val(sessionId);
+                        $('#prix-formation').val(response.prix_formation);
+                        $('#prix-reel').val(response.prix_reel);
+                        $('#reste-a-payer').val(resteAPayer);
+                        $('#paiementAddModal').modal('show');
+                    }
+                } else {
+                    iziToast.error({
+                        message: response.error,
+                        position: 'topRight'
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                iziToast.error({
+                    message: 'Erreur lors de la récupération des détails: ' + error,
+                    position: 'topRight'
+                });
+            }
+        });
+    };
+
+    // window.addPaiement = function() {
+    //     let etudiantId = $('#etudiant-id').val();
+    //     let sessionId = $('#session-id').val();
+    //     let prixFormation = $('#prix-formation').val();
+    //     let prixReel = $('#prix-reel').val();
+    //     let nouveauMontantPaye = $('#nouveau-montant-paye').val();
+    //     let modePaiement = $('#mode-paiement').val();
+    //     let datePaiement = $('#date-paiement').val();
+
+    //     $.ajax({
+    //         url: `/sessions/${sessionId}/paiements`,
+    //         type: 'POST',
+    //         data: {
+    //             etudiant_id: etudiantId,
+    //             montant_paye: nouveauMontantPaye,
+    //             mode_paiement: modePaiement,
+    //             date_paiement: datePaiement
+    //         },
+    //         success: function(response) {
+    //             if (response.success) {
+    //                 $('#paiementAddModal').modal('hide');
+    //                 showContents(sessionId);
+    //             } else {
+    //                 alert(response.error);
+    //             }
+    //         },
+    //         error: function(xhr, status, error) {
+    //             console.error('Error:', error);
+    //             console.error('Status:', status);
+    //             console.error('Response:', xhr.responseText);
+    //             alert('Erreur lors de l\'ajout du paiement: ' + xhr.responseText);
+    //         }
+    //     });
+    // }
+
+    window.addPaiement = function() {
+    let etudiantId = $('#etudiant-id').val();
+    let sessionId = $('#session-id').val();
+    let nouveauMontantPaye = $('#nouveau-montant-paye').val();
+    let modePaiement = $('#mode-paiement').val();
+    let datePaiement = $('#date-paiement').val();
+
+    // Log the data to check if date_paiement is included
+    console.log({
+        etudiant_id: etudiantId,
+        montant_paye: nouveauMontantPaye,
+        mode_paiement: modePaiement,
+        date_paiement: datePaiement
+    });
+
+    $.ajax({
+        url: `/sessions/${sessionId}/paiements`,
+        type: 'POST',
+        data: {
+            etudiant_id: etudiantId,
+            montant_paye: nouveauMontantPaye,
+            mode_paiement: modePaiement,
+            date_paiement: datePaiement  // Ensure this field is included
+        },
+        success: function(response) {
+            if (response.success) {
+                $('#paiementAddModal').modal('hide');
+                showContents(sessionId);
+            } else {
+                alert(response.error);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error:', error);
+            console.error('Status:', status);
+            console.error('Response:', xhr.responseText);
+            alert('Erreur lors de l\'ajout du paiement: ' + xhr.responseText);
+        }
+    });
+}
+
+
+
+
+
+    window.deleteStudentFromSession = function(etudiantId, sessionId) {
+        if (confirm("Êtes-vous sûr de vouloir supprimer cet étudiant de la session ?")) {
+            $.ajax({
+                url: `/sessions/${sessionId}/etudiants/${etudiantId}`,
+                type: 'DELETE',
+                success: function(response) {
+                    if (response.success) {
+                        iziToast.success({
+                            message: response.success,
+                            position: 'topRight'
+                        });
+                        showContents(sessionId);
+                    } else {
+                        iziToast.error({
+                            message: response.error,
+                            position: 'topRight'
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    iziToast.error({
+                        message: 'Erreur lors de la suppression: ' + error,
+                        position: 'topRight'
+                    });
+                }
+            });
+        }
+    };
+
+    window.showContents = function(sessionId) {
+        $.ajax({
+            url: `/sessions/${sessionId}/contents`,
+            type: 'GET',
+            success: function(response) {
+                if (response.error) {
+                    alert(response.error);
+                    return;
+                }
+
+                let html = `<div class="container-fluid py-4">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card my-4">
+                                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#etudiantAddModal" onclick="setSessionId(${sessionId})" data-toggle="tooltip" title="Ajouter un étudiant"><i class="material-icons opacity-10">add</i></button>
+                                        <button class="btn btn-secondary" onclick="hideStudentContents()">Fermer</button>
+                                    </div>
+                                </div>
+                                <div class="card-body px-0 pb-2">
+                                    <div class="table-responsive p-0" id="sessions-table">
+                                        <table class="table align-items-center mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nom & Prénom</th>
+                                                    <th>Phone</th>
+                                                    <th>WhatsApp</th>
+                                                    <th>Prix Programme</th>
+                                                    <th>Prix Réel</th>
+                                                    <th>Montant Payé</th>
+                                                    <th>Reste à Payer</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>`;
+
+                if (response.etudiants.length > 0) {
+                    response.etudiants.forEach(function(content) {
+                        let resteAPayer = content.prix_reel - content.montant_paye;
+
+                        html += `<tr>
+                            <td>${content.nomprenom}</td>
+                            <td>${content.phone}</td>
+                            <td>${content.wtsp}</td>
+                            <td>${content.prix_formation}</td>
+                            <td>${content.prix_reel}</td>
+                            <td>${content.montant_paye}</td>
+                            <td>${resteAPayer}</td>
+                            <td>
+                                <button class="btn btn-dark" onclick="openAddPaymentModal(${content.id}, ${sessionId})"><i class="material-icons opacity-10">payment</i></button>
+                                <button class="btn btn-danger" onclick="deleteStudentFromSession(${content.id}, ${sessionId})"><i class="material-icons opacity-10">delete_forever</i></button>
+                            </td>
+                        </tr>`;
+                    });
+                } else {
+                    html += '<tr><td colspan="10" class="text-center">Aucun étudiant trouvé pour cette Formation.</td></tr>';
+                }
+
+                html += '</tbody></table></div></div></div></div></div>';
+                $('#formationContents').html(html);
+                $('#formationContentContainer').show();
+                $('html, body').animate({ scrollTop: $('#formationContentContainer').offset().top }, 'slow');
+            },
+            error: function() {
+                alert('Erreur lors du chargement des contenus.');
+            }
+        });
+    };
+
+    window.hideStudentContents = function() {
+        $('#formationContentContainer').hide();
+        $('html, body').animate({ scrollTop: 0 }, 'slow');
+    };
+});
+</script>
+
+
+<!-- <script type="text/javascript">
 $(document).ready(function () {
     $.ajaxSetup({
         headers: {
@@ -464,293 +1002,289 @@ $(document).ready(function () {
 
 
 
-window.setSessionId = function(sessionId) {
-    $('#new-student-session_id').val(sessionId);
-}
+    window.setSessionId = function(sessionId) {
+        $('#new-student-session_id').val(sessionId);
+    }
 
-// window.searchStudentByPhone = function() {
-//     const phone = $('#student-phone-search').val();
-//     if (phone) {
-//         $.ajax({
-//             url: '{{ route("etudiant.search") }}',
-//             type: 'POST',
-//             data: { phone: phone },
-//             success: function(response) {
-//                 if (response.etudiant) {
-//                     const etudiant = response.etudiant;
-//                     $('#student-search-results').html(
-//                         `<div class="alert alert-success">Etudiant trouvé: ${etudiant.nomprenom}</div>
-//                         <input type="hidden" id="etudiant-id" value="${etudiant.id}">`
-//                     );
-//                     loadFormationDetails();
-//                     $('#payment-form').show();
-//                 } else {
-//                     $('#student-search-results').html('<div class="alert alert-danger">Etudiant non trouvé.</div>');
-//                 }
-//             },
-//             error: function(xhr, status, error) {
-//                 alert('Erreur lors de la recherche de l\'étudiant: ' + error);
-//             }
-//         });
-//     } else {
-//         alert('Veuillez entrer un numéro de téléphone.');
-//     }
-// }
-window.searchStudentByPhone = function() {
-    const phone = $('#student-phone-search').val();
-    const sessionId = $('#new-student-session_id').val();
-    
-    if (phone) {
-        $.ajax({
-            url: '{{ route("etudiant.search") }}',
-            type: 'POST',
-            data: { phone: phone },
-            success: function(response) {
-                if (response.etudiant) {
-                    const etudiant = response.etudiant;
-                    // Vérifier si l'étudiant est déjà dans la session
-                    $.ajax({
-                        url: `/sessions/${sessionId}/check-student`,
-                        type: 'POST',
-                        data: { etudiant_id: etudiant.id },
-                        success: function(checkResponse) {
-                            if (checkResponse.isInSession) {
-                                $('#student-search-results').html('<div class="alert alert-danger">L\'étudiant est déjà inscrit dans cette session.</div>');
-                            } else {
-                                $('#student-search-results').html(
-                                    `<div class="alert alert-success">Etudiant trouvé: ${etudiant.nomprenom}</div>
-                                    <input type="hidden" id="etudiant-id" value="${etudiant.id}">`
-                                );
-                                loadFormationDetails();
-                                $('#payment-form').show();
+    window.searchStudentByPhone = function() {
+        const phone = $('#student-phone-search').val();
+        const sessionId = $('#new-student-session_id').val();
+        
+        if (phone) {
+            $.ajax({
+                url: '{{ route("etudiant.search") }}',
+                type: 'POST',
+                data: { phone: phone },
+                success: function(response) {
+                    if (response.etudiant) {
+                        const etudiant = response.etudiant;
+                        // Vérifier si l'étudiant est déjà dans la session
+                        $.ajax({
+                            url: `/sessions/${sessionId}/check-student`,
+                            type: 'POST',
+                            data: { etudiant_id: etudiant.id },
+                            success: function(checkResponse) {
+                                if (checkResponse.isInSession) {
+                                    $('#student-search-results').html('<div class="alert alert-danger">L\'étudiant est déjà inscrit dans cette session.</div>');
+                                } else {
+                                    $('#student-search-results').html(
+                                        `<div class="alert alert-success">Etudiant trouvé: ${etudiant.nomprenom}</div>
+                                        <input type="hidden" id="etudiant-id" value="${etudiant.id}">`
+                                    );
+                                    loadFormationDetails();
+                                    $('#payment-form').show();
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                alert('Erreur lors de la vérification de l\'étudiant dans la session: ' + error);
                             }
-                        },
-                        error: function(xhr, status, error) {
-                            alert('Erreur lors de la vérification de l\'étudiant dans la session: ' + error);
-                        }
-                    });
+                        });
+                    } else {
+                        $('#student-search-results').html('<div class="alert alert-danger">Etudiant non trouvé.</div>');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('Erreur lors de la recherche de l\'étudiant: ' + error);
+                }
+            });
+        } else {
+            alert('Veuillez entrer un numéro de téléphone.');
+        }
+    }
+
+    window.loadFormationDetails = function() {
+        const sessionId = $('#new-student-session_id').val();
+        $.ajax({
+            url: `{{ route("sessions.details", ":sessionId") }}`.replace(':sessionId', sessionId),
+            type: 'GET',
+            success: function(response) {
+                if (response.formation) {
+                    $('#formation-price').val(response.formation.prix);
                 } else {
-                    $('#student-search-results').html('<div class="alert alert-danger">Etudiant non trouvé.</div>');
+                    $('#formation-price').val('');
                 }
             },
             error: function(xhr, status, error) {
-                alert('Erreur lors de la recherche de l\'étudiant: ' + error);
+                alert('Erreur lors du chargement des détails de la formation: ' + error);
             }
         });
-    } else {
-        alert('Veuillez entrer un numéro de téléphone.');
-    }
-}
-
-
-window.loadFormationDetails = function() {
-    const sessionId = $('#new-student-session_id').val();
-    $.ajax({
-        url: `{{ route("sessions.details", ":sessionId") }}`.replace(':sessionId', sessionId),
-        type: 'GET',
-        success: function(response) {
-            if (response.formation) {
-                $('#formation-price').val(response.formation.prix);
-            } else {
-                $('#formation-price').val('');
-            }
-        },
-        error: function(xhr, status, error) {
-            alert('Erreur lors du chargement des détails de la formation: ' + error);
-        }
-    });
-}
-
-window.addEtudiantAndPaiement = function() {
-    const etudiantId = $('#etudiant-id').val();
-    const sessionId = $('#new-student-session_id').val();
-    const datePaiement = $('#date-paiement').val();
-    const montantPaye = $('#montant-paye').val();
-    const modePaiement = $('#mode-paiement').val();
-    const prixReel = $('#prix-reel').val();
-
-    if (!etudiantId || !sessionId) {
-        alert('Etudiant ID or Session ID is missing.');
-        return;
     }
 
-    $.ajax({
-        url: `/sessions/${sessionId}/etudiants/${etudiantId}/add`,
-        type: 'POST',
-        data: {
-            etudiant_id: etudiantId,
-            date_paiement: datePaiement,
-            montant_paye: montantPaye,
-            mode_paiement: modePaiement,
-            prix_reel: prixReel
-        },
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        success: function(response) {
-            if (response.success) {
-                $('#etudiantAddModal').modal('hide');
-                showContents(sessionId);
-            } else {
-                alert(response.error);
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error('Error:', error);
-            console.error('Status:', status);
-            console.error('Response:', xhr.responseText);
-            alert('Erreur lors de l\'ajout de l\'étudiant: ' + xhr.responseText);
+    window.addEtudiantAndPaiement = function() {
+        const etudiantId = $('#etudiant-id').val();
+        const sessionId = $('#new-student-session_id').val();
+        const datePaiement = $('#date-paiement').val();
+        const montantPaye = $('#montant-paye').val();
+        const modePaiement = $('#mode-paiement').val();
+        const prixReel = $('#prix-reel').val();
+
+        if (!etudiantId || !sessionId) {
+            alert('Etudiant ID or Session ID is missing.');
+            return;
         }
-    });
-}
 
+        $.ajax({
+            url: `/sessions/${sessionId}/etudiants/${etudiantId}/add`,
+            type: 'POST',
+            data: {
+                etudiant_id: etudiantId,
+                date_paiement: datePaiement,
+                montant_paye: montantPaye,
+                mode_paiement: modePaiement,
+                prix_reel: prixReel
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                if (response.success) {
+                    $('#etudiantAddModal').modal('hide');
+                    showContents(sessionId);
+                } else {
+                    alert(response.error);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+                console.error('Status:', status);
+                console.error('Response:', xhr.responseText);
+                alert('Erreur lors de l\'ajout de l\'étudiant: ' + xhr.responseText);
+            }
+        });
+    }
 
-
-window.openAddPaymentModal = function(etudiantId, sessionId) {
-    $.ajax({
-        url: `/sessions/${sessionId}/etudiants/${etudiantId}/details`,
-        type: 'GET',
-        success: function(response) {
-            if (response.success) {
-                const resteAPayer = response.reste_a_payer;
-                if (resteAPayer <= 0) {
-                    iziToast.warning({
-                        message: 'L\'étudiant a déjà payé la totalité de la formation.',
+    window.openAddPaymentModal = function(etudiantId, sessionId) {
+        $.ajax({
+            url: `/sessions/${sessionId}/etudiants/${etudiantId}/details`,
+            type: 'GET',
+            success: function(response) {
+                if (response.success) {
+                    const resteAPayer = response.reste_a_payer;
+                    if (resteAPayer <= 0) {
+                        iziToast.warning({
+                            message: 'L\'étudiant a déjà payé la totalité de la formation.',
+                            position: 'topRight'
+                        });
+                    } else {
+                        $('#etudiant-id').val(etudiantId);
+                        $('#session-id').val(sessionId);
+                        $('#prix-formation').val(response.prix_formation);
+                        $('#prix-reel').val(response.prix_reel);
+                        $('#reste-a-payer').val(resteAPayer);
+                        $('#paiementAddModal').modal('show');
+                    }
+                } else {
+                    iziToast.error({
+                        message: response.error,
                         position: 'topRight'
                     });
-                } else {
-                    $('#etudiant-id').val(etudiantId);
-                    $('#session-id').val(sessionId);
-                    $('#prix-formation').val(response.prix_formation);
-                    $('#prix-reel').val(response.prix_reel);
-                    $('#reste-a-payer').val(resteAPayer);
-                    $('#paiementAddModal').modal('show');
                 }
-            } else {
+            },
+            error: function(xhr, status, error) {
                 iziToast.error({
-                    message: response.error,
+                    message: 'Erreur lors de la récupération des détails: ' + error,
                     position: 'topRight'
                 });
             }
-        },
-        error: function(xhr, status, error) {
-            iziToast.error({
-                message: 'Erreur lors de la récupération des détails: ' + error,
-                position: 'topRight'
-            });
-        }
-    });
-};
+        });
+    };
 
-window.addPaiement = function() {
-    let etudiantId = $('#etudiant-id').val();
-    let sessionId = $('#session-id').val();
-    let prixFormation = $('#prix-formation').val();
-    let prixReel = $('#prix-reel').val();
-    let nouveauMontantPaye = $('#nouveau-montant-paye').val();
-    let modePaiement = $('#mode-paiement').val();
-    let datePaiement = $('#date-paiement').val();
+    window.addPaiement = function() {
+        let etudiantId = $('#etudiant-id').val();
+        let sessionId = $('#session-id').val();
+        let prixFormation = $('#prix-formation').val();
+        let prixReel = $('#prix-reel').val();
+        let nouveauMontantPaye = $('#nouveau-montant-paye').val();
+        let modePaiement = $('#mode-paiement').val();
+        let datePaiement = $('#date-paiement').val();
 
-    $.ajax({
-        url: `/sessions/${sessionId}/paiements`,
-        type: 'POST',
-        data: {
-            etudiant_id: etudiantId,
-            montant_paye: nouveauMontantPaye,
-            mode_paiement: modePaiement,
-            date_paiement: datePaiement
-        },
-        success: function(response) {
-            if (response.success) {
-                $('#paiementAddModal').modal('hide');
-                showContents(sessionId);
-            } else {
-                alert(response.error);
+        $.ajax({
+            url: `/sessions/${sessionId}/paiements`,
+            type: 'POST',
+            data: {
+                etudiant_id: etudiantId,
+                montant_paye: nouveauMontantPaye,
+                mode_paiement: modePaiement,
+                date_paiement: datePaiement
+            },
+            success: function(response) {
+                if (response.success) {
+                    $('#paiementAddModal').modal('hide');
+                    showContents(sessionId);
+                } else {
+                    alert(response.error);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+                console.error('Status:', status);
+                console.error('Response:', xhr.responseText);
+                alert('Erreur lors de l\'ajout du paiement: ' + xhr.responseText);
             }
-        },
-        error: function(xhr, status, error) {
-            console.error('Error:', error);
-            console.error('Status:', status);
-            console.error('Response:', xhr.responseText);
-            alert('Erreur lors de l\'ajout du paiement: ' + xhr.responseText);
-        }
-    });
-}
+        });
+    }
 
-window.showContents = function(sessionId) {
-    $.ajax({
-        url: `/sessions/${sessionId}/contents`,
-        type: 'GET',
-        success: function(response) {
-            if (response.error) {
-                alert(response.error);
-                return;
-            }
 
-            let html = `<div class="container-fluid py-4">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card my-4">
-                            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 d-flex justify-content-between align-items-center">
-                                <div>
-                                    <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#etudiantAddModal" onclick="setSessionId(${sessionId})" data-toggle="tooltip" title="Ajouter un étudiant"><i class="material-icons opacity-10">add</i></button>
-                                    <button class="btn btn-secondary" onclick="hideStudentContents()">Fermer</button>
-                                </div>
-                            </div>
-                            <div class="card-body px-0 pb-2">
-                                <div class="table-responsive p-0" id="sessions-table">
-                                    <table class="table align-items-center mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th>Nom & Prénom</th>
-                                                <th>Phone</th>
-                                                <th>WhatsApp</th>
-                                                <th>Prix Formation</th>
-                                                <th>Prix Réel</th>
-                                                <th>Montant Payé</th>
-                                                <th>Reste à Payer</th>
-                                                <th>Mode de Paiement</th>
-                                                <th>Date de Paiement</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>`;
-
-            if (response.etudiants.length > 0) {
-                response.etudiants.forEach(function(content) {
-                    let resteAPayer = content.prix_reel - content.montant_paye;
-
-                    html += `<tr>
-                        <td>${content.nomprenom}</td>
-                        <td>${content.phone}</td>
-                        <td>${content.wtsp}</td>
-                        <td>${content.prix_formation}</td>
-                        <td>${content.prix_reel}</td>
-                        <td>${content.montant_paye}</td>
-                        <td>${resteAPayer}</td>
-                        <td>${content.mode_paiement}</td>
-                        <td>${content.date_paiement}</td>
-                        <td>
-                            <button class="btn btn-dark" onclick="openAddPaymentModal(${content.id}, ${sessionId})"><i class="material-icons opacity-10">payment</i></button>
-                            <button class="btn btn-danger" onclick="deleteContent(${content.id})"><i class="material-icons opacity-10">delete_forever</i></button>
-                        </td>
-                    </tr>`;
+    window.deleteStudentFromSession = function(etudiantId, sessionId) {
+            if (confirm("Êtes-vous sûr de vouloir supprimer cet étudiant de la session ?")) {
+                $.ajax({
+                    url: `/sessions/${sessionId}/etudiants/${etudiantId}`,
+                    type: 'DELETE',
+                    success: function(response) {
+                        if (response.success) {
+                            iziToast.success({
+                                message: response.success,
+                                position: 'topRight'
+                            });
+                            showContents(sessionId); // Recharge les contenus après suppression
+                        } else {
+                            iziToast.error({
+                                message: response.error,
+                                position: 'topRight'
+                            });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        iziToast.error({
+                            message: 'Erreur lors de la suppression: ' + error,
+                            position: 'topRight'
+                        });
+                    }
                 });
-            } else {
-                html += '<tr><td colspan="10" class="text-center">Aucun étudiant trouvé pour cette Formation.</td></tr>';
             }
+        };
 
-            html += '</tbody></table></div></div></div></div></div>';
-            $('#formationContents').html(html);
-            $('#formationContentContainer').show();
-            $('html, body').animate({ scrollTop: $('#formationContentContainer').offset().top }, 'slow');
-        },
-        error: function() {
-            alert('Erreur lors du chargement des contenus.');
-        }
-    });
-};
 
+
+    window.showContents = function(sessionId) {
+        $.ajax({
+            url: `/sessions/${sessionId}/contents`,
+            type: 'GET',
+            success: function(response) {
+                if (response.error) {
+                    alert(response.error);
+                    return;
+                }
+
+                let html = `<div class="container-fluid py-4">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card my-4">
+                                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#etudiantAddModal" onclick="setSessionId(${sessionId})" data-toggle="tooltip" title="Ajouter un étudiant"><i class="material-icons opacity-10">add</i></button>
+                                        <button class="btn btn-secondary" onclick="hideStudentContents()">Fermer</button>
+                                    </div>
+                                </div>
+                                <div class="card-body px-0 pb-2">
+                                    <div class="table-responsive p-0" id="sessions-table">
+                                        <table class="table align-items-center mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nom & Prénom</th>
+                                                    <th>Phone</th>
+                                                    <th>WhatsApp</th>
+                                                    <th>Prix Programme</th>
+                                                    <th>Prix Réel</th>
+                                                    <th>Montant Payé</th>
+                                                    <th>Reste à Payer</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>`;
+
+                if (response.etudiants.length > 0) {
+                    response.etudiants.forEach(function(content) {
+                        let resteAPayer = content.prix_reel - content.montant_paye;
+
+                        html += `<tr>
+                            <td>${content.nomprenom}</td>
+                            <td>${content.phone}</td>
+                            <td>${content.wtsp}</td>
+                            <td>${content.prix_formation}</td>
+                            <td>${content.prix_reel}</td>
+                            <td>${content.montant_paye}</td>
+                            <td>${resteAPayer}</td>
+                            <td>
+                                <button class="btn btn-dark" onclick="openAddPaymentModal(${content.id}, ${sessionId})"><i class="material-icons opacity-10">payment</i></button>
+                                <button class="btn btn-danger" onclick="deleteContent(${content.id})"><i class="material-icons opacity-10">delete_forever</i></button>
+                            </td>
+                        </tr>`;
+                    });
+                } else {
+                    html += '<tr><td colspan="10" class="text-center">Aucun étudiant trouvé pour cette Formation.</td></tr>';
+                }
+
+                html += '</tbody></table></div></div></div></div></div>';
+                $('#formationContents').html(html);
+                $('#formationContentContainer').show();
+                $('html, body').animate({ scrollTop: $('#formationContentContainer').offset().top }, 'slow');
+            },
+            error: function() {
+                alert('Erreur lors du chargement des contenus.');
+            }
+        });
+    };
 
     window.hideStudentContents = function() {
         $('#formationContentContainer').hide();
@@ -759,7 +1293,7 @@ window.showContents = function(sessionId) {
 
 
 });
-</script>
+</script> -->
 
 
 </body>

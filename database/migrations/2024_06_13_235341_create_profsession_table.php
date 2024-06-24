@@ -6,19 +6,19 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up(): void
+    public function up()
     {
         Schema::create('prof_session', function (Blueprint $table) {
-            $table->bigInteger('prof_id')->unsigned();
-            $table->bigInteger('session_id')->unsigned();
-            $table->foreign('prof_id')->references('id')->on('professeurs');
-            $table->foreign('session_id')->references('id')->on('sessions');
-            $table->date('date')->nullable();
+            $table->foreignId('prof_id')->constrained('Professeurs');
+            $table->foreignId('session_id')->constrained('sessions');
+            $table->date('date_paiement')->nullable();
             $table->timestamps();
+
+            $table->primary(['prof_id', 'session_id']);
         });
     }
 
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('prof_session');
     }

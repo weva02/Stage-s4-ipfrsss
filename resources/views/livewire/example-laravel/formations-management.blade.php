@@ -554,40 +554,108 @@
         });
 
         // Supprimer un contenu
-        window.deleteContent = function(contentId) {
-            if (confirm("Voulez-vous vraiment supprimer ce contenu?")) {
-                $.ajax({
-                    url: '/contenus/' + contentId,
-                    type: 'DELETE',
-                    dataType: 'json',
-                    success: function (response) {
-                        if (response.success) {
-                            iziToast.success({
-                                title: 'Succès',
-                                message: response.success,
-                                position: 'topRight'
-                            });
-                            setTimeout(function () {
-                                location.reload();
-                            }, 1000);
-                        } else {
-                            iziToast.error({
-                                title: 'Erreur',
-                                message: response.error,
-                                position: 'topRight'
-                            });
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        iziToast.error({
-                            title: 'Erreur',
-                            message: 'Une erreur s\'est produite: ' + error,
-                            position: 'topRight'
+        // window.deleteContent = function(contentId) {
+        //     if (confirm("Voulez-vous vraiment supprimer ce contenu?")) {
+        //         $.ajax({
+        //             url: '/contenus/' + contentId,
+        //             type: 'DELETE',
+        //             dataType: 'json',
+        //             success: function (response) {
+        //                 if (response.success) {
+        //                     iziToast.success({
+        //                         title: 'Succès',
+        //                         message: response.success,
+        //                         position: 'topRight'
+        //                     });
+        //                     setTimeout(function () {
+        //                         location.reload();
+        //                     }, 1000);
+        //                 } else {
+        //                     iziToast.error({
+        //                         title: 'Erreur',
+        //                         message: response.error,
+        //                         position: 'topRight'
+        //                     });
+        //                 }
+        //             },
+        //             error: function (xhr, status, error) {
+        //                 iziToast.error({
+        //                     title: 'Erreur',
+        //                     message: 'Une erreur s\'est produite: ' + error,
+        //                     position: 'topRight'
+        //                 });
+        //             }
+        //         });
+        //     }
+        // }
+
+
+        $('body').on('click', '#delete-formation', function (e) {
+        e.preventDefault();
+        var id = $(this).data('id');
+
+        $.ajax({
+            url: '/formations/' + id + '/delete',
+            type: 'DELETE',
+            dataType: 'json',
+            success: function (response) {
+                if (response.status === 400) {
+                    iziToast.error({
+                        message: response.message,
+                        position: 'topRight'
+                    });
+                } else if (response.status === 200 && response.confirm_deletion) {
+                    if (confirm(response.message)) {
+                        // Si l'utilisateur confirme, envoyer une requête pour supprimer la formation
+                        $.ajax({
+                            url: '/formations/' + id + '/confirm-delete',
+                            type: 'DELETE',
+                            dataType: 'json',
+                            success: function (response) {
+                                if (response.status === 200) {
+                                    iziToast.success({
+                                        message: response.message,
+                                        position: 'topRight'
+                                    });
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 1000);
+                                } else {
+                                    iziToast.error({
+                                        message: response.message,
+                                        position: 'topRight'
+                                    });
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                var errorMessage = xhr.status + ': ' + xhr.statusText;
+                                iziToast.error({
+                                    title: 'Erreur',
+                                    message: 'Une erreur s\'est produite: ' + errorMessage,
+                                    position: 'topRight'
+                                });
+                            }
                         });
                     }
+                } else {
+                    iziToast.error({
+                        message: response.message,
+                        position: 'topRight'
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                var errorMessage = xhr.status + ': ' + xhr.statusText;
+                iziToast.error({
+                    title: 'Erreur',
+                    message: 'Une erreur s\'est produite: ' + errorMessage,
+                    position: 'topRight'
                 });
             }
-        }
+        });
+    });
+
+
 
         // Afficher les contenus de la formation
         // Afficher les contenus de la formation

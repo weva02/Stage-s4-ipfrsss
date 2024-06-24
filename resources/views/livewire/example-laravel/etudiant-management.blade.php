@@ -38,7 +38,7 @@
     </style>
 </head>
 <body>
-    <div class="container-fluid py-4">
+<div class="container-fluid py-4">
         <div class="row">
             <div class="col-12">
                 @if (session('status'))
@@ -71,15 +71,9 @@
         </div>
     </div>
 
-                    <div class="me-3 my-3 text-end "></div>
-
-        
-
-    <!-- Modals -->
-
     <!-- Add Student Modal -->
-    <!-- Add Student Modal -->
-    <div class="modal fade" id="etudiantAddModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- Add Student Modal -->
+<div class="modal fade" id="etudiantAddModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content" style="width: 40cm;">
             <div class="modal-header">
@@ -231,27 +225,14 @@
                                 <input type="radio" id="female" name="genre" value="Female">
                                 <label for="female">Female</label>
                             </div>
-                            <div class="text-danger" id="edit-genre-warning"></div>
+                            <div class="text-danger" id="genre-warning"></div>
                         </div>
+
                         <div class="col-md-3">
                             <label for="datenaissance" class="form-label">Date de naissance:</label>
                             <input type="date" class="form-control" id="etudiant-datenaissance"  name="datenaissance">
                         </div>
                     </div>
-                    <!-- <div class="row mb-3">
-                        <div class="col-md-4">
-                            <label for="lieunaissance" class="form-label">Lieu de naissance:</label>
-                            <input type="text" class="form-control" id="etudiant-lieunaissance" name="lieunaissance">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="adress" class="form-label">Adresse:</label>
-                            <input type="text" class="form-control" id="etudiant-adress" name="adress">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="datenaissance" class="form-label">Date de naissance:</label>
-                            <input type="date" class="form-control" id="etudiant-datenaissance" name="datenaissance">
-                        </div>
-                    </div> -->
                     <div class="row mb-4">
                         <div class="col-md-3">
                             <label for="email" class="form-label">Email:</label>
@@ -283,36 +264,14 @@
 
 
 
-    <script type="text/javascript">
+<script type="text/javascript">
 $(document).ready(function () {
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-    // $(document).ready(function() {
-    //     $('#etudiants-table').DataTable({
-    //         "order": [[4, "asc"]] // Ordre alphabétique sur la colonne "Nom & Prénom"
-    //     });
-    // });
 
-
-    function validateForm(formId, warnings) {
-        let isValid = true;
-        for (let field in warnings) {
-            const input = $(formId + ' #' + field);
-            const warning = $(warnings[field]);
-            if (input.val().trim() === '') {
-                warning.text('Ce champ est requis.');
-                isValid = false;
-            } else {
-                warning.text('');
-            }
-        }
-        return isValid;
-    }
-
-    // Recherche AJAX
     $('#search_bar').on('keyup', function(){
                 var query = $(this).val();
                 $.ajax({
@@ -325,69 +284,248 @@ $(document).ready(function () {
                 });
             });
 
-    $("#add-new-etudiant").click(function(e){
-        e.preventDefault();
-        if (!validateForm('#etudiant-add-form', {
-            'new-etudiant-nni': '#nni-warning',
-            'new-etudiant-nomprenom': '#nomprenom-warning',
-            'new-etudiant-country_id': '#country_id-warning',
-            'new-etudiant-phone': '#phone-warning'
-        })) {
-            return;
-        }
-        let form = $('#etudiant-add-form')[0];
-        let data = new FormData(form);
-
-        $.ajax({
-            url: "{{ route('etudiant.store') }}",
-            type: "POST",
-            data: data,
-            dataType: "JSON",
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                if (response.errors) {
-                    var errorMsg = '';
-                    $.each(response.errors, function(field, errors) {
-                        $.each(errors, function(index, error) {
-                            errorMsg += error + '<br>';
-                        });
-                    });
-                    iziToast.error({
-                        message: errorMsg,
-                        position: 'topRight'
-                    });
-                } else {
-                    iziToast.success({
-                        message: response.success,
-                        position: 'topRight'
-                    });
-                    $('#etudiantAddModal').modal('hide');
-                    setTimeout(function () {
-                        location.reload();
-                    }, 1000);
-                    addStudentToTable(response.etudiant);
-                }
-            },
-            // error: function(xhr, status, error) {
-            //     var errorMsg = '';
-            //     if (xhr.responseJSON && xhr.responseJSON.errors) {
-            //         $.each(xhr.responseJSON.errors, function(field, errors) {
-            //             $.each(errors, function(index, error) {
-            //                 errorMsg += error + '<br>';
-            //             });
-            //         });
-            //     } else {
-            //         errorMsg = 'An error occurred: ' + error;
-            //     }
-            //     iziToast.error({
-            //         message: errorMsg,
-            //         position: 'topRight'
-            //     });
-            // }
+    // Initialize DataTable
+    $(document).ready(function() {
+        $('#etudiants-table').DataTable({
+            "order": [[4, "asc"]] // Ordre alphabétique sur la colonne "Nom & Prénom"
         });
     });
 
+    // Validate form fields
+    // function validateForm(formId, warnings) {
+    //     let isValid = true;
+    //     for (let field in warnings) {
+    //         const input = $(formId + ' #' + field);
+    //         const warning = $(warnings[field]);
+    //         if (input.length === 0) {
+    //             console.warn(`No input found with ID: ${field}`);
+    //             continue;
+    //         }
+    //         if (input.attr('type') === 'radio') {
+    //             if (!$('input[name="' + field + '"]:checked').val()) {
+    //                 warning.text('Ce champ est requis.');
+    //                 isValid = false;
+    //             } else {
+    //                 warning.text('');
+    //             }
+    //         } else if (input.val().trim() === '') {
+    //             warning.text('Ce champ est requis.');
+    //             isValid = false;
+    //         } else if (field === 'new-etudiant-phone' || field === 'etudiant-phone') {
+    //             if (!/^\d{8}$/.test(input.val())) {
+    //                 warning.text('Le numéro de téléphone doit comporter 8 chiffres.');
+    //                 isValid = false;
+    //             } else {
+    //                 warning.text('');
+    //             }
+    //         } else if (field === 'new-etudiant-nni' || field === 'etudiant-nni') {
+    //             if (!/^\d{10}$/.test(input.val())) {
+    //                 warning.text('Le NNI doit comporter 10 chiffres.');
+    //                 isValid = false;
+    //             } else {
+    //                 warning.text('');
+    //             }
+    //         } else if (field === 'new-etudiant-email' || field === 'etudiant-email') {
+    //             const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    //             if (!emailPattern.test(input.val())) {
+    //                 warning.text('Veuillez entrer une adresse e-mail valide.');
+    //                 isValid = false;
+    //             } else {
+    //                 warning.text('');
+    //             }
+    //         } else {
+    //             warning.text('');
+    //         }
+    //     }
+    //     return isValid;
+    // }
+
+    // AJAX call for adding a new student
+    // $("#add-new-etudiant").click(function(e){
+    //     e.preventDefault();
+    //     if (!validateForm('#etudiant-add-form', {
+    //         'new-etudiant-nni': '#nni-warning',
+    //         'new-etudiant-nomprenom': '#nomprenom-warning',
+    //         'new-etudiant-country_id': '#country_id-warning',
+    //         'new-etudiant-phone': '#phone-warning',
+    //         'genre': '#genre-warning'
+    //     })) {
+    //         return;
+    //     }
+    //     let form = $('#etudiant-add-form')[0];
+    //     let data = new FormData(form);
+
+    //     $.ajax({
+    //         url: "{{ route('etudiant.store') }}",
+    //         type: "POST",
+    //         data: data,
+    //         dataType: "JSON",
+    //         processData: false,
+    //         contentType: false,
+    //         success: function(response) {
+    //             if (response.errors) {
+    //                 var errorMsg = '';
+    //                 $.each(response.errors, function(field, errors) {
+    //                     $.each(errors, function(index, error) {
+    //                         errorMsg += error + '<br>';
+    //                     });
+    //                 });
+    //                 iziToast.error({
+    //                     message: errorMsg,
+    //                     position: 'topRight'
+    //                 });
+    //             } else {
+    //                 iziToast.success({
+    //                     message: response.success,
+    //                     position: 'topRight'
+    //                 });
+    //                 $('#etudiantAddModal').modal('hide');
+    //                 setTimeout(function () {
+    //                     location.reload();
+    //                 }, 1000);
+    //                 addStudentToTable(response.etudiant);
+    //             }
+    //         },
+    //         error: function(xhr, status, error) {
+    //             var errorMsg = '';
+    //             if (xhr.responseJSON && xhr.responseJSON.errors) {
+    //                 $.each(xhr.responseJSON.errors, function(field, errors) {
+    //                     $.each(errors, function(index, error) {
+    //                         errorMsg += error + '<br>';
+    //                     });
+    //                 });
+    //             } else {
+    //                 errorMsg = 'Une erreur est survenue : ' + error;
+    //             }
+    //             iziToast.error({
+    //                 message: errorMsg,
+    //                 position: 'topRight'
+    //             });
+    //         }
+    //     });
+    // });
+
+    function validateForm(formId, warnings) {
+        let isValid = true;
+        for (let field in warnings) {
+            const input = $(formId + ' #' + field);
+            const warning = $(warnings[field]);
+
+            if (input.length === 0) {
+                console.warn(`No input found with ID: ${field}`);
+                continue;
+            }
+
+            if (input.attr('type') === 'radio') {
+                if (!$('input[name="' + field + '"]:checked').val()) {
+                    warning.text('Ce champ est requis.');
+                    isValid = false;
+                } else {
+                    warning.text('');
+                }
+            } else if (input.val().trim() === '') {
+                warning.text('Ce champ est requis.');
+                isValid = false;
+            } else if (field === 'new-etudiant-phone' || field === 'etudiant-phone') {
+                if (!/^\d{8}$/.test(input.val())) {
+                    warning.text('Le numéro de téléphone doit comporter 8 chiffres.');
+                    isValid = false;
+                } else {
+                    warning.text('');
+                }
+            } else if (field === 'new-etudiant-nni' || field === 'etudiant-nni') {
+                if (!/^\d{10}$/.test(input.val())) {
+                    warning.text('Le NNI doit comporter 10 chiffres.');
+                    isValid = false;
+                } else {
+                    warning.text('');
+                }
+            } else if (field === 'new-etudiant-email' || field === 'etudiant-email') {
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailPattern.test(input.val())) {
+                    warning.text('Veuillez entrer une adresse e-mail valide.');
+                    isValid = false;
+                } else {
+                    warning.text('');
+                }
+            } else {
+                warning.text('');
+            }
+        }
+        return isValid;
+    }
+
+$("#add-new-etudiant").click(function (e) {
+    e.preventDefault();
+
+    if (!validateForm('#etudiant-add-form', {
+        'new-etudiant-nni': '#nni-warning',
+        'new-etudiant-nomprenom': '#nomprenom-warning',
+        'new-etudiant-country_id': '#country_id-warning',
+        'new-etudiant-phone': '#phone-warning',
+        'genre': '#genre-warning'
+    })) {
+        return;
+    }
+
+    let form = $('#etudiant-add-form')[0];
+    let data = new FormData(form);
+
+    $.ajax({
+        url: "{{ route('etudiant.store') }}",
+        type: "POST",
+        data: data,
+        dataType: "JSON",
+        processData: false,
+        contentType: false,
+        success: function (response) {
+            if (response.errors) {
+                var errorMsg = '';
+                $.each(response.errors, function (field, errors) {
+                    $.each(errors, function (index, error) {
+                        errorMsg += error + '<br>';
+                    });
+                });
+                iziToast.error({
+                    message: errorMsg,
+                    position: 'topRight'
+                });
+            } else {
+                iziToast.success({
+                    message: response.success,
+                    position: 'topRight'
+                });
+                $('#etudiantAddModal').modal('hide');
+                setTimeout(function () {
+                    location.reload();
+                }, 1000);
+                addStudentToTable(response.etudiant);
+            }
+        },
+        error: function (xhr, status, error) {
+            var errorMsg = '';
+            if (xhr.responseJSON && xhr.responseJSON.error) {
+                errorMsg = xhr.responseJSON.error;
+            } else if (xhr.responseJSON && xhr.responseJSON.errors) {
+                $.each(xhr.responseJSON.errors, function (field, errors) {
+                    $.each(errors, function (index, error) {
+                        errorMsg += error + '<br>';
+                    });
+                });
+            } else {
+                errorMsg = 'Une erreur est survenue : ' + error;
+            }
+            iziToast.error({
+                message: errorMsg,
+                position: 'topRight'
+            });
+        }
+    });
+});
+
+
+
+    // Populate the edit modal with the selected student's data
     $('body').on('click', '#edit-etudiant', function () {
         var tr = $(this).closest('tr');
         $('#etudiant-id').val($(this).data('id'));
@@ -408,12 +546,14 @@ $(document).ready(function () {
         $('#etudiantEditModal').modal('show');
     });
 
+    // AJAX call for updating student details
     $('body').on('click', '#etudiant-update', function () {
         if (!validateForm('#etudiant-edit-form', {
             'etudiant-nni': '#edit-nni-warning',
             'etudiant-nomprenom': '#edit-nomprenom-warning',
             'etudiant-country_id': '#edit-country_id-warning',
-            'etudiant-phone': '#edit-phone-warning'
+            'etudiant-phone': '#edit-phone-warning',
+            'genre': '#edit-genre-warning'
         })) {
             return;
         }
@@ -455,7 +595,7 @@ $(document).ready(function () {
                         });
                     });
                 } else {
-                    errorMsg = 'An error occurred: ' + error;
+                    errorMsg = 'Une erreur est survenue : ' + error;
                 }
                 iziToast.error({
                     message: errorMsg,
@@ -465,30 +605,84 @@ $(document).ready(function () {
         });
     });
 
+    // AJAX call for deleting a student with validation and confirmation
     $('body').on('click', '#delete-etudiant', function (e) {
         e.preventDefault();
         var id = $(this).data('id');
-        var confirmation = confirm("Êtes-vous sûr de vouloir supprimer cet étudiant ?");
-        if (confirmation) {
-            $.ajax({
-                url: "{{ route('etudiant.delete', '') }}/" + id,
-                type: 'DELETE',
-                success: function(response) {
-                    iziToast.success({
-                        message: response.success,
-                        position: 'topRight'
-                    });
-                    removeStudentFromTable(id);
-                },
-                error: function(xhr, status, error) {
+        
+        // Step 1: Check if the student can be deleted
+        $.ajax({
+            url: "{{ route('etudiant.delete', '') }}/" + id,
+            type: 'GET',
+            success: function(response) {
+                if (response.status === 200 && response.confirm_deletion) {
+                    // Ask for confirmation before proceeding with deletion
+                    var confirmation = confirm(response.message);
+                    if (confirmation) {
+                        // Step 2: Confirm deletion
+                        $.ajax({
+                            url: "{{ route('etudiant.confirm_delete', '') }}/" + id,
+                            type: 'DELETE',
+                            success: function(response) {
+                                if (response.status === 200) {
+                                    iziToast.success({
+                                        message: response.message,
+                                        position: 'topRight'
+                                    });
+                                    removeStudentFromTable(id);
+                                } else {
+                                    iziToast.error({
+                                        message: response.message,
+                                        position: 'topRight'
+                                    });
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                iziToast.error({
+                                    message: 'Une erreur est survenue : ' + error,
+                                    position: 'topRight'
+                                });
+                            }
+                        });
+                    }
+                } else {
                     iziToast.error({
-                        message: 'An error occurred: ' + error,
+                        message: response.message,
                         position: 'topRight'
                     });
                 }
-            });
-        }
+            },
+            error: function(xhr, status, error) {
+                iziToast.error({
+                    message: 'Une erreur est survenue : ' + error,
+                    position: 'topRight'
+                });
+            }
+        });
     });
+
+    // function addStudentToTable(etudiant) {
+    //     var newRow = `<tr id="student-${etudiant.id}">
+    //         <td>${etudiant.id}</td>
+    //         <td><img src="{{ asset('images/') }}/${etudiant.image}" alt="" width="60px"></td>
+    //         <td>${etudiant.nni}</td>
+    //         <td>${etudiant.nomprenom}</td>
+    //         <td data-country-id="${etudiant.country_id}">${etudiant.country ? etudiant.country.name : 'N/A'}</td>
+    //         <td>${etudiant.diplome}</td>
+    //         <td>${etudiant.genre}</td>
+    //         <td>${etudiant.lieunaissance}</td>
+    //         <td>${etudiant.adress}</td>
+    //         <td>${etudiant.datenaissance}</td>
+    //         <td>${etudiant.email}</td>
+    //         <td>${etudiant.phone}</td>
+    //         <td>${etudiant.wtsp}</td>
+    //         <td>
+    //             <a href="javascript:void(0)" id="edit-etudiant" data-id="${etudiant.id}" class="btn btn-info"><i class="material-icons opacity-10">border_color</i></a>
+    //             <a href="javascript:void(0)" id="delete-etudiant" data-id="${etudiant.id}" class="btn btn-danger"><i class="material-icons opacity-10">delete</i></a>
+    //         </td>
+    //     </tr>`;
+    //     $('table tbody').append(newRow);
+    // }
 
     function addStudentToTable(etudiant) {
         var newRow = `<tr id="student-${etudiant.id}">
@@ -540,7 +734,11 @@ $(document).ready(function () {
         }, 2000);
     }
 });
+</script>
 
-    </script>
+
+
+
+
 </body>
 </html>

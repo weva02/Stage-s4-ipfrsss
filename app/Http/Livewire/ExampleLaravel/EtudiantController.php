@@ -85,7 +85,7 @@ class EtudiantController extends Component
     {
         $request->validate([
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'nni' => 'required|integer',
+            'nni' => 'required|digits:10|integer|gt:0',
             'nomprenom' => 'required|string',
             'diplome' => 'nullable|string',
             'genre' => 'required|string',
@@ -93,7 +93,7 @@ class EtudiantController extends Component
             'adress' => 'nullable|string',
             'datenaissance' => 'nullable|date',
             'email' => 'nullable|email',
-            'phone' => 'required|integer',
+            'phone' => 'required|digits:8|integer|gt:0',
             'wtsp' => 'nullable|integer',
             'country_id' => 'required|exists:countries,id',
         ]);
@@ -126,11 +126,15 @@ class EtudiantController extends Component
         }
     }
 
+
+    
+    
+
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'nni' => 'required|integer',
+            'nni' => 'required|digits:10|integer|gt:0',
             'nomprenom' => 'required|string',
             'diplome' => 'nullable|string',
             'genre' => 'required|string',
@@ -138,7 +142,7 @@ class EtudiantController extends Component
             'adress' => 'nullable|string',
             'datenaissance' => 'nullable|date',
             'email' => 'nullable|email',
-            'phone' => 'required|integer',
+            'phone' => 'required|digits:8|integer|gt:0',
             'wtsp' => 'nullable|integer',
             'country_id' => 'required|exists:countries,id',
         ]);
@@ -160,13 +164,46 @@ class EtudiantController extends Component
         }
     }
 
-    public function delete_etudiant($id)
-    {
-        $etudiant = Etudiant::findOrFail($id);
-        $etudiant->delete();
 
-        return response()->json(['success' => 'Étudiant supprimé avec succès']);
+    public function deleteEtudiant($id)
+    {
+        $etudiant = Etudiant::find($id);
+    
+        if (!$etudiant) {
+            return response()->json(['status' => 404, 'message' => 'Étudiant non trouvé.']);
+        }
+    
+        $sessionsCount = $etudiant->sessions()->count();
+    
+        if ($sessionsCount > 0) {
+            return response()->json([
+                'status' => 400,
+                'message' => 'Cet étudiant est associé à une ou plusieurs sessions et ne peut pas être supprimé.'
+            ]);
+        }
+    
+        // Si aucune relation n'existe, confirmation de suppression
+        return response()->json([
+            'status' => 200,
+            'message' => 'Voulez-vous vraiment supprimer cet étudiant?',
+            'confirm_deletion' => true
+        ]);
     }
+    
+    public function confirmDeleteEtudiant($id)
+    {
+        $etudiant = Etudiant::find($id);
+    
+        if (!$etudiant) {
+            return response()->json(['status' => 404, 'message' => 'Étudiant non trouvé.']);
+        }
+    
+        $etudiant->delete();
+        return response()->json(['status' => 200, 'message' => 'Étudiant supprimé avec succès.']);
+    }
+    
+    
+
 
     public function search(Request $request)
     {

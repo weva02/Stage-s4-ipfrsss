@@ -65,7 +65,7 @@
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">format_list_bulleted</i>
                     </div>
-                    <span class="nav-link-text ms-1"><b>programmes</b> </span>
+                    <span class="nav-link-text ms-1"><b>Programmes</b> </span>
                 </a>
             </li>
             <li class="nav-item">
@@ -75,6 +75,15 @@
                         <i class="material-icons opacity-10">format_list_bulleted</i>
                     </div>
                     <span class="nav-link-text ms-1"><b>Formations</b> </span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white {{ Route::currentRouteName() == 'paiement-management' ? ' active bg-gradient-info' : '' }}  "
+                    href="{{ route('paiement-management') }}">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">payment</i>
+                    </div>
+                    <span class="nav-link-text ms-1"><b>Paiements</b> </span>
                 </a>
             </li>
             <!-- <li class="nav-item">

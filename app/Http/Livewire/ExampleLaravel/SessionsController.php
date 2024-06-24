@@ -13,14 +13,10 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Maatwebsite\Excel\Facades\Excel;
 
-
 use App\Exports\SessionsExport;
-
-
 
 class SessionsController extends Component
 {
-
     public function list_session()
     {
         $sessions = Sessions::with('etudiants', 'formation')->paginate(4);
@@ -42,12 +38,10 @@ class SessionsController extends Component
             $session = Sessions::findOrFail($sessionId);
             $etudiant = Etudiant::findOrFail($etudiantId);
 
-            // Attach the student to the session with the payment date
             $session->etudiants()->attach($etudiantId, [
                 'date_paiement' => $request->date_paiement,
             ]);
 
-            // Create a new Paiement record
             $paiement = new Paiement([
                 'etudiant_id' => $etudiantId,
                 'session_id' => $sessionId,
@@ -66,7 +60,6 @@ class SessionsController extends Component
             return response()->json(['error' => 'Erreur lors de l\'ajout de l\'étudiant et du paiement: ' . $e->getMessage()], 500);
         }
     }
-
 
     public function getSessionContents($sessionId)
     {
@@ -103,7 +96,6 @@ class SessionsController extends Component
         ]);
     }
 
-
     public function getStudentDetails($sessionId, $etudiantId)
     {
         try {
@@ -130,19 +122,54 @@ class SessionsController extends Component
         }
     }
 
+    // public function addPaiement(Request $request, $sessionId)
+    // {
+    //     $request->validate([
+    //         'etudiant_id' => 'required|exists:etudiants,id',
+    //         'montant_paye' => 'required|numeric',
+    //         'mode_paiement' => 'required|exists:modes_paiement,id',
+    //         'date_paiement' => 'required|date',
+    //     ]);
+
+    //     try {
+    //         $etudiant = Etudiant::findOrFail($request->etudiant_id);
+    //         $session = Sessions::findOrFail($sessionId);
+
+    //         $paiement = new Paiement([
+    //             'etudiant_id' => $request->etudiant_id,
+    //             'session_id' => $sessionId,
+    //             'prix_reel' => $session->formation->prix,
+    //             'montant_paye' => $request->montant_paye,
+    //             'mode_paiement_id' => $request->mode_paiement,
+    //             'date_paiement' => $request->date_paiement,
+    //         ]);
+    //         $paiement->save();
+
+    //         return response()->json(['success' => 'Paiement ajouté avec succès']);
+    //     } catch (ModelNotFoundException $e) {
+    //         Log::error('Model not found: ' . $e->getMessage());
+    //         return response()->json(['error' => 'Session ou Étudiant non trouvé.'], 404);
+    //     } catch (\Exception $e) {
+    //         Log::error('Error adding payment: ' . $e->getMessage());
+    //         return response()->json(['error' => 'Erreur lors de l\'ajout du paiement: ' . $e->getMessage()], 500);
+    //     }
+    // }
+
     public function addPaiement(Request $request, $sessionId)
     {
+        Log::info('Received data:', $request->all()); // Log the received data
+    
         $request->validate([
             'etudiant_id' => 'required|exists:etudiants,id',
             'montant_paye' => 'required|numeric',
             'mode_paiement' => 'required|exists:modes_paiement,id',
             'date_paiement' => 'required|date',
         ]);
-
+    
         try {
             $etudiant = Etudiant::findOrFail($request->etudiant_id);
             $session = Sessions::findOrFail($sessionId);
-
+    
             $paiement = new Paiement([
                 'etudiant_id' => $request->etudiant_id,
                 'session_id' => $sessionId,
@@ -152,7 +179,7 @@ class SessionsController extends Component
                 'date_paiement' => $request->date_paiement,
             ]);
             $paiement->save();
-
+    
             return response()->json(['success' => 'Paiement ajouté avec succès']);
         } catch (ModelNotFoundException $e) {
             Log::error('Model not found: ' . $e->getMessage());
@@ -162,7 +189,38 @@ class SessionsController extends Component
             return response()->json(['error' => 'Erreur lors de l\'ajout du paiement: ' . $e->getMessage()], 500);
         }
     }
+    
+    
 
+
+    public function deleteStudentFromSession($sessionId, $etudiantId)
+    {
+        try {
+            $session = Sessions::findOrFail($sessionId);
+            $session->etudiants()->detach($etudiantId);
+
+            Paiement::where('session_id', $sessionId)->where('etudiant_id', $etudiantId)->delete();
+
+            return response()->json(['success' => 'Étudiant retiré de la session avec succès']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Erreur lors de la suppression de l\'étudiant: ' . $e->getMessage()], 500);
+        }
+    }
+
+    // public function destroy($id)
+    // {
+    //     try {
+    //         $session = Sessions::with('etudiants', 'professeurs')->findOrFail($id);
+    //         if ($session->etudiants->isNotEmpty() || $session->professeurs->isNotEmpty()) {
+    //             return response()->json(['status' => 400, 'message' => 'La session ne peut pas être supprimée car elle contient des étudiants ou des professeurs.']);
+    //         }
+
+    //         $session->delete();
+    //         return response()->json(['success' => 'Session supprimée avec succès']);
+    //     } catch (\Throwable $th) {
+    //         return response()->json(['error' => $th->getMessage()], 500);
+    //     }
+    // }
 
     public function getFormationDetails($id)
     {
@@ -229,6 +287,25 @@ class SessionsController extends Component
         }
     }
 
+    // public function update(Request $request, $id)
+    // {
+    //     $validated = $request->validate([
+    //         'date_debut' => 'required|date',
+    //         'date_fin' => 'required|date',
+    //         'nom' => 'required|string',
+    //         'formation_id' => 'required|exists:formations,id',
+    //     ]);
+
+    //     try {
+    //         $session = Sessions::findOrFail($id);
+    //         $session->update($validated);
+
+    //         return response()->json(['success' => 'Session modifiée avec succès', 'session' => $session]);
+    //     } catch (\Throwable $th) {
+    //         return response()->json(['error' => $th->getMessage()], 500);
+    //     }
+    // }
+
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
@@ -237,27 +314,34 @@ class SessionsController extends Component
             'nom' => 'required|string',
             'formation_id' => 'required|exists:formations,id',
         ]);
-
+    
         try {
             $session = Sessions::findOrFail($id);
+    
+            // Modification permise même si des étudiants ou des professeurs sont inscrits
             $session->update($validated);
-
             return response()->json(['success' => 'Session modifiée avec succès', 'session' => $session]);
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 500);
         }
     }
-
+    
     public function destroy($id)
     {
         try {
-            $session = Sessions::findOrFail($id);
+            $session = Sessions::with('etudiants', 'professeurs')->findOrFail($id);
+            if ($session->etudiants->isNotEmpty() || $session->professeurs->isNotEmpty()) {
+                return response()->json(['status' => 400, 'message' => 'La session ne peut pas être supprimée car elle contient des étudiants ou des professeurs.']);
+            }
+    
             $session->delete();
             return response()->json(['success' => 'Session supprimée avec succès']);
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 500);
         }
     }
+    
+
 
     public function search6(Request $request)
     {

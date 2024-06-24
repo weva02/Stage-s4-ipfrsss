@@ -10,10 +10,53 @@ use App\Models\Paiement;
 use App\Models\Etudiant;
 use App\Models\Sessions;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\PaiementsExport;
 
 
 class PaiementController extends Component
 {
+
+
+    // public function list_peiement()
+    // {
+    //     $paiements = Paiement::with(['etudiant', 'session.formation', 'mode'])->paginate(6);
+    //     return view('livewire.example-laravel.paiement-management', compact('paiements'));
+    // }
+
+    public function list_paiement()
+    {
+        $paiements = Paiement::with(['etudiant', 'session.formation', 'mode'])
+            ->join('etudiants', 'paiements.etudiant_id', '=', 'etudiants.id')
+            ->join('sessions', 'paiements.session_id', '=', 'sessions.id')
+            ->orderBy('sessions.nom', 'asc')
+            ->orderBy('etudiants.nomprenom', 'asc')
+            ->select('paiements.*')
+            ->paginate(8);
+    
+        // Calculer le reste à payer
+        foreach ($paiements as $paiement) {
+            $montantPayeTotal = Paiement::where('etudiant_id', $paiement->etudiant_id)
+                ->where('session_id', $paiement->session_id)
+                ->sum('montant_paye');
+            $paiement->reste_a_payer = $paiement->prix_reel - $montantPayeTotal;
+        }
+    
+        return view('livewire.example-laravel.paiement-management', compact('paiements'));
+    }
+    
+
+
+    public function render(){
+        return $this->list_paiement();
+    }
+
+    public function exportPaiements()
+    {
+        return Excel::download(new PaiementsExport, 'paiements.xlsx');
+    }
+
+
     public function addPaiement(Request $request)
     {
         $validatedData = $request->validate([

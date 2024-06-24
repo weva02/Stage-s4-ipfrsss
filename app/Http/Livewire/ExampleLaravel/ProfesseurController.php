@@ -11,7 +11,7 @@ use Livewire\Component;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ProfesseurExport;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Validation\ValidationException;
 
 class ProfesseurController extends Component
 {
@@ -22,7 +22,6 @@ class ProfesseurController extends Component
         $typeymntprofs = Typeymntprofs::all();
         return view('livewire.example-laravel.prof-management', compact('profs', 'countries', 'typeymntprofs'));
     }
-
 
     public function searchByPhoneProf(Request $request)
     {
@@ -60,12 +59,11 @@ class ProfesseurController extends Component
             'adress' => 'nullable|string',
             'datenaissance' => 'nullable|date',
             'email' => 'nullable|email',
-            'phone' => 'required|integer',
+            'phone' => 'required|digits:8|integer|gt:0',
             'wtsp' => 'nullable|integer',
             'country_id' => 'required|exists:countries,id',
             'type_id' => 'required|exists:typeymntprofs,id',
         ]);
-        
 
         try {
             $imageName = $request->hasFile('image') ? time() . '.' . $request->image->extension() : null;
@@ -90,11 +88,12 @@ class ProfesseurController extends Component
             ]);
         
             return response()->json(['success' => 'Professeur créé avec succès', 'prof' => $prof->load('country', 'type')]);
+        } catch (ValidationException $e) {
+            return response()->json(['error' => $e->errors()], 422);
         } catch (\Throwable $th) {
             Log::error('Error creating prof: ', ['error' => $th->getMessage()]);
             return response()->json(['error' => $th->getMessage()], 500);
         }
-        
     }
 
     public function update(Request $request, $id)
@@ -108,7 +107,7 @@ class ProfesseurController extends Component
             'adress' => 'nullable|string',
             'datenaissance' => 'nullable|date',
             'email' => 'nullable|email',
-            'phone' => 'required|integer',
+            'phone' => 'required|digits:8|integer|gt:0',
             'wtsp' => 'nullable|integer',
             'country_id' => 'required|exists:countries,id',
             'type_id' => 'required|exists:typeymntprofs,id',
@@ -126,15 +125,19 @@ class ProfesseurController extends Component
             $prof->update($validated);
 
             return response()->json(['success' => 'Professeur modifié avec succès', 'prof' => $prof->load('country', 'type')]);
+        } catch (ValidationException $e) {
+            return response()->json(['error' => $e->errors()], 422);
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 500);
         }
     }
 
-
     public function delete_prof($id)
     {
         $prof = Professeur::findOrFail($id);
+        if ($prof->sessions()->count() > 0) {
+            return response()->json(['error' => 'Impossible de supprimer ce professeur, il est assigné à une ou plusieurs sessions.'], 422);
+        }
         $prof->delete();
 
         return response()->json(['success' => 'Professeur supprimé avec succès']);

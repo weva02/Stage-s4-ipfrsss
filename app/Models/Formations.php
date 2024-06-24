@@ -17,4 +17,8 @@ class Formations extends Model
     {
         return $this->hasMany(Sessions::class, 'formation_id');
     }
+    public function contenusFormation()
+    {
+        return $this->hasMany(ContenusFormation::class, 'formation_id');
+    }
 }
