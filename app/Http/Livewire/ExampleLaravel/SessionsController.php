@@ -326,6 +326,7 @@ class SessionsController extends Component
         }
     }
     
+    
     public function destroy($id)
     {
         try {
@@ -347,12 +348,14 @@ class SessionsController extends Component
     {
         if ($request->ajax()) {
             $search6 = $request->search6;
-            $sessions = Sessions::where('date_debut', 'like', "%$search6%")
-                ->orWhere('date_fin', 'like', "%$search6%")
-                ->orWhere('nom', 'like', "%$search6%")
-                ->paginate(4);
+            $sessions = Sessions::where(function($query) use ($search6) {
+                $query->where('id', 'like', "%$search6%")
+                    ->orWhere('code', 'like', "%$search6%")
+                    ->orWhere('nom', 'like', "%$search6%")
+                    ->orWhere('duree', 'like', "%$search6%");
+            })->paginate(4);
 
-            $view = view('livewire.example-laravel.sessions-list', compact('sessions'))->render();
+            $view = view('livewire.example-laravel.sessions-list', compact('formations'))->render();
             return response()->json(['html' => $view]);
         }
     }

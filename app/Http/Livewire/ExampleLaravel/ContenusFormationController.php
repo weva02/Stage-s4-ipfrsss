@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Livewire\ExampleLaravel;
 
 use Illuminate\Http\Request;
@@ -14,9 +13,7 @@ class ContenusFormationController extends Component
     public function liste_contenue()
     {
         $contenues = ContenusFormation::with('formation')
-            ->join('formations', 'contenus_formations.formation_id', '=', 'formations.id')
-            ->orderBy('formations.nom')
-            ->select('contenus_formations.*')
+            ->orderBy('id')
             ->paginate(4);
 
         $formations = Formations::all();
@@ -34,15 +31,8 @@ class ContenusFormationController extends Component
         ]);
 
         try {
-            ContenusFormation::create([
-                'nomchap' => $request->nomchap,
-                'nomunite' => $request->nomunite,
-                'description' => $request->description,
-                'nombreheures' => $request->nombreheures,
-                'formation_id' => $request->formation_id,
-            ]);
-
-            return response()->json(['success' => 'Contenu créé avec succès']);
+            $contenu = ContenusFormation::create($request->all());
+            return response()->json(['success' => 'Contenu créé avec succès', 'contenu' => $contenu]);
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 500);
         }
@@ -50,7 +40,7 @@ class ContenusFormationController extends Component
 
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([
+        $request->validate([
             'nomchap' => 'required|string',
             'nomunite' => 'required|string',
             'description' => 'nullable|string',
@@ -60,9 +50,8 @@ class ContenusFormationController extends Component
 
         try {
             $contenue = ContenusFormation::findOrFail($id);
-            $contenue->update($validated);
-
-            return response()->json(['success' => 'Contenu modifié avec succès']);
+            $contenue->update($request->all());
+            return response()->json(['success' => 'Contenu modifié avec succès', 'contenue' => $contenue]);
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 500);
         }
@@ -73,26 +62,19 @@ class ContenusFormationController extends Component
         try {
             $contenue = ContenusFormation::findOrFail($id);
             $contenue->delete();
-
             return response()->json(['success' => 'Contenu supprimé avec succès']);
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 500);
         }
     }
 
-    public function search3(Request $request)
+    public function show($id)
     {
-        if ($request->ajax()) {
-            $search3 = $request->search3;
-            $contenues = ContenusFormation::with('formation')
-                ->where('nomchap', 'like', "%$search3%")
-                ->orWhere('nomunite', 'like', "%$search3%")
-                ->orWhere('description', 'like', "%$search3%")
-                ->orWhere('nombreheures', 'like', "%$search3%")
-                ->paginate(4);
-
-            $view = view('livewire.example-laravel.contenusformation-management', compact('contenues'))->render();
-            return response()->json(['html' => $view]);
+        try {
+            $contenu = ContenusFormation::findOrFail($id);
+            return response()->json(['contenu' => $contenu]);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => $th->getMessage()], 500);
         }
     }
 
@@ -100,21 +82,4 @@ class ContenusFormationController extends Component
     {
         return $this->liste_contenue();
     }
-
-    public function export()
-    {
-        return Excel::download(new ContenusFormationExport(), 'ContenusFormation.xlsx');
-    }
-
-    public function show($id)
-    {
-        $formation = Formations::with('contenusFormation')->find($id);
-
-        if ($formation) {
-            return response()->json(['formation' => $formation, 'contenus' => $formation->contenusFormation]);
-        } else {
-            return response()->json(['error' => 'Formation non trouvée'], 404);
-        }
-    }
 }
-

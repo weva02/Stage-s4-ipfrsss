@@ -82,49 +82,50 @@ class EtudiantController extends Component
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'nni' => 'required|digits:10|integer|gt:0',
-            'nomprenom' => 'required|string',
-            'diplome' => 'nullable|string',
-            'genre' => 'required|string',
-            'lieunaissance' => 'nullable|string',
-            'adress' => 'nullable|string',
-            'datenaissance' => 'nullable|date',
-            'email' => 'nullable|email',
-            'phone' => 'required|digits:8|integer|gt:0',
-            'wtsp' => 'nullable|integer',
-            'country_id' => 'required|exists:countries,id',
+{
+    $request->validate([
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        'nni' => 'required|digits:10|integer|gt:0',
+        'nomprenom' => 'required|string',
+        'diplome' => 'nullable|string',
+        'genre' => 'required|string',
+        'lieunaissance' => 'nullable|string',
+        'adress' => 'nullable|string',
+        'datenaissance' => 'nullable|date',
+        'email' => 'nullable|email',
+        'phone' => 'required|digits:8|integer|gt:0',
+        'wtsp' => 'nullable|integer',
+        'country_id' => 'required|exists:countries,id',
+    ]);
+
+    try {
+        $imageName = $request->hasFile('image') ? time() . '.' . $request->image->extension() : null;
+
+        if ($imageName) {
+            $request->image->move(public_path('images'), $imageName);
+        }
+
+        $etudiant = Etudiant::create([
+            'image' => $imageName,
+            'nni' => $request->nni,
+            'nomprenom' => $request->nomprenom,
+            'diplome' => $request->diplome,
+            'genre' => $request->genre,
+            'lieunaissance' => $request->lieunaissance,
+            'adress' => $request->adress,
+            'datenaissance' => $request->datenaissance,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'wtsp' => $request->wtsp,
+            'country_id' => $request->country_id,
         ]);
 
-        try {
-            $imageName = $request->hasFile('image') ? time() . '.' . $request->image->extension() : null;
-
-            if ($imageName) {
-                $request->image->move(public_path('images'), $imageName);
-            }
-
-            Etudiant::create([
-                'image' => $imageName,
-                'nni' => $request->nni,
-                'nomprenom' => $request->nomprenom,
-                'diplome' => $request->diplome,
-                'genre' => $request->genre,
-                'lieunaissance' => $request->lieunaissance,
-                'adress' => $request->adress,
-                'datenaissance' => $request->datenaissance,
-                'email' => $request->email,
-                'phone' => $request->phone,
-                'wtsp' => $request->wtsp,
-                'country_id' => $request->country_id,
-            ]);
-
-            return response()->json(['success' => 'Étudiant créé avec succès']);
-        } catch (\Throwable $th) {
-            return response()->json(['error' => $th->getMessage()], 500);
-        }
+        return response()->json(['success' => 'Étudiant créé avec succès', 'etudiant' => $etudiant]);
+    } catch (\Throwable $th) {
+        return response()->json(['error' => $th->getMessage()], 500);
     }
+}
+
 
 
     

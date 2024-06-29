@@ -150,8 +150,6 @@
                             <label for="adress" class="form-label">Adresse:</label>
                             <input type="text" class="form-control" id="new-etudiant-adress" placeholder="Adresse" name="adress">
                         </div>
-                        <div>
-                        </div>
                     </div>
                 </form>
             </div>
@@ -162,6 +160,7 @@
         </div>
     </div>
 </div>
+
 
 
 
@@ -406,54 +405,54 @@ $(document).ready(function () {
     // });
 
     function validateForm(formId, warnings) {
-        let isValid = true;
-        for (let field in warnings) {
-            const input = $(formId + ' #' + field);
-            const warning = $(warnings[field]);
+    let isValid = true;
+    for (let field in warnings) {
+        const input = $(formId + ' #' + field);
+        const warning = $(warnings[field]);
 
-            if (input.length === 0) {
-                console.warn(`No input found with ID: ${field}`);
-                continue;
-            }
+        if (input.length === 0) {
+            console.warn(`No input found with ID: ${field}`);
+            continue;
+        }
 
-            if (input.attr('type') === 'radio') {
-                if (!$('input[name="' + field + '"]:checked').val()) {
-                    warning.text('Ce champ est requis.');
-                    isValid = false;
-                } else {
-                    warning.text('');
-                }
-            } else if (input.val().trim() === '') {
+        if (input.attr('type') === 'radio') {
+            if (!$('input[name="' + field + '"]:checked').val()) {
                 warning.text('Ce champ est requis.');
                 isValid = false;
-            } else if (field === 'new-etudiant-phone' || field === 'etudiant-phone') {
-                if (!/^\d{8}$/.test(input.val())) {
-                    warning.text('Le numéro de téléphone doit comporter 8 chiffres.');
-                    isValid = false;
-                } else {
-                    warning.text('');
-                }
-            } else if (field === 'new-etudiant-nni' || field === 'etudiant-nni') {
-                if (!/^\d{10}$/.test(input.val())) {
-                    warning.text('Le NNI doit comporter 10 chiffres.');
-                    isValid = false;
-                } else {
-                    warning.text('');
-                }
-            } else if (field === 'new-etudiant-email' || field === 'etudiant-email') {
-                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailPattern.test(input.val())) {
-                    warning.text('Veuillez entrer une adresse e-mail valide.');
-                    isValid = false;
-                } else {
-                    warning.text('');
-                }
             } else {
                 warning.text('');
             }
+        } else if (input.val().trim() === '') {
+            warning.text('Ce champ est requis.');
+            isValid = false;
+        } else if (field === 'new-etudiant-phone' || field === 'etudiant-phone') {
+            if (!/^\d{8}$/.test(input.val())) {
+                warning.text('Le numéro de téléphone doit comporter 8 chiffres.');
+                isValid = false;
+            } else {
+                warning.text('');
+            }
+        } else if (field === 'new-etudiant-nni' || field === 'etudiant-nni') {
+            if (!/^\d{10}$/.test(input.val())) {
+                warning.text('Le NNI doit comporter 10 chiffres.');
+                isValid = false;
+            } else {
+                warning.text('');
+            }
+        } else if (field === 'new-etudiant-email' || field === 'etudiant-email') {
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(input.val())) {
+                warning.text('Veuillez entrer une adresse e-mail valide.');
+                isValid = false;
+            } else {
+                warning.text('');
+            }
+        } else {
+            warning.text('');
         }
-        return isValid;
     }
+    return isValid;
+}
 
 $("#add-new-etudiant").click(function (e) {
     e.preventDefault();
@@ -522,7 +521,21 @@ $("#add-new-etudiant").click(function (e) {
         }
     });
 });
+function addStudentToTable(etudiant) {
+    let newRow = `<tr>
+        <td>${etudiant.nni}</td>
+        <td>${etudiant.nomprenom}</td>
+        <td>${etudiant.genre}</td>
+        <td>${etudiant.phone}</td>
+        <td>${etudiant.email}</td>
+        <td>${etudiant.country_id}</td>
+        <td>
+            <!-- Add any other necessary fields and actions here -->
+        </td>
+    </tr>`;
 
+    $('#students-table tbody').append(newRow);
+}
 
 
     // Populate the edit modal with the selected student's data

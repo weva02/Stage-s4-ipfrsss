@@ -115,6 +115,7 @@ Route::post('/sessions/{sessionId}/profs', [SessionsController::class, 'addProfT
 
 Route::delete('/sessions/{id}', [SessionsController::class, 'destroy'])->name('session.delete');
 Route::post('/sessions/update/{id}', [SessionsController::class, 'update'])->name('session.update');
+Route::put('update/{id}', [SessionsController::class, 'update'])->name('session.update');
 
 
 
@@ -170,7 +171,8 @@ Route::get('/search3', [ContenusFormationController::class, 'search3'])->name('s
 
 //Etudiant routes
 Route::get('/etudiants', [EtudiantController::class, 'liste_etudiant'])->name('etudiant.list');
-// Route::post('/etudiants', [EtudiantController::class, 'store'])->name('etudiant.store');
+Route::post('etudiants', [EtudiantController::class, 'store'])->name('etudiant.store');
+
 Route::put('/etudiants/{id}', [EtudiantController::class, 'update'])->name('etudiant.update');
 // Route::delete('/etudiants/{id}', [EtudiantController::class, 'delete_etudiant'])->name('etudiant.delete');
 Route::get('/search', [EtudiantController::class, 'search'])->name('search');

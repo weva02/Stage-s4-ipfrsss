@@ -399,52 +399,47 @@ $(document).ready(function () {
     });
 
     $('body').on('click', '#session-update', function () {
-        var id = $('#session-id').val();
-        var formData = new FormData($('#session-edit-form')[0]);
-        formData.append('_method', 'PUT');
+    var id = $('#session-id').val();
+    var formData = new FormData($('#session-edit-form')[0]);
 
-        $.ajax({
-            url: "{{ route('session.update', '') }}/" + id,
-            type: 'POST',
-            dataType: 'json',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                $('#sessionEditModal').modal('hide');
-                setTimeout(function () {
-                    location.reload();
-                }, 1000);
-                if (response.success) {
-                    iziToast.success({
-                        message: response.success,
-                        position: 'topRight'
-                    });
-                } else {
-                    iziToast.error({
-                        message: response.error,
-                        position: 'topRight',
-                    });
-                }
-            },
-            error: function(xhr, status, error) {
-                var errorMsg = '';
-                if (xhr.responseJSON && xhr.responseJSON.errors) {
-                    $.each(xhr.responseJSON.errors, function(field, errors) {
-                        $.each(errors, function(index, error) {
-                            errorMsg += error + '<br>';
-                        });
-                    });
-                } else {
-                    errorMsg = 'An error occurred: ' + error;
-                }
-                iziToast.error({
-                    message: errorMsg,
+    $.ajax({
+        url: "{{ route('session.update', '') }}/" + id,
+        type: 'POST',
+        dataType: 'json',
+        data: formData,
+        processData: false,
+        contentType: false,
+        headers: {
+            'X-HTTP-Method-Override': 'PUT'
+        },
+        success: function(response) {
+            $('#sessionEditModal').modal('hide');
+            setTimeout(function () {
+                location.reload();
+            }, 1000);
+            if (response.success) {
+                iziToast.success({
+                    message: response.success,
                     position: 'topRight'
                 });
+            } else {
+                iziToast.error({
+                    message: response.error,
+                    position: 'topRight',
+                });
             }
-        });
+        },
+        error: function(xhr) {
+            var errors = xhr.responseJSON.errors;
+            if (errors) {
+                $.each(errors, function(key, value) {
+                    $('#' + key + '-warning').text(value[0]);
+                });
+            }
+        }
     });
+});
+
 
     // $('body').on('click', '#delete-session', function (e) {
     //     e.preventDefault();
