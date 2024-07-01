@@ -24,7 +24,7 @@
                         <div class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
                             <i class="material-icons opacity-10">done_all</i>
                         </div>
-                        <div class="text-end pt-1">
+                        <div class="text-end pt-1 mt-4">
                             <p class="text-sm mb-0 text-capitalize"><strong>Formations<br> terminées</strong></p>
                             <h4 class="mb-0">{{ $sessionsTerminees }}</h4>
                         </div>
@@ -130,6 +130,7 @@
         </div>
     </div>
 </div>
+
 
 
           <!-- <div class="row mt-4">

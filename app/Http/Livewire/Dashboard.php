@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Livewire;
 
 use Livewire\Component;
@@ -50,14 +49,13 @@ class Dashboard extends Component
         // Calcul du montant payé et du reste à payer
         $paiements = DB::table('paiements')
                        ->join('sessions', 'paiements.session_id', '=', 'sessions.id')
-                       ->join('formations', 'sessions.formation_id', '=', 'formations.id')
                        ->where('sessions.date_debut', '<=', Carbon::now())
                        ->where('sessions.date_fin', '>=', Carbon::now())
-                       ->select(DB::raw('SUM(paiements.montant_paye) as montant_paye, SUM(formations.prix) as montant_total'))
+                       ->select(DB::raw('SUM(paiements.montant_paye) as montant_paye'))
                        ->first();
-        
+
         $this->montantPaye = $paiements->montant_paye ?? 0;
-        $this->resteAPayer = ($paiements->montant_total ?? 0) - $this->montantPaye;
+        $this->resteAPayer = $this->montantTotalFormationsEnCours - $this->montantPaye;
     }
 
     public function render()

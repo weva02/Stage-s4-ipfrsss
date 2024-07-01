@@ -102,12 +102,15 @@ Route::prefix('sessions')->group(function () {
     Route::get('details/{id}', [SessionsController::class, 'getFormationDetails'])->name('sessions.details');
     Route::post('etudiants/{etudiantId}/add', [SessionsController::class, 'addEtudiantToSession']);
     Route::delete('{sessionId}/etudiants/{etudiantId}', [SessionsController::class, 'deleteStudentFromSession']);
+    Route::delete('/sessions/{sessionId}/profs/{profId}', [SessionsController::class, 'deleteProfContent']);
+
     Route::post('{sessionId}/paiements', [SessionsController::class, 'addPaiement']);
     Route::get('{sessionId}/contents', [SessionsController::class, 'getSessionContents']);
     Route::get('{sessionId}/etudiants/{etudiantId}/details', [SessionsController::class, 'getStudentDetails']);
     Route::post('{sessionId}/check-student', [SessionsController::class, 'checkStudentInSession']);
     // Route::post('{sessionId}/professeurs/add', [SessionsController::class, 'addProfToSession']);
 Route::post('/sessions/{sessionId}/profs', [SessionsController::class, 'addProfToSession']);
+Route::delete('/sessions/{sessionId}/profs/{profId}', [SessionsController::class, 'deleteProfContent']);
 
     Route::get('{sessionId}/professeurs', [SessionsController::class, 'getProfSessionContents']);
     Route::post('etudiant/search', [SessionsController::class, 'searchStudentByPhone'])->name('etudiant.search');
@@ -133,6 +136,7 @@ Route::post('/sessions/search', [SessionsController::class, 'search6'])->name('s
 // // Route::post('/sessions/{sessionId}/paiements', [SessionsController::class, 'addPaiement'])->name('sessions.paiements.add');
 // // Route::post('/sessions/{sessionId}/check-student', [SessionsController::class, 'checkStudentInSession'])->name('sessions.check-student');
 Route::get('sessions-management', SessionsController::class)->middleware('auth')->name('sessions-management');
+Route::post('/sessions/search', [SessionsController::class, 'search6'])->name('search6');
 
 // Route::post('/sessions/{sessionId}/paiements', [SessionsController::class, 'addPaiement'])->name('sessions.addPaiement');
 // Route::delete('/sessions/{sessionId}/etudiants/{etudiantId}', [SessionsController::class, 'removeStudentFromSession'])->name('sessions.removeStudent');
@@ -152,7 +156,7 @@ Route::get('paiement-management', PaiementController::class)->middleware('auth')
 Route::get('export-paiements', [PaiementController::class, 'exportPaiements'])->name('export.paiements');
 
 
-// Route::get('/search6', [SessionsController::class, 'search6'])->name('search6');
+Route::get('/search6', [SessionsController::class, 'search6'])->name('search6');
 
 
 
@@ -205,7 +209,7 @@ Route::get('export/professeurs', [ExportController::class, 'exportProfesseurs'])
 Route::get('export/etudiants', [ExportController::class, 'exportEtudiants'])->name('export.etudiants');
 Route::get('export/formationa', [ExportController::class, 'formationsExport'])->name('formations.export');
 Route::get('export/contenus', [ExportController::class, 'exportContenusFormation'])->name('contenues.export');
-
+Route::get('export/sessions', [SessionsController::class, 'exportSessions'])->name('sessions.export');
 
 
 Route::get('formations-management', FormationsController::class)->middleware('auth')->name('formations-management');
@@ -244,7 +248,7 @@ Route::get('/contenus/{id}', [FormationsController::class, 'show'])->name('conte
 Route::get('/contenus', [FormationsController::class, 'liste_contenus'])->name('contenus.liste');
 
 
-
+Route::put('/contenus/{id}', [ContenusFormationController::class, 'update'])->name('contenus.update');
 
 
 Route::group(['middleware' => 'auth'], function () {

@@ -194,19 +194,19 @@
                         <button type="button" class="btn bg-gradient-dark" data-bs-toggle="modal" data-bs-target="#sessionAddModal">
                             <i class="material-icons text-sm">add</i>&nbsp;&nbsp;Ajouter 
                         </button>
-                        <a href="#" class="btn btn-success">Exporter </a>
+                        <a href="{{ route('sessions.export') }}" class="btn btn-success">Exporter </a>
                     </div>
                     <form class="d-flex align-items-center ms-auto">
-                        <div class="input-group input-group-sm" style="width: 250px;">
-                        <input type="text" name="search6" id="search_bar" class="form-control" placeholder="Rechercher..." value="{{ isset($search6) ? $search6 : ''}}">
-                        </div>
-                    </form>
+    <div class="input-group input-group-sm" style="width: 250px;">
+        <input type="text" name="search6" id="search_bar" class="form-control" placeholder="Rechercher..." value="{{ isset($search6) ? $search6 : '' }}">
+    </div>
+</form>
                 </div>
                 <div class="card-body px-0 pb-2">
-                    <div class="table-responsive p-0" id="sessions-table">
-                        @include('livewire.example-laravel.sessions-list', ['sessions' => $sessions])
-                    </div>
-                </div>
+    <div class="table-responsive p-0" id="sessions-table">
+        @include('livewire.example-laravel.sessions-list', ['sessions' => $sessions])
+    </div>
+</div>
             </div>
         </div>
     </div>
@@ -321,16 +321,17 @@ $(document).ready(function () {
     });
 
     $('#search_bar').on('keyup', function(){
-        var query = $(this).val();
-        $.ajax({
-            url: "{{ route('search6') }}",
-            type: "GET",
-            data: {'search6': query},
-            success: function(data){
-                $('#sessions-table').html(data.html);
-            }
+            var query = $(this).val();
+            $.ajax({
+                url: "{{ route('search6') }}",
+                type: "GET",
+                data: {'search6': query},
+                success: function(data){
+                    $('#sessions-table').html(data.html);
+                }
+            });
         });
-    });
+
 
     $("#add-new-session").click(function(e){
         e.preventDefault();

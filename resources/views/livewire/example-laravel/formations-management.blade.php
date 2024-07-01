@@ -534,40 +534,40 @@
         });
 
         // Supprimer un contenu
-        // window.deleteContent = function(contentId) {
-        //     if (confirm("Voulez-vous vraiment supprimer ce contenu?")) {
-        //         $.ajax({
-        //             url: '/contenus/' + contentId,
-        //             type: 'DELETE',
-        //             dataType: 'json',
-        //             success: function (response) {
-        //                 if (response.success) {
-        //                     iziToast.success({
-        //                         title: 'Succès',
-        //                         message: response.success,
-        //                         position: 'topRight'
-        //                     });
-        //                     setTimeout(function () {
-        //                         location.reload();
-        //                     }, 1000);
-        //                 } else {
-        //                     iziToast.error({
-        //                         title: 'Erreur',
-        //                         message: response.error,
-        //                         position: 'topRight'
-        //                     });
-        //                 }
-        //             },
-        //             error: function (xhr, status, error) {
-        //                 iziToast.error({
-        //                     title: 'Erreur',
-        //                     message: 'Une erreur s\'est produite: ' + error,
-        //                     position: 'topRight'
-        //                 });
-        //             }
-        //         });
-        //     }
-        // }
+        window.deleteContent = function(contentId) {
+            if (confirm("Voulez-vous vraiment supprimer ce contenu?")) {
+                $.ajax({
+                    url: '/contenus/' + contentId,
+                    type: 'DELETE',
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.success) {
+                            iziToast.success({
+                                title: 'Succès',
+                                message: response.success,
+                                position: 'topRight'
+                            });
+                            setTimeout(function () {
+                                location.reload();
+                            }, 1000);
+                        } else {
+                            iziToast.error({
+                                title: 'Erreur',
+                                message: response.error,
+                                position: 'topRight'
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        iziToast.error({
+                            title: 'Erreur',
+                            message: 'Une erreur s\'est produite: ' + error,
+                            position: 'topRight'
+                        });
+                    }
+                });
+            }
+        }
 
 
         $('body').on('click', '#delete-formation', function (e) {
@@ -685,6 +685,9 @@ window.showContents = function(formationId) {
                         <td>${content.nombreheures}</td>
                         <td>
                             <button class="btn btn-danger" onclick="deleteContent(${content.id})"><i class="material-icons opacity-10">delete</i></button>
+                              <button class="btn btn-info" onclick="editContent(${content.id})">
+                            <i class="material-icons opacity-10">edit</i>
+                        </button>
                         </td>
                     </tr>`;
                 });

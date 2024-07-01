@@ -20,15 +20,12 @@
             <td>
                 <button class="btn btn-info" id="edit-session" data-id="{{ $session->id }}"><i class="material-icons opacity-10">border_color</i></button>
                 <button class="btn btn-danger" id="delete-session" data-id="{{ $session->id }}"><i class="material-icons opacity-10">delete</i></button>
-                <!-- <button class="btn btn-secondary" onclick="showContents({{ $session->id }})"><i class="material-icons opacity-10">group</i></button> -->
                 <button class="btn btn-secondary" onclick="showContents({{ $session->id }})" data-toggle="tooltip" title="Liste des étudiants">
                     <i class="material-icons opacity-10">group</i>
                 </button>
-
                 <button class="btn btn-secondary" onclick="showProfContents({{ $session->id }})" data-toggle="tooltip" title="Liste des professeurs">
                     <i class="material-icons opacity-10">assignment_ind</i>
                 </button>
-
             </td>
         </tr>
         @endforeach

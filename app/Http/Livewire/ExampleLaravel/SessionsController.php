@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Livewire\Component;
 use App\Models\Formations;
 use App\Models\Sessions;
+use App\Models\Professeur;
 use App\Models\Etudiant;
 use App\Models\Paiement;
 use App\Models\ModePaiement;
@@ -206,6 +207,24 @@ class SessionsController extends Component
             return response()->json(['error' => 'Erreur lors de la suppression de l\'étudiant: ' . $e->getMessage()], 500);
         }
     }
+    public function deleteProfContent($sessionId, $profId)
+{
+    try {
+        $session = Sessions::findOrFail($sessionId);
+        $prof = Professeur::findOrFail($profId);
+
+        if ($session && $prof) {
+            $session->profs()->detach($profId);
+            return response()->json(['success' => 'Professeur retiré de la session avec succès']);
+        } else {
+            return response()->json(['error' => 'Session ou professeur non trouvé.'], 404);
+        }
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'Erreur lors de la suppression du professeur : ' . $e->getMessage()], 500);
+    }
+}
+
+
 
     // public function destroy($id)
     // {
@@ -348,17 +367,16 @@ class SessionsController extends Component
     {
         if ($request->ajax()) {
             $search6 = $request->search6;
-            $sessions = Sessions::where(function($query) use ($search6) {
-                $query->where('id', 'like', "%$search6%")
-                    ->orWhere('code', 'like', "%$search6%")
-                    ->orWhere('nom', 'like', "%$search6%")
-                    ->orWhere('duree', 'like', "%$search6%");
-            })->paginate(4);
+            $sessions = Sessions::where('date_debut', 'like', "%$search6%")
+                ->orWhere('date_fin', 'like', "%$search6%")
+                ->orWhere('nom', 'like', "%$search6%")
+                ->paginate(4);
 
-            $view = view('livewire.example-laravel.sessions-list', compact('formations'))->render();
+            $view = view('livewire.example-laravel.sessions-list', compact('sessions'))->render();
             return response()->json(['html' => $view]);
         }
     }
+
 
     public function render()
     {
