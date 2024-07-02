@@ -32,13 +32,15 @@
             <li class="nav-item mt-3">
                 <!-- <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Pages</h6> -->
             </li>
+
+            
             <li class="nav-item">
                 <a class="nav-link text-white {{ Route::currentRouteName() == 'dashboard' ? ' active bg-gradient-info' : '' }} "
                     href="{{ route('dashboard') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">dashboard</i>
                     </div>
-                    <span class="nav-link-text ms-1"><b>Dashboard</b></span>
+                    <span class="nav-link-text ms-1"><b>Tableau de bord</b></span>
                 </a>
             </li>
             <li class="nav-item">
@@ -102,7 +104,7 @@
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">login</i>
                     </div>
-                    <span class="nav-link-text ms-1"><b>Sign In</b></span>
+                    <span class="nav-link-text ms-1"><b>Se connecter </b></span>
                 </a>
             </li>
             <li class="nav-item">
@@ -110,9 +112,12 @@
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">assignment</i>
                     </div>
-                    <span class="nav-link-text ms-1"><b>Sign Up</b></span>
+                    <span class="nav-link-text ms-1"><b>S'inscrire</b></span>
                 </a>
             </li> 
+
+
+            
         </ul>
     
 </aside>

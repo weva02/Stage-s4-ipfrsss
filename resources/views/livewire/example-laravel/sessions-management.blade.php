@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Laravel AJAX Sessions Management</title>
+    <title>Laravel AJAX Formations Management</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js"></script>
@@ -164,12 +164,12 @@
 </div>
 
 <div id="formationContentContainer" style="display:none;">
-    <h4>Liste des etudiants</h4>
+    <center><h4>Liste des etudiants</h4> </center>
     <div id="formationContents"></div>
 </div>
 
 <div id="formationProfContentContainer" style="display:none;">
-    <h4>Liste des Professeurs</h4>
+    <center><h4>Liste des Professeurs</h4></center>
     <div id="formationProfContents"></div>
 </div>
 
@@ -197,16 +197,16 @@
                         <a href="{{ route('sessions.export') }}" class="btn btn-success">Exporter </a>
                     </div>
                     <form class="d-flex align-items-center ms-auto">
-    <div class="input-group input-group-sm" style="width: 250px;">
-        <input type="text" name="search6" id="search_bar" class="form-control" placeholder="Rechercher..." value="{{ isset($search6) ? $search6 : '' }}">
-    </div>
-</form>
-                </div>
-                <div class="card-body px-0 pb-2">
-    <div class="table-responsive p-0" id="sessions-table">
-        @include('livewire.example-laravel.sessions-list', ['sessions' => $sessions])
-    </div>
-</div>
+                        <div class="input-group input-group-sm" style="width: 250px;">
+                            <input type="text" name="search6" id="search_bar" class="form-control" placeholder="Rechercher..." value="{{ isset($search6) ? $search6 : '' }}">
+                        </div>
+                    </form>
+                                    </div>
+                                    <div class="card-body px-0 pb-2">
+                        <div class="table-responsive p-0" id="sessions-table">
+                            @include('livewire.example-laravel.sessions-list', ['sessions' => $sessions])
+                        </div>
+                    </div>
             </div>
         </div>
     </div>
@@ -216,7 +216,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Ajouter un nouveau Session</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Ajouter une nouveau Formation</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -265,7 +265,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modifier session</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Modifier Formation</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -527,7 +527,7 @@ $(document).ready(function () {
                             data: { etudiant_id: etudiant.id },
                             success: function(checkResponse) {
                                 if (checkResponse.isInSession) {
-                                    $('#student-search-results').html('<div class="alert alert-danger">L\'étudiant est déjà inscrit dans cette session.</div>');
+                                    $('#student-search-results').html('<div class="alert alert-danger">L\'étudiant est déjà inscrit dans cette Formation.</div>');
                                 } else {
                                     $('#student-search-results').html(
                                         `<div class="alert alert-success">Etudiant trouvé: ${etudiant.nomprenom}</div>
@@ -538,7 +538,7 @@ $(document).ready(function () {
                                 }
                             },
                             error: function(xhr, status, error) {
-                                alert('Erreur lors de la vérification de l\'étudiant dans la session: ' + error);
+                                alert('Erreur lors de la vérification de l\'étudiant dans la Formation: ' + error);
                             }
                         });
                     } else {
@@ -754,7 +754,7 @@ window.addPaiement = function() {
 
 
     window.deleteStudentFromSession = function(etudiantId, sessionId) {
-        if (confirm("Êtes-vous sûr de vouloir supprimer cet étudiant de la session ?")) {
+        if (confirm("Êtes-vous sûr de vouloir supprimer cet étudiant de la Formation ?")) {
             $.ajax({
                 url: `/sessions/${sessionId}/etudiants/${etudiantId}`,
                 type: 'DELETE',

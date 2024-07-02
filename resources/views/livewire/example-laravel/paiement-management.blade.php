@@ -63,7 +63,7 @@
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Prix Réel</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Montant Payé</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Mode de Paiement</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Reste à Payer</th>
+                                        <!-- <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Reste à Payer</th> -->
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date de Paiement</th>
                                     </tr>
                                 </thead>
@@ -79,7 +79,7 @@
                                         <td>{{ $paiement->prix_reel }}</td>
                                         <td>{{ $paiement->montant_paye }}</td>
                                         <td>{{ $paiement->mode->nom ?? 'N/A' }}</td>
-                                        <td>{{ $paiement->reste_a_payer }}</td>
+                                        <!-- <td>{{ $paiement->reste_a_payer }}</td> -->
                                         <td>{{ $paiement->date_paiement }}</td>
                                     </tr>
                                     @endforeach

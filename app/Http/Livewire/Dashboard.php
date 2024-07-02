@@ -40,11 +40,25 @@ class Dashboard extends Component
                   ->where('date_fin', '>=', Carbon::now());
         })->count(); // Nombre d'étudiants en cours
 
+
+        // Sous-requête pour obtenir les montants distincts par session et par étudiant
+        $distinctPaiements = DB::table('paiements')
+            ->join('sessions', 'paiements.session_id', '=', 'sessions.id')
+            ->where('sessions.date_debut', '<=', Carbon::now())
+            ->where('sessions.date_fin', '>=', Carbon::now())
+            ->select('paiements.session_id', 'paiements.etudiant_id', 'paiements.prix_reel')
+            ->distinct();
+
+        // Calcul du montant total en sommant les prix_reel distincts
+        $this->montantTotalFormationsEnCours = DB::table(DB::raw("({$distinctPaiements->toSql()}) as sub"))
+            ->mergeBindings($distinctPaiements)
+            ->sum('sub.prix_reel');
+
         // Calcul du montant total des formations en cours
-        $this->montantTotalFormationsEnCours = Sessions::join('formations', 'sessions.formation_id', '=', 'formations.id')
-                                                       ->where('sessions.date_debut', '<=', Carbon::now())
-                                                       ->where('sessions.date_fin', '>=', Carbon::now())
-                                                       ->sum('formations.prix');
+        // $this->montantTotalFormationsEnCours = Sessions::join('formations', 'sessions.formation_id', '=', 'formations.id')
+        //                                                ->where('sessions.date_debut', '<=', Carbon::now())
+        //                                                ->where('sessions.date_fin', '>=', Carbon::now())
+        //                                                ->sum('formations.prix');
         
         // Calcul du montant payé et du reste à payer
         $paiements = DB::table('paiements')

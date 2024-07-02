@@ -57,7 +57,7 @@ class SessionsController extends Component
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'Session or student not found.'], 404);
         } catch (\Exception $e) {
-            Log::error('Error adding student to session: ' . $e->getMessage());
+            Log::error('Error adding student to Formation: ' . $e->getMessage());
             return response()->json(['error' => 'Erreur lors de l\'ajout de l\'étudiant et du paiement: ' . $e->getMessage()], 500);
         }
     }
@@ -69,7 +69,7 @@ class SessionsController extends Component
         }, 'etudiants.paiements.mode', 'formation'])->find($sessionId);
 
         if (!$session) {
-            return response()->json(['error' => 'Session not found'], 404);
+            return response()->json(['error' => 'Formation not found'], 404);
         }
 
         $etudiants = $session->etudiants->map(function($etudiant) use ($session) {
@@ -116,7 +116,7 @@ class SessionsController extends Component
                 'reste_a_payer' => $resteAPayer
             ]);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'Étudiant ou Session non trouvé.'], 404);
+            return response()->json(['error' => 'Étudiant ou Formation non trouvé.'], 404);
         } catch (\Exception $e) {
             Log::error('Error fetching student details: ' . $e->getMessage());
             return response()->json(['error' => 'Erreur lors de la récupération des détails de l\'étudiant.'], 500);
@@ -184,7 +184,7 @@ class SessionsController extends Component
             return response()->json(['success' => 'Paiement ajouté avec succès']);
         } catch (ModelNotFoundException $e) {
             Log::error('Model not found: ' . $e->getMessage());
-            return response()->json(['error' => 'Session ou Étudiant non trouvé.'], 404);
+            return response()->json(['error' => 'Formation ou Étudiant non trouvé.'], 404);
         } catch (\Exception $e) {
             Log::error('Error adding payment: ' . $e->getMessage());
             return response()->json(['error' => 'Erreur lors de l\'ajout du paiement: ' . $e->getMessage()], 500);
@@ -202,7 +202,7 @@ class SessionsController extends Component
 
             Paiement::where('session_id', $sessionId)->where('etudiant_id', $etudiantId)->delete();
 
-            return response()->json(['success' => 'Étudiant retiré de la session avec succès']);
+            return response()->json(['success' => 'Étudiant retiré de la Formation avec succès']);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Erreur lors de la suppression de l\'étudiant: ' . $e->getMessage()], 500);
         }
@@ -215,9 +215,9 @@ class SessionsController extends Component
 
         if ($session && $prof) {
             $session->profs()->detach($profId);
-            return response()->json(['success' => 'Professeur retiré de la session avec succès']);
+            return response()->json(['success' => 'Professeur retiré de la Formation avec succès']);
         } else {
-            return response()->json(['error' => 'Session ou professeur non trouvé.'], 404);
+            return response()->json(['error' => 'Formation ou professeur non trouvé.'], 404);
         }
     } catch (\Exception $e) {
         return response()->json(['error' => 'Erreur lors de la suppression du professeur : ' . $e->getMessage()], 500);
@@ -300,7 +300,7 @@ class SessionsController extends Component
 
         try {
             $session = Sessions::create($request->all());
-            return response()->json(['success' => 'Session créée avec succès', 'session' => $session]);
+            return response()->json(['success' => 'Formation créée avec succès', 'session' => $session]);
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 500);
         }
@@ -339,7 +339,7 @@ class SessionsController extends Component
     
             // Modification permise même si des étudiants ou des professeurs sont inscrits
             $session->update($validated);
-            return response()->json(['success' => 'Session modifiée avec succès', 'session' => $session]);
+            return response()->json(['success' => 'Formation modifiée avec succès', 'session' => $session]);
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 500);
         }
@@ -351,11 +351,11 @@ class SessionsController extends Component
         try {
             $session = Sessions::with('etudiants', 'professeurs')->findOrFail($id);
             if ($session->etudiants->isNotEmpty() || $session->professeurs->isNotEmpty()) {
-                return response()->json(['status' => 400, 'message' => 'La session ne peut pas être supprimée car elle contient des étudiants ou des professeurs.']);
+                return response()->json(['status' => 400, 'message' => 'La Formation ne peut pas être supprimée car elle contient des étudiants ou des professeurs.']);
             }
     
             $session->delete();
-            return response()->json(['success' => 'Session supprimée avec succès']);
+            return response()->json(['success' => 'Formation supprimée avec succès']);
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 500);
         }

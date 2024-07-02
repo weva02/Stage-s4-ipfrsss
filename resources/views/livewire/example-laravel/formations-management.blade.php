@@ -34,7 +34,7 @@
 <body>
     <div class="container-fluid py-4">
         <div id="formationContentContainer" style="display:none;">
-            <button onclick="$('#formationContentContainer').hide();" class="btn btn-secondary">Fermer</button>
+            <!-- <button onclick="$('#formationContentContainer').hide();" class="btn btn-secondary">Fermer</button> -->
             <div id="formationContents"></div>
         </div>
         <div class="row">

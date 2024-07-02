@@ -24,7 +24,7 @@
                         <div class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
                             <i class="material-icons opacity-10">done_all</i>
                         </div>
-                        <div class="text-end pt-1 mt-4">
+                        <div class="text-end pt-1 ">
                             <p class="text-sm mb-0 text-capitalize"><strong>Formations<br> terminées</strong></p>
                             <h4 class="mb-0">{{ $sessionsTerminees }}</h4>
                         </div>
@@ -88,9 +88,10 @@
                         <div class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
                             <i class="material-icons opacity-10">attach_money</i>
                         </div>
-                        <div class="text-end pt-1 mt-4">
-                            <p class="text-sm mb-0 text-capitalize"><strong>Montant Total des Formations en Cours</strong></p>
+                        <div class="text-end pt-1 ">
+                            <p class="text-sm mb-0 text-capitalize"><strong>Montant Total <br>des Formations <br>en Cours</strong></p>
                             <h4 class="mb-0">{{ number_format($montantTotalFormationsEnCours, 2, ',', ' ') }} MRU</h4>
+                            <!-- <p class="card-text">{{ $montantTotalFormationsEnCours }} MRU</p> -->
                         </div>
                     </div>
                     <hr class="dark horizontal my-0">
