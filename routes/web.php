@@ -4,7 +4,7 @@ use App\Http\Livewire\Auth\ForgotPassword;
 use App\Http\Livewire\Auth\Login;
 use App\Http\Livewire\Auth\Register;
 use App\Http\Livewire\Auth\ResetPassword;
-use App\Http\Livewire\Billing;
+// use App\Http\Livewire\Billing;
 use Illuminate\Support\Facades\Route;
 use App\Http\Livewire\Dashboard;
 use App\Http\Livewire\ExampleLaravel\UserManagement;
@@ -26,13 +26,13 @@ use App\Http\Livewire\ExampleLaravel\PaiementController;
 use App\Http\Controllers\ExportController;
 
 
-use App\Http\Livewire\Notifications;
+// use App\Http\Livewire\Notifications;
 use App\Http\Livewire\Profile;
-use App\Http\Livewire\RTL;
+// use App\Http\Livewire\RTL;
 use App\Http\Livewire\StaticSignIn;
 use App\Http\Livewire\StaticSignUp;
-use App\Http\Livewire\Tables;
-use App\Http\Livewire\VirtualReality;
+// use App\Http\Livewire\Tables;
+// use App\Http\Livewire\VirtualReality;
 use GuzzleHttp\Middleware;
 
 /*
@@ -109,8 +109,8 @@ Route::prefix('sessions')->group(function () {
     Route::get('{sessionId}/etudiants/{etudiantId}/details', [SessionsController::class, 'getStudentDetails']);
     Route::post('{sessionId}/check-student', [SessionsController::class, 'checkStudentInSession']);
     // Route::post('{sessionId}/professeurs/add', [SessionsController::class, 'addProfToSession']);
-Route::post('/sessions/{sessionId}/profs', [SessionsController::class, 'addProfToSession']);
-Route::delete('/sessions/{sessionId}/profs/{profId}', [SessionsController::class, 'deleteProfContent']);
+    Route::post('/sessions/{sessionId}/profs', [SessionsController::class, 'addProfToSession']);
+    Route::delete('/sessions/{sessionId}/profs/{profId}', [SessionsController::class, 'deleteProfContent']);
 
     Route::get('{sessionId}/professeurs', [SessionsController::class, 'getProfSessionContents']);
     Route::post('etudiant/search', [SessionsController::class, 'searchStudentByPhone'])->name('etudiant.search');
@@ -253,12 +253,12 @@ Route::put('/contenus/{id}', [ContenusFormationController::class, 'update'])->na
 
 Route::group(['middleware' => 'auth'], function () {
 Route::get('dashboard', Dashboard::class)->name('dashboard');
-Route::get('billing', Billing::class)->name('billing');
+// Route::get('billing', Billing::class)->name('billing');
 Route::get('profile', Profile::class)->name('profile');
-Route::get('tables', Tables::class)->name('tables');
-Route::get('notifications', Notifications::class)->name("notifications");
-Route::get('virtual-reality', VirtualReality::class)->name('virtual-reality');
+// Route::get('tables', Tables::class)->name('tables');
+// Route::get('notifications', Notifications::class)->name("notifications");
+// Route::get('virtual-reality', VirtualReality::class)->name('virtual-reality');
 Route::get('static-sign-in', StaticSignIn::class)->name('static-sign-in');
 Route::get('static-sign-up', StaticSignUp::class)->name('static-sign-up');
-Route::get('rtl', RTL::class)->name('rtl');
+// Route::get('rtl', RTL::class)->name('rtl');
 });

@@ -59,7 +59,7 @@
                             <div id="search_list"></div>
                         </form>
                     </div>
-                    <div class="me-3 my-3 text-end"></div>
+                    <!-- <div class="me-3 my-3 text-end"></div> -->
                     <div class="card-body px-0 pb-2">
                         <div class="table-responsive p-0" id="formations-table">
                             @include('livewire.example-laravel.formations-list', ['formations' => $formations])

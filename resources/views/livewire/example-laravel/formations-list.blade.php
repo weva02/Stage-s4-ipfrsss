@@ -16,7 +16,7 @@
                 <td>{{ $formation->duree }}</td>
                 <td>{{ $formation->prix }}</td>
                 <td>
-                <button class="btn btn-primary" onclick="showContents({{ $formation->id }})"><i class="material-icons opacity-10">chat</i></button>
+                <button class="btn btn-primary" onclick="showContents({{ $formation->id }})" data-toggle="tooltip" title="Liste des contenus de la programme"><i class="material-icons opacity-10">chat</i></button>
                     <a href="javascript:void(0)" id="edit-formation" data-id="{{ $formation->id }}" class="btn btn-info"><i class="material-icons opacity-10">border_color</i></a>
                     <a href="javascript:void(0)" id="delete-formation" data-id="{{ $formation->id }}" class="btn btn-danger"><i class="material-icons opacity-10">delete</i></a>
                 </td>

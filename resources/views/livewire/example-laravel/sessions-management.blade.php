@@ -320,6 +320,10 @@ $(document).ready(function () {
         }
     });
 
+    $(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+
     $('#search_bar').on('keyup', function(){
             var query = $(this).val();
             $.ajax({

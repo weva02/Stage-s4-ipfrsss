@@ -68,9 +68,9 @@ class EtudiantController extends Component
 
             return response()->json(['success' => 'Étudiant et paiement ajoutés avec succès']);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'Session not found.'], 404);
+            return response()->json(['error' => 'Formation not found.'], 404);
         } catch (\Exception $e) {
-            Log::error('Error adding student to session: ' . $e->getMessage());
+            Log::error('Error adding student to Formation: ' . $e->getMessage());
             return response()->json(['error' => 'Erreur lors de l\'ajout de l\'étudiant et du paiement: ' . $e->getMessage()], 500);
         }
     }
@@ -81,18 +81,64 @@ class EtudiantController extends Component
         return view('add_student_modal', compact('modes_paiement', 'sessionId'));
     }
 
-    public function store(Request $request)
+//     public function store(Request $request)
+// {
+//     $request->validate([
+//         'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+//         'nni' => 'required|digits:10|integer|gt:0',
+//         'nomprenom' => 'required|string',
+//         'diplome' => 'nullable|string',
+//         'genre' => 'required|string',
+//         'lieunaissance' => 'nullable|string',
+//         'adress' => 'nullable|string',
+//         'datenaissance' => 'nullable|date',
+//         'email' => 'nullable|email',
+//         'phone' => 'required|digits:8|integer|gt:0',
+//         'wtsp' => 'nullable|integer',
+//         'country_id' => 'required|exists:countries,id',
+//     ]);
+
+//     try {
+//         $imageName = $request->hasFile('image') ? time() . '.' . $request->image->extension() : null;
+
+//         if ($imageName) {
+//             $request->image->move(public_path('images'), $imageName);
+//         }
+
+//         $etudiant = Etudiant::create([
+//             'image' => $imageName,
+//             'nni' => $request->nni,
+//             'nomprenom' => $request->nomprenom,
+//             'diplome' => $request->diplome,
+//             'genre' => $request->genre,
+//             'lieunaissance' => $request->lieunaissance,
+//             'adress' => $request->adress,
+//             'datenaissance' => $request->datenaissance,
+//             'email' => $request->email,
+//             'phone' => $request->phone,
+//             'wtsp' => $request->wtsp,
+//             'country_id' => $request->country_id,
+//         ]);
+
+//         return response()->json(['success' => 'Étudiant créé avec succès', 'etudiant' => $etudiant]);
+//     } catch (\Throwable $th) {
+//         return response()->json(['error' => $th->getMessage()], 500);
+//     }
+// }
+
+
+public function store(Request $request)
 {
     $request->validate([
         'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        'nni' => 'required|digits:10|integer|gt:0',
+        'nni' => 'required|digits:10|integer|gt:0|unique:etudiants,nni',
         'nomprenom' => 'required|string',
         'diplome' => 'nullable|string',
         'genre' => 'required|string',
         'lieunaissance' => 'nullable|string',
         'adress' => 'nullable|string',
         'datenaissance' => 'nullable|date',
-        'email' => 'nullable|email',
+        'email' => 'nullable|email|unique:etudiants,email',
         'phone' => 'required|digits:8|integer|gt:0',
         'wtsp' => 'nullable|integer',
         'country_id' => 'required|exists:countries,id',
@@ -179,7 +225,7 @@ class EtudiantController extends Component
         if ($sessionsCount > 0) {
             return response()->json([
                 'status' => 400,
-                'message' => 'Cet étudiant est associé à une ou plusieurs sessions et ne peut pas être supprimé.'
+                'message' => 'Cet étudiant est associé à une ou plusieurs formations et ne peut pas être supprimé.'
             ]);
         }
     

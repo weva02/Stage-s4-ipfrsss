@@ -69,11 +69,11 @@
                                         <a href="{{ route('register') }}"
                                             class="text-info text-gradient font-weight-bold">S'inscrire</a>
                                     </p>
-                                    <p class="text-sm text-center">
+                                    <!-- <p class="text-sm text-center">
                                     Mot de passe oublié? Réinitialisez votre mot de passe ici
                                         <a href="{{ route('password.forgot') }}"
                                             class="text-info text-gradient font-weight-bold">ici</a>
-                                    </p>
+                                    </p> -->
                                 </form>
                             </div>
                         </div>
