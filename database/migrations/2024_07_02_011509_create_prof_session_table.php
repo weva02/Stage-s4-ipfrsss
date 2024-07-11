@@ -7,14 +7,17 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('prof_session', function (Blueprint $table) {
-            $table->foreignId('prof_id')->constrained('Professeurs');
-            $table->foreignId('session_id')->constrained('sessions');
-            $table->date('date_paiement')->nullable();
-            $table->timestamps();
+        if (!Schema::hasTable('prof_session')) {
+            Schema::create('prof_session', function (Blueprint $table) {
+                $table->foreignId('prof_id')->constrained('Professeurs');
+                $table->foreignId('session_id')->constrained('sessions');
+                // $table->foreignId('typeymntprofs_id')->constrained('typeymntprofs');
+                $table->date('date_paiement')->nullable();
+                $table->timestamps();
 
-            $table->primary(['prof_id', 'session_id']);
-        });
+                $table->primary(['prof_id', 'session_id']);
+            });
+        }
     }
 
     public function down()
